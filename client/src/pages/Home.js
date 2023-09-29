@@ -30,7 +30,7 @@ const Home = () => {
             brand: "Cuba Real", name: "Gooding Real", blend: "Sabroso", size: "double toro", qty: 4, discount: 7, id: 3 
         }
     ];
-    const cigars = [];
+    const [cigars, setCigars] = useState([]);
         /*{ 
             brand: "", name: "", blend: "", size: "", qty: "", id: 1
         }

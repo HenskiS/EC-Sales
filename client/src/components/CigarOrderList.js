@@ -7,27 +7,9 @@ import * as IoIcons from 'react-icons/io';
 import Cigar from './Cigar';
 import Total from './Total';
 
-const cs = [{
-    brand: "Esteban Carreras",
-    name: "10 Anos",
-    blend: "Maduro",
-    sizeName: "Churchill"
-},
-{
-    brand: "Esteban Carreras",
-    name: "10 Anos",
-    blend: "Maduro",
-    sizeName: "Churchill"
-},
-{
-    brand: "Esteban Carreras",
-    name: "10 Anos",
-    blend: "Maduro",
-    sizeName: "Churchill"
-}
-]
-function price(item){
 
+function price(item){
+    if (item.hidden) return 0;
     return item.price * item.qty * (item.discount ? 100 - item.discount : 100)/100;
 }
   
@@ -51,13 +33,24 @@ const CigarOrderList = ({cigars, displayButton}) => {
 
     const [cigs, setCigs] = useState(cigars.length); // cigs is a counter, only used to update the list onClick 'Add Cigar'
     const [key, setKey] = useState(5);
+    const [subtotal, setSubtotal] = useState();
 
-    const onBrandChange = (cid, field, value) => {
+    const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
-        cigars[cid-1][field] = value;
+        const index = cigars.findIndex(c => c.id === cid);
+        cigars[index][field] = value;
         //console.log(cigars);
         setKey(key*-1);
+        setSubtotal(getSubtotal(cigars));
     }
+    /*const cigarDelete = (cid) => {
+        const index = cigars.findIndex(c => c.id === cid);
+        console.log("Removing cid: "+cid+" at index: " + index);
+        //cigars.splice(index, 1);
+        cigars[index]["hidden"] = true;
+        //setCigs(cigs-1);
+        console.log(cigars);
+    }*/
 
     return ( 
         <div className="cigar-list">
@@ -70,14 +63,14 @@ const CigarOrderList = ({cigars, displayButton}) => {
                 <p className="hcol cigar-size">Size</p>
                 <p className="hcol cigar-qty">Qty</p>
                 <p className="hcol cigar-discount">DC %</p>
-                <p className="hcol cigar-price">Price</p>
+                <p className="hcol cigar-price">PPB</p>
 
             </div>
             {/* Cigar List */}
 
             {cigars.map((cigar) => (
                 <Cigar 
-                    onBrandChange={onBrandChange}
+                    onCigarChange={onCigarChange}
                     cid={cigar.id}
                 />
             ))}
@@ -87,7 +80,7 @@ const CigarOrderList = ({cigars, displayButton}) => {
                 <button onClick={() => {
                     console.log('click! adding cigar...');
                     let id = cigs ? cigars[cigs - 1].id + 1 : 1;
-                    cigars.push({brand: "", name: "", blend: "", size: "", qty: '', discount: '', id: id});
+                    cigars.push({brand: "", name: "", blend: "", size: "", qty: '', discount: '', hidden: false, id: id});
                     setCigs(cigs + 1); // literally just a counter but it forces the cigar list to update when the button is pressed
                 }}>Add cigar</button>
             </div> : <div></div>}
@@ -95,9 +88,9 @@ const CigarOrderList = ({cigars, displayButton}) => {
             {/*<Total key={key} cigars={cigars} />*/}
             <div className="subtotal">
                 <h5>Subtotal</h5>
-                <p>${cigars.length > 0 && getSubtotal(cigars)}</p>
+                <p>${cigars.length > 0 && subtotal}</p>
                 <h4>Total (with taxes and discount)</h4>
-                <p className='total'>${cigars.length > 0 && getSubtotal(cigars)}</p>
+                <p className='total'>${cigars.length > 0 && subtotal}</p>
             </div>
 
 

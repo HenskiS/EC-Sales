@@ -25,7 +25,7 @@ const Auth = ({ setToken }) => {
         event.preventDefault();
         
         try {
-            const response = await axios.post("http://192.168.1.135:3001/auth/login", { username, password });
+            const response = await axios.post("http://192.168.1.133:3001/auth/login", { username, password });
             //setCookies("access_token", response.data.token)
             setToken(response.data.token);
             console.log("setToken");
