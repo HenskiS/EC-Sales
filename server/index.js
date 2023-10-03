@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import { userRouter } from './routes/users.js'
 import { cigarRouter } from "./routes/cigars.js";
+import { clientRouter } from "./routes/clients.js";
 
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use("/auth", userRouter)
 app.use("/cigars", cigarRouter)
+app.use("/clients", clientRouter)
 
 mongoose.connect('mongodb://127.0.0.1:27017/test');
 

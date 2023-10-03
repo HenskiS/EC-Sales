@@ -99,7 +99,7 @@
 }
 hr{
   /*width: 600px;*/
-  margin: 15px;
+  /*margin: 15px;*/
   color: #060b26;
 }
 .subtotal{
@@ -114,6 +114,11 @@ hr{
   border: 1px solid;
   border-radius: 5px;
   margin: 0px 0px 20px auto;/*365px;*/
+}
+.clientlist {
+  display: flex;
+  flex-direction: column;
+  /*align-items: stretch;*/
 }
 .client-list{
   display: flex;
@@ -147,10 +152,57 @@ hr{
   margin: 5px;
 }
 .client-search{
-  width: 560px;
-  margin: 10px 10px 10px 0px;
+  /*width: 560px;*/
+  margin: 10px 10px 10px 10px;
   border: 1px solid lightgray;
   border-radius: 5px;
+}
+.clientnames {
+  padding: 5px 10px;
+  border: 0px;
+  display: flex;
+  background-color: transparent;
+  color: black;
+  /*border-top: 1px solid black;*/
+  /*border-bottom: 1px solid black;*/
+}
+.clientnames-list {
+  padding: 5px 10px;
+  border-top: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  /*border-bottom: 1px solid black;*/
+}
+.ClientInfo {
+  width: 60%;
+  /*height: 60vh;*/
+  position: fixed;
+  align-self: center;
+  /*top: 80px;
+  left:0;*/
+  /*display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;*/
+  background-color: white;
+  padding: 25px;
+  border: 1px solid black;
+  border-radius: 15px;
+}
+.ClientInfo svg{
+  /*position: fixed;
+  top: 90px;
+  right: 10px;*/
+  width: 2rem;
+  height: 2rem;
+  padding: 5px;
+  background-color: rgba(0,0,0,0.4);
+  color: #ffffff;
+  border-radius: 5px;
+}
+.clientinfo-header {
+  display: flex;
+  justify-content: space-between;
 }
 .cigar{
   /*width: 600px;*/

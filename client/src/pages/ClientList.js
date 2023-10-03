@@ -1,8 +1,10 @@
-import * as IoIcons from "react-icons/io";
+import { IoMdPaper } from "react-icons/io";
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useToken from '../hooks/useToken';
+import axios from 'axios';
+import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
 
@@ -24,11 +26,50 @@ const ClientList = () => {
         }
     ]
 
+    const [clientNames, setClientNames] = useState(["loading..."]);
+    useEffect(() => {
+        const getClients = async () => {
+            try {
+                const response = await axios.get("http://192.168.1.133:3001/clients/clientnames");
+                console.log("got clients");
+                console.log(response);
+                setClientNames(response.data);
+            } catch (err) { console.error(err); }
+        }
+        getClients()
+        .catch(console.error);
+    }, []);
+
+    const [info, setInfo] = useState(false);
+    const [infoSrc, setInfoSrc] = useState();
+
+    const getInfo = (infoSrc) => {
+        setInfoSrc(infoSrc);
+        setInfo(true);
+    }
+
     return ( 
         <div className="clientlist">
             <h2>Client List</h2>
+
+            {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} /> : <></>}
+
+
             <input type="search" className="client-search" placeholder="Search clients..."/>
-            {clients.map((client) => (
+
+            <div className="clientnames-list">
+                {clientNames.map((client, index) => (
+                    <>
+                    <button className="clientnames" onClick={() => {
+                        //alert(clientNames[index]);
+                        getInfo(client._id);}} >
+                        {client.name}
+                    </button>
+                    <hr />
+                    </>
+                ))}
+            </div>
+            {/*clients.map((client) => (
                 <div className="client-list" key={client.name}>
                     <div className="client-info">
                         <h4 className="client-name">{client.name}</h4>
@@ -40,13 +81,13 @@ const ClientList = () => {
                     <div className="client-buttons">
                         <button className="client-button">
                             <Link to="/">
-                                <IoIcons.IoMdPaper className="client-order-icon" />
+                                <IoMdPaper className="client-order-icon" />
                                 Start Order
                             </Link>
                         </button>
                     </div>
                 </div>
-            ))}
+            ))*/}
         </div>
     );
 }
