@@ -1,7 +1,7 @@
 import { IoMdPaper } from "react-icons/io";
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import useToken from '../hooks/useToken';
 import axios from 'axios';
 import ClientInfo from "../components/ClientInfo";
@@ -27,6 +27,7 @@ const ClientList = () => {
     ]
 
     const [clientNames, setClientNames] = useState(["loading..."]);
+    const [listCounter, setListCounter] = useState(0);
     useEffect(() => {
         const getClients = async () => {
             try {
@@ -38,7 +39,12 @@ const ClientList = () => {
         }
         getClients()
         .catch(console.error);
-    }, []);
+    }, [listCounter]);
+
+    const addName = (name) => {
+        console.log("add name to list");
+        setListCounter(listCounter+1);
+    }
 
     const [info, setInfo] = useState(false);
     const [infoSrc, setInfoSrc] = useState();
@@ -52,21 +58,25 @@ const ClientList = () => {
         <div className="clientlist">
             <h2>Client List</h2>
 
-            {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} /> : <></>}
+            {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addName={addName}/> : <></>}
 
 
             <input type="search" className="client-search" placeholder="Search clients..."/>
 
             <div className="clientnames-list">
+                <div className="cigar add-cigar">
+                    <button onClick={() => getInfo("")}>Add client</button>
+                </div>
+                <hr />
                 {clientNames.map((client, index) => (
-                    <>
+                    <Fragment key={index}>
                     <button className="clientnames" onClick={() => {
                         //alert(clientNames[index]);
                         getInfo(client._id);}} >
                         {client.name}
                     </button>
                     <hr />
-                    </>
+                    </Fragment>
                 ))}
             </div>
             {/*clients.map((client) => (

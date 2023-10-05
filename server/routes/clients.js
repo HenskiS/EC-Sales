@@ -52,6 +52,30 @@ router.post("/updateclientbyid", async (req, res) => {
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
 });
 
+router.post("/add", async (req, res) => {
+    const client = req.body.editClient;
+    const id = client._id;
+
+    const c = await ClientModel.findOne({ name: client.name });
+    if (c) {
+        return res.json({ exists: "Client already exists!" });
+    }
+
+    const newClient = new ClientModel( 
+        {
+            name: client.name,
+            phone: client.phone,
+            address1: client.address1,
+            address2: client.address2,
+            city: client.city,
+            state: client.state,
+            zip: client.zip
+        })
+    await newClient.save();
+
+    res.json({ success: "Client Registered Successfully!"})
+});
+
 /*
 https://www.codingthesmartway.com/the-mern-stack-tutorial-building-a-react-crud-application-from-start-to-finish-part-2/
 todoRoutes.route('/add').post(function(req, res) {
@@ -65,20 +89,6 @@ todoRoutes.route('/add').post(function(req, res) {
         });
 });
 */
-
-router.post("/add", async (req, res) => {
-    const { name, phone, address1, address2, city, state, zip } = req.body;
-    const client = await ClientModel.findOne({ name });
-
-    if (client) {
-        return res.json({ message: "Client already exists!" });
-    }
-
-    const newClient = new ClientModel({ name, phone, address1, address2, city, state, zip });
-    await newClient.save();
-
-    res.json({ message: "Client Registered Successfully!"});
-});
 
 router.post("/cigarblends", async (req, res) => {
     const { brand, name }  = req.body;
