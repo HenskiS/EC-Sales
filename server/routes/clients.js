@@ -35,6 +35,37 @@ router.post("/getclientbyid", async (req, res) => {
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
 });
 
+router.post("/updateclientbyid", async (req, res) => {
+    const client = req.body.editClient;
+    const id = client._id;
+    ClientModel.findByIdAndUpdate({_id: id}, 
+        {
+            name: client.name,
+            phone: client.phone,
+            address1: client.address1,
+            address2: client.address2,
+            city: client.city,
+            state: client.state,
+            zip: client.zip
+        }, {new: true}) // new option returns modified doc rather than original
+    .then(client => res.json(client))
+    .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
+});
+
+/*
+https://www.codingthesmartway.com/the-mern-stack-tutorial-building-a-react-crud-application-from-start-to-finish-part-2/
+todoRoutes.route('/add').post(function(req, res) {
+    let todo = new Todo(req.body);
+    todo.save()
+        .then(todo => {
+            res.status(200).json({'todo': 'todo added successfully'});
+        })
+        .catch(err => {
+            res.status(400).send('adding new todo failed');
+        });
+});
+*/
+
 router.post("/add", async (req, res) => {
     const { name, phone, address1, address2, city, state, zip } = req.body;
     const client = await ClientModel.findOne({ name });

@@ -133,6 +133,7 @@ hr{
 .client-info{
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 }
 .client-buttons{
   text-decoration: none;
@@ -189,7 +190,11 @@ hr{
   border: 1px solid black;
   border-radius: 15px;
 }
-.ClientInfo svg{
+.clientinfo-header {
+  display: flex;
+  justify-content: space-between;
+}
+.clientinfo-header svg{
   /*position: fixed;
   top: 90px;
   right: 10px;*/
@@ -200,9 +205,30 @@ hr{
   color: #ffffff;
   border-radius: 5px;
 }
-.clientinfo-header {
+.clientinfo-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
+  color: rgb(49, 167, 240);
+}
+.clientinfo-footer svg{
+  width: 2rem;
+  height: 2rem;
+  padding: 5px;
+  /*color: rgb(49, 167, 240);*/
+  border-radius: 5px;
+}
+.client-info p{
+  padding-top: 5px;
+}
+.client-info p:empty{
+  padding-top: 0px;
+}
+.client-info span{
+  margin: 5px 0px;
+  display: flex;
+}
+.client-info label{
+  width: 80px;
 }
 .cigar{
   /*width: 600px;*/
