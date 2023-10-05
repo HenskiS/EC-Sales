@@ -17,24 +17,18 @@ const ClientList = () => {
         }
     });
 
-    let clients = [
-        {
-            name: 'John Smoker', phone: '949-555-0179', address: '124 Conch St.', city: 'San Clemente', state: 'CA', zip: '92675'
-        },
-        {
-            name: 'Albert Mulvaney', phone: '302-555-0124', address: '32 Apple Orchard Lane', city: 'Wilmington', state: 'DE', zip: '19884'
-        }
-    ]
-
     const [clientNames, setClientNames] = useState(["loading..."]);
+    const [filteredClientNames, setFilteredClientNames] = useState(clientNames);
     const [listCounter, setListCounter] = useState(0);
     useEffect(() => {
         const getClients = async () => {
             try {
                 const response = await axios.get("http://192.168.1.133:3001/clients/clientnames");
+                //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
                 setClientNames(response.data);
+                setFilteredClientNames(response.data);
             } catch (err) { console.error(err); }
         }
         getClients()
@@ -44,6 +38,10 @@ const ClientList = () => {
     const addName = (name) => {
         console.log("add name to list");
         setListCounter(listCounter+1);
+    }
+
+    const filter = (e) => {
+        setFilteredClientNames(clientNames.filter(n => n.name.toLowerCase().includes(e.target.value.toLowerCase())))
     }
 
     const [info, setInfo] = useState(false);
@@ -61,14 +59,14 @@ const ClientList = () => {
             {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addName={addName}/> : <></>}
 
 
-            <input type="search" className="client-search" placeholder="Search clients..."/>
+            <input type="search" className="client-search" placeholder="Search clients..." onChange={filter}/>
 
             <div className="clientnames-list">
                 <div className="cigar add-cigar">
                     <button onClick={() => getInfo("")}>Add client</button>
                 </div>
                 <hr />
-                {clientNames.map((client, index) => (
+                {filteredClientNames.map((client, index) => (
                     <Fragment key={index}>
                     <button className="clientnames" onClick={() => {
                         //alert(clientNames[index]);
