@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
 import CigarOrderList from '../components/CigarOrderList';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 
-const Home = () => {
+const Home = (props) => {
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -17,31 +18,43 @@ const Home = () => {
         }
     });
 
-    /*const { data: cigars, isPending, error } = useFetch('http://localhost:8000/cigars');*/
-
-    const previousCigars= [
-        { 
-            brand: "Esteban Carreras", name: "Hellcat", blend: "Oscuro", size: "toro", qty: 6, discount: 5, id: 1
-        },
-        { 
-            brand: "Bloodline", name: "Devils Hand", blend: "Melodioso", size: "robusto", qty: 2, discount: 3.5, id: 2 
-        },
-        { 
-            brand: "Cuba Real", name: "Gooding Real", blend: "Sabroso", size: "double toro", qty: 4, discount: 7, id: 3 
-        }
-    ];
+    const previousCigars= [];
     const [cigars, setCigars] = useState([]);
-        /*{ 
-            brand: "", name: "", blend: "", size: "", qty: "", id: 1
-        }
-    ]*/
-    const c = {
-        brand: "Esteban Carreras",
-        name: "10 Anos",
-        blend: "Maduro",
-        sizeName: "Churchill"
-    }
     
+    const [queryParameters] = useSearchParams();
+    const clientName = queryParameters.get("name");
+    const clientID = queryParameters.get("id");
+    console.log("ID: " + clientID);
+
+    const [client, setClient] = useState({
+        _id: "",
+        name: "",
+        phone: "",
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        zip: ""
+    });
+
+    useEffect(() => {
+        const getClient = async () => {
+            try {
+                const response = await axios.post("http://192.168.1.133:3001/clients/getclientbyid", {id: clientID});
+                console.log("got client info");
+                console.log(response);
+                setClient(response.data);
+            } catch (err) { console.error(err); }
+        }
+        if (clientID) {
+            console.log("-----getClient()-----");
+            getClient()
+            .catch(console.error);
+        }
+        //console.log("client");
+        //console.log(client);
+        //else setIsEditing(true);
+    }, []);
 
 
     return ( 
@@ -50,8 +63,16 @@ const Home = () => {
             {/* Client and Salesman Info */}
             <div className="client-and-salesrep">
                 <div className="client">
-                    <input type='text' className='cust-input' placeholder='John Smoker'></input>
-                    <p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>
+                    {/*<input type='text' className='cust-input' placeholder="" value={client.name}></input>*/}
+                    {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
+                    <div className="client-info-home">
+                        <p className="client-name">{client.name}</p>
+                        <p className="client-phone">{client.phone}</p>
+                        <p className="client-address">{client.address1}</p>
+                        <p className="client-address">{client.address2}</p>
+                        <p className="client-city">{client.city}</p>
+                        <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                    </div>
                 </div>
                 <div className="salesrep">
                     <p>Esteban Carreras <br /> 915 Calle Amanecer <br /> San Clemente <br /> CA 92673 <br /> Joe Salesman <br /> joe@estebancarreras.com <br /> </p>
