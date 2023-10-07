@@ -120,8 +120,8 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 
                 <option value="" >---</option>
                 
-                {brands.map((brand) => (
-                    <option value={brand}>{brand}</option>
+                {brands.map((brand, index) => (
+                    <option key={index} value={brand}>{brand}</option>
                 ))}
             </select>
 
@@ -151,12 +151,12 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                     <option value={cigar} key={cigar}>{cigar}</option>
                 ))}
             </select>
-            <select className='cigar-size cigar-col' onChange={(e) => {
+            <select className='cigar-size cigar-col' defaultValue={""} onChange={(e) => {
                 setCigarSize(e.target.value);
                 //onCigarChange(id, "size", e.target.value);
                 setCigarBlend( cigarBlends.length > 0 ? cigarBlend : "" )
             }}>
-                <option value="" selected={cigarSize === ""}>---</option>
+                <option value="">---</option>
                 {/* brand!=="" && cigarName!=="" && CigarData[ brand ].find(c => c.name === cigarName).sizes.map((size) => (
                     <option value={size}>{size}</option>
                 ))*/}

@@ -16,15 +16,17 @@ const Home = (props) => {
         if (!token) {
             navigate("/auth");
         }
-    });
+    }, []);
 
     const previousCigars= [];
     const [cigars, setCigars] = useState([]);
     
     const [queryParameters] = useSearchParams();
-    const clientName = queryParameters.get("name");
-    const clientID = queryParameters.get("id");
-    console.log("ID: " + clientID);
+    const [clientName, setClientName] = useState(queryParameters.get("name"));
+    const [clientID, setClientID] = useState(queryParameters.get("id"));
+    console.log("Client ID: " + clientID);
+
+    
 
     const [client, setClient] = useState({
         _id: "",
@@ -47,7 +49,6 @@ const Home = (props) => {
             } catch (err) { console.error(err); }
         }
         if (clientID) {
-            console.log("-----getClient()-----");
             getClient()
             .catch(console.error);
         }
@@ -66,6 +67,7 @@ const Home = (props) => {
                     {/*<input type='text' className='cust-input' placeholder="" value={client.name}></input>*/}
                     {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
                     <div className="client-info-home">
+                        {clientID ? <></> : <p>Select a client from Client List...</p>}
                         <p className="client-name">{client.name}</p>
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
@@ -75,7 +77,12 @@ const Home = (props) => {
                     </div>
                 </div>
                 <div className="salesrep">
-                    <p>Esteban Carreras <br /> 915 Calle Amanecer <br /> San Clemente <br /> CA 92673 <br /> Joe Salesman <br /> joe@estebancarreras.com <br /> </p>
+                    <p>Esteban Carreras </p> 
+                    <p>915 Calle Amanecer </p> 
+                    <p>San Clemente </p> 
+                    <p>CA 92673 </p> 
+                    <p>{JSON.parse(localStorage.getItem('userName'))} </p> 
+                    {/*<p>joe@estebancarreras.com</p>*/}
                 </div>
             </div>
             <h4>Cigars</h4>

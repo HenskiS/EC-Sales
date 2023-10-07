@@ -29,6 +29,8 @@ const Auth = ({ setToken }) => {
             //setCookies("access_token", response.data.token)
             setToken(response.data.token);
             console.log("setToken");
+            localStorage.setItem('userName', JSON.stringify(response.data.name));
+            localStorage.setItem('userID', JSON.stringify(response.data.userID));
             //window.localStorage.setItem("userID", response.data.userID);
             navigate("/");
             

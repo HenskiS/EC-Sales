@@ -68,8 +68,9 @@ const CigarOrderList = ({cigars, displayButton}) => {
             </div>
             {/* Cigar List */}
 
-            {cigars.map((cigar) => (
+            {cigars.map((cigar, index) => (
                 <Cigar 
+                    key={index}
                     onCigarChange={onCigarChange}
                     cid={cigar.id}
                 />

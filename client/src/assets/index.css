@@ -76,13 +76,15 @@
   display: flex;
   justify-content: right;
   text-align: right;
+  flex-direction: column;
+  margin-top: 5px;
 }
 ::placeholder{
   color: #000;
   stroke-width: 110%;
 }
 .submit-order{
-  width: 600px;
+  /*width: 600px;*/
   display: flex;
   justify-content: right;
 }
