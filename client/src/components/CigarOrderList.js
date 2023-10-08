@@ -26,10 +26,9 @@ function getSubtotal(cigars) {
         return prices.reduce(sum)/100;
     }
     else return 0;
-    
 }
 
-const CigarOrderList = ({cigars, displayButton}) => {
+const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
 
     const [cigs, setCigs] = useState(cigars.length); // cigs is a counter, only used to update the list onClick 'Add Cigar'
     const [key, setKey] = useState(5);
@@ -41,7 +40,9 @@ const CigarOrderList = ({cigars, displayButton}) => {
         cigars[index][field] = value;
         //console.log(cigars);
         setKey(key*-1);
-        setSubtotal(getSubtotal(cigars));
+        const s = getSubtotal(cigars);
+        setSubtotal(s);
+        setOrderPrice(s, s);
     }
     /*const cigarDelete = (cid) => {
         const index = cigars.findIndex(c => c.id === cid);

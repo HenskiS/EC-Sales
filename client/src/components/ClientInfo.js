@@ -32,7 +32,7 @@ const ClientInfo = ({ id, close, addName }) => {
         if (client !== editClient) {
             console.log("there's been a change here...");
             try {
-                const response = await axios.post("http://192.168.1.133:3001/clients/updateclientbyid", {editClient});
+                const response = await axios.post("http://localhost:3001/clients/updateclientbyid", {editClient});
                 console.log("updated client info");
                 console.log(response);
                 setClient(editClient);
@@ -48,7 +48,7 @@ const ClientInfo = ({ id, close, addName }) => {
         }
         console.log("add client");
         try {
-            const response = await axios.post("http://192.168.1.133:3001/clients/add", {editClient});
+            const response = await axios.post("http://localhost:3001/clients/add", {editClient});
             if ("exists" in response.data) {alert("A client with this name already exists.");}
             else {
                 console.log("added client:");
@@ -64,7 +64,7 @@ const ClientInfo = ({ id, close, addName }) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/clients/getclientbyid", {id});
+                const response = await axios.post("http://localhost:3001/clients/getclientbyid", {id});
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);

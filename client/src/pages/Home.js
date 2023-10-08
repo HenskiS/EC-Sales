@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
 import CigarOrderList from '../components/CigarOrderList';
@@ -6,6 +6,36 @@ import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+
+const cigarsToString = (cigars) => {
+    const notHiddenCigars = cigars.filter(function (cigar) {
+        return !cigar.hidden;
+    });
+    return notHiddenCigars.map((cigar) => {
+        let s = cigar.brand;
+        s += " " + cigar.name;
+        s += cigar.blend !== "" ? " " + cigar.blend : "";
+        s += " " + cigar.size;
+        s += ", Qty: " + cigar.qty;
+        s += cigar.discount === "" ? "" : cigar.discount === "100" ? " Discount: Box" : " Discount: " + cigar.discount + "%";
+        return s;
+    })
+}
+const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) => {
+    if (client.name === "") {
+        alert("No client selected!");
+        return;}
+    if (cigars.length === 0) {
+        alert("No cigars added!");
+        return;}
+    const response = await axios.post("http://localhost:3001/orders/add", 
+        {client, salesman, cigars: {cigars: cigarsToString(cigars),
+                                    subtotal:orderSubtotal,
+                                    total:orderTotal}});
+    console.log("Order submission response:");
+    console.log(response);
+    if ("success" in response.data) alert("Order Submission Successful!");
+}
 
 const Home = (props) => {
 
@@ -20,14 +50,15 @@ const Home = (props) => {
 
     const previousCigars= [];
     const [cigars, setCigars] = useState([]);
+    const [orderSubtotal, setOrderSubtotal] = useState();
+    const [orderTotal, setOrderTotal] = useState();
     
     const [queryParameters] = useSearchParams();
     const [clientName, setClientName] = useState(queryParameters.get("name"));
     const [clientID, setClientID] = useState(queryParameters.get("id"));
-    console.log("Client ID: " + clientID);
+    //console.log("Client ID: " + clientID);
 
     
-
     const [client, setClient] = useState({
         _id: "",
         name: "",
@@ -38,14 +69,17 @@ const Home = (props) => {
         state: "",
         zip: ""
     });
+    const [orders, setOrders] = useState();
 
     useEffect(() => {
         const getClient = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/clients/getclientbyid", {id: clientID});
+                const response = await axios.post("http://localhost:3001/clients/getclientbyid", {id: clientID});
                 console.log("got client info");
-                console.log(response);
+                //console.log(response);
                 setClient(response.data);
+                const response2 = await axios.post("http://localhost:3001/orders/getordersbyclientid", {id: clientID});
+                setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
         if (clientID) {
@@ -56,6 +90,11 @@ const Home = (props) => {
         //console.log(client);
         //else setIsEditing(true);
     }, []);
+
+    const setOrderPrice = (subtotal, total) => {
+        setOrderSubtotal(subtotal);
+        setOrderTotal(total);
+    }
 
 
     return ( 
@@ -85,24 +124,31 @@ const Home = (props) => {
                     {/*<p>joe@estebancarreras.com</p>*/}
                 </div>
             </div>
-            <h4>Cigars</h4>
+            <h3>Cigars</h3>
             {/*{error && <div>{error}</div>}*/}
             {/*isPending && <div>Loading...</div>*/}
-            {cigars && <CigarOrderList cigars={cigars} displayButton />}
+            {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} displayButton />}
             <hr />
-            {/*<div className="subtotal">
-                <h5>Subtotal</h5>
-                <p>$560.57{}</p>
-                <h4>Total (with taxes and discount)</h4>
-                <p className='total'>$542.46</p>
-            </div>*/}
             
             <div className="submit-order">
-                <button className='submit-button'>Submit Order</button>
+                <button className='submit-button' onClick={() => {
+                    console.log(orderSubtotal+", "+orderTotal);
+                    console.log(cigarsToString(cigars));
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: localStorage.getItem('userID'), name: localStorage.getItem('userName')});
+                }}>Submit Order</button>
             </div>
             <hr />
-            <h4>Previously Ordered Cigars</h4>
-            {/*previousCigars && <CigarList cigars={previousCigars} />*/}
+            <h3>Previously Ordered Cigars</h3>
+            {!orders? <></> : orders.map((order, index) => (
+                <Fragment key={index}>
+                    <h4>{new Date(order.date).toLocaleDateString()}</h4>
+                    <ul>
+                    {order.cigars.cigars.map((cigar, index) => (
+                        <li key={index}>{cigar}</li>
+                    ))}
+                    </ul>
+                </Fragment>
+            ))}
         </div>
     );
 }

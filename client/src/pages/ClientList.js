@@ -23,7 +23,7 @@ const ClientList = () => {
     useEffect(() => {
         const getClients = async () => {
             try {
-                const response = await axios.get("http://192.168.1.133:3001/clients/clientnames");
+                const response = await axios.get("http://localhost:3001/clients/clientnames");
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);

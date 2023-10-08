@@ -25,9 +25,9 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getBrands = async () => {
             try {
-                const response = await axios.get("http://192.168.1.133:3001/cigars/cigarbrands");
-                console.log("got brands");
-                console.log(response);
+                const response = await axios.get("http://localhost:3001/cigars/cigarbrands");
+                //console.log("got brands");
+                //console.log(response);
                 setBrands(response.data);
             } catch (err) { console.error(err); }
         }
@@ -38,8 +38,8 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getCigars = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/cigars/cigarnames", { brand: brand });
-                console.log("got " + brand + " cigars");
+                const response = await axios.post("http://localhost:3001/cigars/cigarnames", { brand: brand });
+                //console.log("got " + brand + " cigars");
                 //console.log(response);
                 setCigarNames(response.data);
             } catch (err) { console.error(err); }
@@ -51,8 +51,8 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getBlends = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/cigars/cigarblends", { brand: brand , name: cigarName});
-                console.log("got " + cigarName + " blends");
+                const response = await axios.post("http://localhost:3001/cigars/cigarblends", { brand: brand , name: cigarName});
+                //console.log("got " + cigarName + " blends");
                 //console.log(response);
                 setCigarBlends(response.data);
             } catch (err) { console.error(err); }
@@ -67,8 +67,8 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getSizes = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""});
-                console.log("got " + cigarName + " " + cigarBlend + " sizes");
+                const response = await axios.post("http://localhost:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""});
+                //console.log("got " + cigarName + " " + cigarBlend + " sizes");
                 //console.log(response);
                 setCigarSizes(response.data);
             } catch (err) { console.error(err); }
@@ -83,8 +83,8 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getPrice = async () => {
             try {
-                const response = await axios.post("http://192.168.1.133:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize});
-                console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
+                const response = await axios.post("http://localhost:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize});
+                //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
                 //console.log(response);
                 setCigarPrice(response.data[0]*100);
             } catch (err) { console.error(err); }
@@ -174,7 +174,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
             }} />
             {
                 <p className='cigar-price'>{!( brand && cigarName && cigarSize && (cigarBlends.length === 0 || cigarBlend) ) ? " " : 
-                    parseInt(cigarPrice)/100
+                    isNaN(parseInt(cigarPrice)) ? " " : parseInt(cigarPrice)/100
                 }</p>
             }
             
