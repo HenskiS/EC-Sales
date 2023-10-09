@@ -13,7 +13,7 @@ function price(item){
     return item.price * item.qty;
 }
 function priceWithDiscount(item){
-    if (item.hidden) return 0;
+    if (item.hidden) return {price:0, qty:0};
     return {price: item.price * (item.discount ? 100 - item.discount : 100)/100, qty: item.qty === "" ? 0 : parseInt(item.qty)};
 }
 function sum(prev, next){
@@ -46,18 +46,20 @@ function getTotal(cigars, setIsBox) {
     setIsBox( isBox );
     
     let prices = cigars.map(priceWithDiscount).filter(function (value) {
-        return !Number.isNaN(value) && value !== "" && value;
+        return  !Number.isNaN(value.price) && value.price !== "" && 
+                !Number.isNaN(value.qty) && value.qty !== "";
     });
 
     if (isBox) {      // if using box discounts
-        //prices = cigars.map(c => { return {price: c.price, id: c.id}}).filter(function (value) {
-        if (true) {//(prices.length > 1) {
-            const totalQty = prices.reduce((a,b)=>{
-                return parseInt(a.qty) + parseInt(b.qty);
-            });
-            if (totalQty >= 8) { // remove cheapest box if buying 8
-                console.log("even");
+        if (prices.length > 0) {
+            let totalQty = 0;
+            for (let i = 0; i<prices.length; i++) {
+                totalQty += prices[i].qty;
+            }
+            if (totalQty >= 8) { // remove cheapest box
+                                    // remove 1 if >= 8, 2 if >= 16, 3 if >= 24
                 prices = prices.sort((a,b) => a.price - b.price);
+                while (prices[0].qty === 0) prices = prices.slice(1);
                 for (let i=0; i<Math.floor(totalQty/8) && i<3; i++) {
                     prices[0].qty -= 1;
                     if (prices[0].qty == 0) prices = prices.slice(1);
