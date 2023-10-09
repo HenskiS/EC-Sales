@@ -49,33 +49,20 @@ function getTotal(cigars, setIsBox) {
         return !Number.isNaN(value) && value !== "" && value;
     });
 
-    if (!isBox) console.log("no box");
     if (isBox) {      // if using box discounts
-        console.log("box");
         //prices = cigars.map(c => { return {price: c.price, id: c.id}}).filter(function (value) {
         if (true) {//(prices.length > 1) {
             const totalQty = prices.reduce((a,b)=>{
                 return parseInt(a.qty) + parseInt(b.qty);
             });
-            console.log(totalQty);
-            if (totalQty >= 8 && totalQty%2===0) { // remove cheapest box if buying 8
+            if (totalQty >= 8) { // remove cheapest box if buying 8
                 console.log("even");
                 prices = prices.sort((a,b) => a.price - b.price);
-                for (let i=0; i<totalQty/2 - 3; i++) {
+                for (let i=0; i<Math.floor(totalQty/8) && i<3; i++) {
                     prices[0].qty -= 1;
                     if (prices[0].qty == 0) prices = prices.slice(1);
                 }
             }
-            /*else if (totalQty == 10) {
-                console.log("10");
-                prices = prices.sort((a,b) => a.price - b.price);
-                console.log(prices);
-                prices[0].qty -= 1; // subtract 1. If 0, get rid of that cigar, then sub 1 from the next
-                if (prices[0].qty == 0) prices = prices.slice(1);
-                prices[0].qty -= 1;
-                console.log(prices);
-            }*/
-            
         }
     }
     prices = prices.map((i) => i.price * i.qty);
