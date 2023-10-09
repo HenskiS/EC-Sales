@@ -3,7 +3,8 @@
 /* base styles */
 * {
   margin: 0;
-  font-family: "Quicksand";
+  /*font-family: "Quicksand";*/
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
 
   /*color: #333;*/

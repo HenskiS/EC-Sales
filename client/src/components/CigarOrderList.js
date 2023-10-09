@@ -10,19 +10,70 @@ import Total from './Total';
 
 function price(item){
     if (item.hidden) return 0;
-    return item.price * item.qty * (item.discount ? 100 - item.discount : 100)/100;
+    return item.price * item.qty;
 }
-  
+function priceWithDiscount(item){
+    if (item.hidden) return 0;
+    return {price: item.price * (item.discount ? 100 - item.discount : 100)/100, qty: item.qty};
+}
 function sum(prev, next){
     return prev + next;
 }
-function getSubtotal(cigars) {
-    //console.log(cigars)
-    const prices = cigars.map(price).filter(function (value) {
+function getSubtotal(cigars, setIsBox) {
+    //check if box discount or manual
+    const box = cigars.map(c => {if (!c.hidden) return c.discount}).filter(function (value) {
+        return !Number.isNaN(value) && value !== "" && value > 0;
+    });
+
+    let prices = cigars.map(price).filter(function (value) {
         return !Number.isNaN(value) && value !== "";
     });
+    
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
+        //return prices.reduce((a, b) => a.price + b.price)/100;
+        return prices.reduce(sum)/100;
+    }
+    else return 0;
+}
+function getTotal(cigars, setIsBox) {
+    //check if box discount or manual
+    const discounts = cigars.map(c => {if (!c.hidden) return c.discount}).filter(function (value) {
+        return !Number.isNaN(value) && value !== "" && value > 0;
+    });
+
+    let isBox = !(discounts.length > 0);
+    setIsBox( isBox );
+    
+    let prices = [];
+
+    if (!isBox) { // If using per-cigar discounts
+        console.log("no box");
+        prices = cigars.map(priceWithDiscount).filter(function (value) {
+            return !Number.isNaN(value) && value !== "";
+        });
+    }
+    else {      // if using box discounts
+        console.log("box");
+        //prices = cigars.map(c => { return {price: c.price, id: c.id}}).filter(function (value) {
+        prices = cigars.map(priceWithDiscount).filter(function (value) {
+            return !Number.isNaN(value.price) && value.price !== "";
+        });
+        if (prices.length > 0) {
+            const totalQty = prices.reduce((a,b)=>{
+                return a.qty + b.qty;
+            });
+            if (totalQty == 8) { // remove cheapest box if buying 8
+                prices = prices.sort((a,b) => a.price - b.price);
+                prices[0].qty -= 1;
+                prices = prices.map((i) => i.price * i.qty);
+            }
+        }
+    }
+    
+    //return cigars.map(price).reduce(sum)/100;
+    if (prices.length > 0) {
+        //return prices.reduce((a, b) => a.price + b.price)/100;
         return prices.reduce(sum)/100;
     }
     else return 0;
@@ -33,25 +84,25 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
     const [cigs, setCigs] = useState(cigars.length); // cigs is a counter, only used to update the list onClick 'Add Cigar'
     const [key, setKey] = useState(5);
     const [subtotal, setSubtotal] = useState();
+    const [total, setTotal] = useState();
+    const [isBox, setIsBox] = useState(true);
 
     const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
         const index = cigars.findIndex(c => c.id === cid);
-        cigars[index][field] = value;
-        //console.log(cigars);
-        setKey(key*-1);
-        const s = getSubtotal(cigars);
-        setSubtotal(s);
-        setOrderPrice(s, s);
+        if (cigars[index][field] === value) return;
+        else {
+            //console.log("id: " + cid + ", field: " + field + ", value: " + value);
+            cigars[index][field] = value;
+            //console.log(cigars);
+            setKey(key*-1);
+            let s = getSubtotal(cigars, setIsBox);
+            let t = getTotal(cigars, setIsBox);
+            setSubtotal(s);
+            setTotal(t);
+            setOrderPrice(s, t);
+        }
     }
-    /*const cigarDelete = (cid) => {
-        const index = cigars.findIndex(c => c.id === cid);
-        console.log("Removing cid: "+cid+" at index: " + index);
-        //cigars.splice(index, 1);
-        cigars[index]["hidden"] = true;
-        //setCigs(cigs-1);
-        console.log(cigars);
-    }*/
 
     return ( 
         <div className="cigar-list">
@@ -72,7 +123,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             {cigars.map((cigar, index) => (
                 <Cigar 
                     key={index}
-                    onCigarChange={onCigarChange}
+                    onCigarChange={(cid, field, value) => {onCigarChange(cid, field, value)}}
                     cid={cigar.id}
                 />
             ))}
@@ -82,7 +133,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
                 <button onClick={() => {
                     console.log('click! adding cigar...');
                     let id = cigs ? cigars[cigs - 1].id + 1 : 1;
-                    cigars.push({brand: "", name: "", blend: "", size: "", qty: '', discount: '', hidden: false, id: id});
+                    cigars.push({brand: "", name: "", blend: "", size: "", qty: '', discount: '', price:"", hidden: false, id: id});
                     setCigs(cigs + 1); // literally just a counter but it forces the cigar list to update when the button is pressed
                 }}>Add cigar</button>
             </div> : <div></div>}
@@ -91,8 +142,8 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             <div className="subtotal">
                 <h5>Subtotal</h5>
                 <p>${cigars.length > 0 && subtotal}</p>
-                <h4>Total (with taxes and discount)</h4>
-                <p className='total'>${cigars.length > 0 && subtotal}</p>
+                <h4>Total (with taxes and {isBox? "box" : "per-cigar"} discount)</h4>
+                <p className='total'>${cigars.length > 0 && total}</p>
             </div>
 
 

@@ -27,8 +27,13 @@ const ClientList = () => {
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
-                setClientNames(response.data);
-                setFilteredClientNames(response.data);
+                const names = response.data.sort((a,b)=>{
+                    if ( a.name.split(" ").slice(-1) < b.name.split(" ").slice(-1) ) return -1;
+                    if ( a.name.split(" ").slice(-1) > b.name.split(" ").slice(-1) ) return 1;
+                    return 0;
+                })
+                setClientNames(names);
+                setFilteredClientNames(names);
             } catch (err) { console.error(err); }
         }
         getClients()
@@ -77,25 +82,6 @@ const ClientList = () => {
                     </Fragment>
                 ))}
             </div>
-            {/*clients.map((client) => (
-                <div className="client-list" key={client.name}>
-                    <div className="client-info">
-                        <h4 className="client-name">{client.name}</h4>
-                        <p className="client-phone">{client.phone}</p>
-                        <p className="client-address">{client.address}</p>
-                        <p className="client-city">{client.city}</p>
-                        <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
-                    </div>
-                    <div className="client-buttons">
-                        <button className="client-button">
-                            <Link to="/">
-                                <IoMdPaper className="client-order-icon" />
-                                Start Order
-                            </Link>
-                        </button>
-                    </div>
-                </div>
-            ))*/}
         </div>
     );
 }

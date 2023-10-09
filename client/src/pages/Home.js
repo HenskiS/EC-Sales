@@ -69,7 +69,7 @@ const Home = (props) => {
         state: "",
         zip: ""
     });
-    const [orders, setOrders] = useState();
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         const getClient = async () => {
@@ -138,8 +138,9 @@ const Home = (props) => {
                 }}>Submit Order</button>
             </div>
             <hr />
-            <h3>Previously Ordered Cigars</h3>
-            {!orders? <></> : orders.map((order, index) => (
+            {/*console.log(orders)*/}
+            {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
+            {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>
                     <h4>{new Date(order.date).toLocaleDateString()}</h4>
                     <ul>
