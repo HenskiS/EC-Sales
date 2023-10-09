@@ -14,7 +14,7 @@ function price(item){
 }
 function priceWithDiscount(item){
     if (item.hidden) return 0;
-    return {price: item.price * (item.discount ? 100 - item.discount : 100)/100, qty: item.qty};
+    return {price: item.price * (item.discount ? 100 - item.discount : 100)/100, qty: item.qty === "" ? 0 : parseInt(item.qty)};
 }
 function sum(prev, next){
     return prev + next;
@@ -45,31 +45,40 @@ function getTotal(cigars, setIsBox) {
     let isBox = !(discounts.length > 0);
     setIsBox( isBox );
     
-    let prices = [];
+    let prices = cigars.map(priceWithDiscount).filter(function (value) {
+        return !Number.isNaN(value) && value !== "" && value;
+    });
 
-    if (!isBox) { // If using per-cigar discounts
-        console.log("no box");
-        prices = cigars.map(priceWithDiscount).filter(function (value) {
-            return !Number.isNaN(value) && value !== "";
-        });
-    }
-    else {      // if using box discounts
+    if (!isBox) console.log("no box");
+    if (isBox) {      // if using box discounts
         console.log("box");
         //prices = cigars.map(c => { return {price: c.price, id: c.id}}).filter(function (value) {
-        prices = cigars.map(priceWithDiscount).filter(function (value) {
-            return !Number.isNaN(value.price) && value.price !== "";
-        });
-        if (prices.length > 0) {
+        if (true) {//(prices.length > 1) {
             const totalQty = prices.reduce((a,b)=>{
-                return a.qty + b.qty;
+                return parseInt(a.qty) + parseInt(b.qty);
             });
-            if (totalQty == 8) { // remove cheapest box if buying 8
+            console.log(totalQty);
+            if (totalQty >= 8 && totalQty%2===0) { // remove cheapest box if buying 8
+                console.log("even");
                 prices = prices.sort((a,b) => a.price - b.price);
-                prices[0].qty -= 1;
-                prices = prices.map((i) => i.price * i.qty);
+                for (let i=0; i<totalQty/2 - 3; i++) {
+                    prices[0].qty -= 1;
+                    if (prices[0].qty == 0) prices = prices.slice(1);
+                }
             }
+            /*else if (totalQty == 10) {
+                console.log("10");
+                prices = prices.sort((a,b) => a.price - b.price);
+                console.log(prices);
+                prices[0].qty -= 1; // subtract 1. If 0, get rid of that cigar, then sub 1 from the next
+                if (prices[0].qty == 0) prices = prices.slice(1);
+                prices[0].qty -= 1;
+                console.log(prices);
+            }*/
+            
         }
     }
+    prices = prices.map((i) => i.price * i.qty);
     
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
