@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import CigarList from "../components/CigarList";
 import image1 from '../assets/images/devils-hand-box.jpg'
 import { useNavigate } from 'react-router';
@@ -33,22 +33,22 @@ const Photos = () => {
 
 
     return ( 
-        <>
-        <h2>Photos</h2>
-        {info? <PhotoInfo index={infoSrc} close={() => setInfo(false)} /> : <></>}
-        <div className="photos">
-            
-            {/*<CigarList cigars={cigars} />*/}
-            {/*<img className="photo" src={image1} alt="" />*/}
-            {PhotosData.map((photo, index) => (
-                <Card 
-                    src={photo.src} 
-                    title={photo.title} 
-                    onClick={() => getInfo(index)}
-                />
-            ))}
+        <div className='content'>
+            <h2>Photos</h2>
+            {info? <PhotoInfo index={infoSrc} close={() => setInfo(false)} /> : <></>}
+            <div className="photos">
+                
+                {/*<CigarList cigars={cigars} />*/}
+                {/*<img className="photo" src={image1} alt="" />*/}
+                {PhotosData.map((photo, index) => (
+                    <Card 
+                        src={photo.src} 
+                        title={photo.title} 
+                        onClick={() => getInfo(index)}
+                    />
+                ))}
+            </div>
         </div>
-        </>
     );
 }
 

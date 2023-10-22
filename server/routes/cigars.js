@@ -1,8 +1,13 @@
-import express from "express";
+/*import express from "express";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/Users.js';
-import { CigarModel } from '../models/Cigars.js'
+import { CigarModel } from '../models/Cigars.js'*/
+const express =  require("express");
+const jwt =  require('jsonwebtoken');
+const bcrypt =  require('bcrypt');
+const UserModel  =  require('../models/Users.js');
+const CigarModel  =  require('../models/Cigars.js');
 
 const router = express.Router();
 
@@ -88,4 +93,5 @@ router.post("/cigarprice", async (req, res) => {
 });
 
 
-export { router as cigarRouter };
+//export { router as cigarRouter };
+module.exports = router

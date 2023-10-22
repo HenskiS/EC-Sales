@@ -1,17 +1,20 @@
-import express from "express";
-import { ClientModel } from '../models/Clients.js'
+/*import express from "express";
+import { ClientModel } from '../models/Clients.js'*/
+const express =  require("express");
+const ClientModel =  require('../models/Clients.js');
+
 
 const router = express.Router();
 
 // GET cigars/
 // get all cigars
-router.get("/", async (req, res) => {
+/*router.get("/", async (req, res) => {
     ClientModel//.where({brand: "Esteban Carreras"})
     //.distinct("name")
     .exec()
     .then(clients => res.json(clients))
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
-});
+});*/
 
 router.get("/clientnames", async (req, res) => {
     //const { brand }  = req.body;
@@ -76,6 +79,5 @@ router.post("/add", async (req, res) => {
     res.json({ success: "Client Registered Successfully!"})
 });
 
-
-
-export { router as clientRouter };
+//export { router as clientRouter };
+module.exports= router

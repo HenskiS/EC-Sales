@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+//import mongoose from "mongoose";
+const mongoose =  require("mongoose");
+
 
 const CigarSchema = new mongoose.Schema({
     brand: {
@@ -36,4 +38,5 @@ const CigarSchema = new mongoose.Schema({
 
 });
 
-export const CigarModel = mongoose.model("cigars", CigarSchema);
+//export const CigarModel = mongoose.model("cigars", CigarSchema);
+module.exports = mongoose.model("cigars", CigarSchema);

@@ -98,7 +98,7 @@ const Home = (props) => {
 
 
     return ( 
-        <div className='home'>
+        <div className='home content'>
             <h1>Client Order Form</h1>
             {/* Client and Salesman Info */}
             <div className="client-and-salesrep">
@@ -134,7 +134,7 @@ const Home = (props) => {
                 <button className='submit-button' onClick={() => {
                     console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: localStorage.getItem('userID'), name: localStorage.getItem('userName')});
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: JSON.parse(localStorage.getItem('userID')), name: JSON.parse(localStorage.getItem('userName'))});
                 }}>Submit Order</button>
             </div>
             <hr />
