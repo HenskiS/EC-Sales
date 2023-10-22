@@ -142,7 +142,7 @@ const Home = (props) => {
             {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>
-                    <h4>{new Date(order.date).toLocaleDateString()}</h4>
+                    <h4>{new Date(order.date).toLocaleDateString()} - ${order.cigars.total}</h4>
                     <ul>
                     {order.cigars.cigars.map((cigar, index) => (
                         <li key={index}>{cigar}</li>

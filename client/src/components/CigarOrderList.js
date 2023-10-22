@@ -32,7 +32,7 @@ function getSubtotal(cigars, setIsBox) {
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
         //return prices.reduce((a, b) => a.price + b.price)/100;
-        return prices.reduce(sum)/100;
+        return Math.ceil(prices.reduce(sum))/100;
     }
     else return 0;
 }
@@ -72,7 +72,7 @@ function getTotal(cigars, setIsBox) {
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
         //return prices.reduce((a, b) => a.price + b.price)/100;
-        return prices.reduce(sum)/100;
+        return Math.ceil(prices.reduce(sum))/100;
     }
     else return 0;
 }
