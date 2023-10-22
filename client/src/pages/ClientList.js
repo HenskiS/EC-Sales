@@ -58,7 +58,7 @@ const ClientList = () => {
     }
 
     return ( 
-        <div className="clientlist">
+        <div className="clientlist content">
             <h2>Client List</h2>
 
             {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addName={addName}/> : <></>}

@@ -1,25 +1,54 @@
-import express from "express";
-import mongoose from 'mongoose';
-import cors from 'cors';
-
-import { userRouter } from './routes/users.js'
-import { cigarRouter } from "./routes/cigars.js";
-import { clientRouter } from "./routes/clients.js";
-import { orderRouter } from "./routes/orders.js";
-
+require('dotenv').config()
+const express = require("express");
+const mongoose = require('mongoose');
+const cors =  require('cors');
+const path =  require('path');
+const { logger, logEvents } = require('./middleware/logger')
+const errorHandler = require('./middleware/errorHandler')
+const cookieParser = require('cookie-parser')
+const corsOptions = require('./config/corsOptions')
+const connectDB = require('./config/dbConn')
+const PORT = process.env.PORT || 3001
 
 const app = express();
 
+console.log(process.env.NODE_ENV)
+
+connectDB()
+
+app.use(logger)
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser())
 
-app.use("/auth", userRouter)
-app.use("/cigars", cigarRouter)
-app.use("/clients", clientRouter)
-app.use("/orders", orderRouter)
+//app.use("/", express.static(path.join(__dirname, "public")))
+app.use(express.static('public')) // same thing as previous line, just shorter
+app.use("/", require('./routes/root'))
+app.use("/auth", require('./routes/users'))
+app.use("/users", require('./routes/users'))
+app.use("/cigars", require("./routes/cigars"))
+app.use("/clients", require("./routes/clients"))
+app.use("/orders", require("./routes/orders"))
 
-mongoose.connect('mongodb://127.0.0.1:27017/test');
+app.all('*', (req, res) => {
+    res.status(404)
+    if (req.accepts('html')) {
+        res.sendFile(path.join(__dirname, 'views', '404.html'))
+    } else if (req.accepts('json')) {
+        res.json({message: '404 Not Found'})
+    } else {
+        res.type('txt').send('404 Not Found')
+    }
+})
 
-app.listen(3001, () => {
-    console.log("SERVER RUNNING!");
-});
+app.use(errorHandler)
+
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB')
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+})
+
+mongoose.connection.on('error', err => {
+    console.log(err)
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+})

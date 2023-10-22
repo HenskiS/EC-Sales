@@ -1,16 +1,26 @@
-import express from "express";
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { UserModel } from '../models/Users.js';
+/*
+const jwt =  require('jsonwebtoken');
+const bcrypt =  require('bcrypt');
+const UserModel =  require('../models/Users.js');
+const asyncHandler = require('express-async-handler')
+*/
+const express =  require("express");
+const usersController = require('../controllers/usersController')
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+router.route('/')
+    .get(usersController.getAllUsers)
+    .post(usersController.createNewUser)
+    .patch(usersController.updateUser)
+    .delete(usersController.deleteUser)
+
+/*router.post("/register", async (req, res) => {
     const { username, name, password } = req.body;
     const user = await UserModel.findOne({ username });
 
     if (user) {
-        return res.json({ message: "User already exists!" });
+        return res.json({ message: "Username is taken!" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,6 +47,7 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, "secret");
     res.json({ token, userID: user._id, name: user.name });
-});
+});*/
 
-export { router as userRouter };
+//export { router as userRouter };
+module.exports = router

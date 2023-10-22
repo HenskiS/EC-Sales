@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+//import mongoose from "mongoose";
+const mongoose =  require("mongoose");
+
 
 const OrderSchema = new mongoose.Schema({
     client: {
@@ -20,7 +22,7 @@ const OrderSchema = new mongoose.Schema({
 
     salesman: {
         type: {
-            _id: String,
+            _id: mongoose.Schema.Types.ObjectId,
             name: String
         },
         required: true
@@ -42,4 +44,5 @@ const OrderSchema = new mongoose.Schema({
 
 });
 
-export const OrderModel = mongoose.model("orders", OrderSchema);
+//export const OrderModel = mongoose.model("orders", OrderSchema);
+module.exports = mongoose.model("orders", OrderSchema);

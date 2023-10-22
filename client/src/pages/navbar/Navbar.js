@@ -8,7 +8,7 @@ import { IconContext } from 'react-icons';*/
 import { useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 //import { SidebarData } from './SidebarData';
 import { IconContext } from 'react-icons';
 
@@ -53,12 +53,12 @@ function Navbar() {
                   <span>Photos</span>
                 </Link>
               </li>
-              <li key={2} className='nav-text'>
+              {/*<li key={2} className='nav-text'>
                 <Link to='/reppersonal'>
                   <AiIcons.AiOutlineFileText />
                   <span>Rep Personal</span>
                 </Link>
-              </li>
+          </li>*/}
               <li key={3} className='nav-text'>
                 <Link to='/clientlist'>
                   <IoIcons.IoMdPeople />
@@ -93,6 +93,7 @@ function Navbar() {
             </ul>
           </nav>
         </IconContext.Provider>
+        <Outlet />
       </>
     );
   }

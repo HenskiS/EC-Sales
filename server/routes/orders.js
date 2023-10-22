@@ -1,5 +1,7 @@
-import express from "express";
-import { OrderModel } from '../models/Orders.js'
+/*import express from "express";
+import { OrderModel } from '../models/Orders.js'*/
+const express =  require("express");
+const OrderModel =  require('../models/Orders.js');
 
 const router = express.Router();
 
@@ -35,4 +37,5 @@ router.post("/add", async (req, res) => {
 });
 
 
-export { router as orderRouter };
+//export { router as orderRouter };
+module.exports = router
