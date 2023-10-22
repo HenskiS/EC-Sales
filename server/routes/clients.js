@@ -2,10 +2,10 @@
 import { ClientModel } from '../models/Clients.js'*/
 const express =  require("express");
 const ClientModel =  require('../models/Clients.js');
-
+const verifyJWT = require('../middleware/verifyJWT');
 
 const router = express.Router();
-
+router.use(verifyJWT)
 // GET cigars/
 // get all cigars
 /*router.get("/", async (req, res) => {

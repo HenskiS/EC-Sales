@@ -8,9 +8,11 @@ const jwt =  require('jsonwebtoken');
 const bcrypt =  require('bcrypt');
 const UserModel  =  require('../models/Users.js');
 const CigarModel  =  require('../models/Cigars.js');
+const verifyJWT = require('../middleware/verifyJWT');
 
 const router = express.Router();
 
+router.use(verifyJWT)
 // GET cigars/
 // get all cigars
 router.get("/", async (req, res) => {

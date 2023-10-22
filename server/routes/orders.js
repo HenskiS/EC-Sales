@@ -2,9 +2,10 @@
 import { OrderModel } from '../models/Orders.js'*/
 const express =  require("express");
 const OrderModel =  require('../models/Orders.js');
+const verifyJWT = require('../middleware/verifyJWT');
 
 const router = express.Router();
-
+router.use(verifyJWT)
 
 router.post("/getordersbyclientid", async (req, res) => {
     const id = req.body.id;

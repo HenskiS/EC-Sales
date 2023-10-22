@@ -24,7 +24,7 @@ app.use(cookieParser())
 //app.use("/", express.static(path.join(__dirname, "public")))
 app.use(express.static('public')) // same thing as previous line, just shorter
 app.use("/", require('./routes/root'))
-app.use("/auth", require('./routes/users'))
+app.use("/auth", require('./routes/auth'))
 app.use("/users", require('./routes/users'))
 app.use("/cigars", require("./routes/cigars"))
 app.use("/clients", require("./routes/clients"))
