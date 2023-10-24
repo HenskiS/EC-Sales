@@ -47,7 +47,7 @@ ul {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: left;
   padding: 20px;
   background-color: white;
   border-radius: 5px;
@@ -59,7 +59,14 @@ ul {
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
+  margin: 10px 0px;
+}
+.errMsg {
+  background-color: lightpink;
+  color: red;
+  margin: 10px 0px 0px 0px;
+  padding: 10px;
 }
 
 .content {

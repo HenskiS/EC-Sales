@@ -13,15 +13,6 @@ let cigars = [
 ]
 
 const Photos = () => {
-
-    const navigate = useNavigate();
-    useEffect(() => {
-        const tokenString = localStorage.getItem('token');
-        const token = (tokenString !== 'undefined') ? tokenString : null;
-        if (!token) {
-            navigate("/auth");
-        }
-    });
     
     const [info, setInfo] = useState(false);
     const [infoSrc, setInfoSrc] = useState();

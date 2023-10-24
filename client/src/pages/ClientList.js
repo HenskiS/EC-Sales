@@ -8,22 +8,17 @@ import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
 
-    const navigate = useNavigate();
-    useEffect(() => {
-        const tokenString = localStorage.getItem('token');
-        const token = (tokenString !== 'undefined') ? tokenString : null;
-        if (!token) {
-            navigate("/auth");
-        }
-    });
-
     const [clientNames, setClientNames] = useState(["loading..."]);
     const [filteredClientNames, setFilteredClientNames] = useState(clientNames);
     const [listCounter, setListCounter] = useState(0);
     useEffect(() => {
         const getClients = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/clients/clientnames");
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.get("http://localhost:3001/clients/clientnames", config);
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);

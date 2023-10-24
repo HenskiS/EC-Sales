@@ -27,7 +27,7 @@ function Navbar() {
               <FaIcons.FaBars onClick={showSidebar} />
             </Link>
             <button className='logout' onClick={() => {
-              localStorage.removeItem("token");
+              sessionStorage.clear();
               window.location.reload();
             }}>
               Logout

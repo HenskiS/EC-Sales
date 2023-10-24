@@ -7,6 +7,7 @@ import ClientList from './pages/ClientList';
 import Auth from './pages/Auth';
 import useToken from './hooks/useToken';
 import ShowNavBar from './pages/navbar/ShowNavBar';
+import PrivateRoutes from './components/PrivateRoutes'
 
 function App() {
 
@@ -16,14 +17,17 @@ function App() {
   return (
     
         <Routes>
-          <Route path="/" element={<Navbar />}>
-            <Route index element={<Home />} />
-            <Route path="photos" element={<Photos />} />
-            <Route path="reppersonal" element={<RepPersonal />} />
-            <Route path="clientlist" element={<ClientList />} />
-            <Route path="auth" element={<Auth setToken={setToken} />} />
-            <Route path="*" element={<Home />} />
+          <Route path="/" element={<PrivateRoutes />}>
+            <Route path="/" element={<Navbar />}>
+              <Route index element={<Home />} />
+              <Route path="photos" element={<Photos />} />
+              <Route path="reppersonal" element={<RepPersonal />} />
+              <Route path="clientlist" element={<ClientList />} />
+              {/*<Route path="auth" element={<Auth setToken={setToken} />} />*/}
+              <Route path="*" element={<Home />} />
+            </Route>
           </Route>
+          <Route path="/auth" element={<Auth setToken={setToken} />} />
         </Routes>
   );
 }

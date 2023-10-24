@@ -25,7 +25,11 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getBrands = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/cigars/cigarbrands");
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.get("http://localhost:3001/cigars/cigarbrands", config);
                 //console.log("got brands");
                 //console.log(response);
                 setBrands(response.data);
@@ -38,7 +42,11 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getCigars = async () => {
             try {
-                const response = await axios.post("http://localhost:3001/cigars/cigarnames", { brand: brand });
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://localhost:3001/cigars/cigarnames", { brand: brand }, config);
                 //console.log("got " + brand + " cigars");
                 //console.log(response);
                 setCigarNames(response.data);
@@ -51,7 +59,11 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getBlends = async () => {
             try {
-                const response = await axios.post("http://localhost:3001/cigars/cigarblends", { brand: brand , name: cigarName});
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://localhost:3001/cigars/cigarblends", { brand: brand , name: cigarName}, config);
                 //console.log("got " + cigarName + " blends");
                 //console.log(response);
                 setCigarBlends(response.data);
@@ -67,7 +79,11 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getSizes = async () => {
             try {
-                const response = await axios.post("http://localhost:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""});
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://localhost:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " sizes");
                 //console.log(response);
                 setCigarSizes(response.data);
@@ -83,7 +99,11 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getPrice = async () => {
             try {
-                const response = await axios.post("http://localhost:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize});
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://localhost:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
                 //console.log(response);
                 setCigarPrice(response.data[0]*100);

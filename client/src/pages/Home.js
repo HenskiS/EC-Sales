@@ -28,25 +28,21 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
     if (cigars.length === 0) {
         alert("No cigars added!");
         return;}
+    
+    const token = JSON.parse(sessionStorage.getItem('token'));
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
     const response = await axios.post("http://localhost:3001/orders/add", 
         {client, salesman, cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
-                                    total:orderTotal}});
+                                    total:orderTotal}}, config);
     console.log("Order submission response:");
     console.log(response);
     if ("success" in response.data) alert("Order Submission Successful!");
 }
 
 const Home = (props) => {
-
-    const navigate = useNavigate();
-    useEffect(() => {
-        const tokenString = localStorage.getItem('token');
-        const token = (tokenString !== 'undefined') ? tokenString : null;
-        if (!token) {
-            navigate("/auth");
-        }
-    }, []);
 
     const previousCigars= [];
     const [cigars, setCigars] = useState([]);
@@ -74,11 +70,15 @@ const Home = (props) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const response = await axios.post("http://localhost:3001/clients/getclientbyid", {id: clientID});
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://localhost:3001/clients/getclientbyid", {id: clientID}, config);
                 console.log("got client info");
                 //console.log(response);
                 setClient(response.data);
-                const response2 = await axios.post("http://localhost:3001/orders/getordersbyclientid", {id: clientID});
+                const response2 = await axios.post("http://localhost:3001/orders/getordersbyclientid", {id: clientID}, config);
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
@@ -95,6 +95,9 @@ const Home = (props) => {
         setOrderSubtotal(subtotal);
         setOrderTotal(total);
     }
+
+    const uinfo = sessionStorage.getItem('UserInfo')
+    const UserInfo = uinfo ? JSON.parse(uinfo) : {name: "", userID: ""}
 
 
     return ( 
@@ -120,7 +123,7 @@ const Home = (props) => {
                     <p>915 Calle Amanecer </p> 
                     <p>San Clemente </p> 
                     <p>CA 92673 </p> 
-                    <p>{JSON.parse(localStorage.getItem('userName'))} </p> 
+                    <p>{UserInfo.name} </p> 
                     {/*<p>joe@estebancarreras.com</p>*/}
                 </div>
             </div>
@@ -134,7 +137,7 @@ const Home = (props) => {
                 <button className='submit-button' onClick={() => {
                     console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: JSON.parse(localStorage.getItem('userID')), name: JSON.parse(localStorage.getItem('userName'))});
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name});
                 }}>Submit Order</button>
             </div>
             <hr />
