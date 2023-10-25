@@ -40,14 +40,20 @@ function Navbar() {
                   <AiIcons.AiOutlineClose />
                 </Link>
               </li>
-
+              {(!JSON.parse(sessionStorage.getItem('UserInfo')).roles.includes("Admin")) ? <></> :
               <li key={0} className='nav-text'>
                 <Link to='/'>
-                  <IoIcons.IoMdPaper />
+                  <AiIcons.AiOutlineDashboard />
                   <span>Dashboard</span>
                 </Link>
-              </li>
+              </li>}
               <li key={1} className='nav-text'>
+                <Link to='/order'>
+                  <IoIcons.IoMdPaper />
+                  <span>Order Form</span>
+                </Link>
+              </li>
+              <li key={2} className='nav-text'>
                 <Link to='/photos'>
                   <AiIcons.AiOutlinePicture />
                   <span>Photos</span>

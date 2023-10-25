@@ -8,6 +8,7 @@ import Auth from './pages/Auth';
 import useToken from './hooks/useToken';
 import ShowNavBar from './pages/navbar/ShowNavBar';
 import PrivateRoutes from './components/PrivateRoutes'
+import AdminRoute from './components/AdminRoute';
 
 function App() {
 
@@ -19,7 +20,8 @@ function App() {
         <Routes>
           <Route path="/" element={<PrivateRoutes />}>
             <Route path="/" element={<Navbar />}>
-              <Route index element={<Home />} />
+              <Route index element={<AdminRoute />} />
+              <Route path="order" element={<Home />} />
               <Route path="photos" element={<Photos />} />
               <Route path="reppersonal" element={<RepPersonal />} />
               <Route path="clientlist" element={<ClientList />} />
