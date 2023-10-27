@@ -111,7 +111,7 @@ const ClientInfo = ({ id, close, addName }) => {
                 {/*<h5>Info for Client {id}</h5>*/}
                 <IoMdCreate onClick={() => setIsEditing(true)} />
                 <button className="client-button">
-                    <Link to={"/?name="+client.name+"&id="+client._id}>
+                    <Link to={"/order/?name="+client.name+"&id="+client._id}>
                         <IoMdPaper className="client-order-icon" />
                         Start Order
                     </Link>

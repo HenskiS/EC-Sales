@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useRef } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
 import CigarOrderList from '../components/CigarOrderList';
@@ -6,6 +6,7 @@ import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+
 
 const cigarsToString = (cigars) => {
     const notHiddenCigars = cigars.filter(function (cigar) {
@@ -39,7 +40,10 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
                                     total:orderTotal}}, config);
     console.log("Order submission response:");
     console.log(response);
-    if ("success" in response.data) alert("Order Submission Successful!");
+    if ("success" in response.data) {
+        alert("Order Submission Successful!") 
+        window.location.reload()
+    }
 }
 
 const Home = (props) => {

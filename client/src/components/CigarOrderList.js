@@ -36,7 +36,7 @@ function getSubtotal(cigars, setIsBox) {
     }
     else return 0;
 }
-function getTotal(cigars, setIsBox) {
+function getTotal(cigars, setIsBox, setBoxesOff) {
     //check if box discount or manual
     const discounts = cigars.map(c => {if (!c.hidden) return c.discount}).filter(function (value) {
         return !Number.isNaN(value) && value !== "" && value > 0;
@@ -61,12 +61,13 @@ function getTotal(cigars, setIsBox) {
                 prices = prices.sort((a,b) => a.price - b.price);
                 while (prices[0].qty === 0) prices = prices.slice(1);
                 for (let i=0; i<Math.floor(totalQty/8) && i<3; i++) {
+                    setBoxesOff(i+1);
                     prices[0].qty -= 1;
                     if (prices[0].qty == 0) prices = prices.slice(1);
                 }
-            }
+            } else setBoxesOff(0)
         }
-    }
+    } else setBoxesOff(-1)
     prices = prices.map((i) => i.price * i.qty);
     
     //return cigars.map(price).reduce(sum)/100;
@@ -84,6 +85,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
     const [subtotal, setSubtotal] = useState();
     const [total, setTotal] = useState();
     const [isBox, setIsBox] = useState(true);
+    const [boxesOff, setBoxesOff] = useState("");
 
     const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
@@ -95,7 +97,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             //console.log(cigars);
             setKey(key*-1);
             let s = getSubtotal(cigars, setIsBox);
-            let t = getTotal(cigars, setIsBox);
+            let t = getTotal(cigars, setIsBox, setBoxesOff);
             setSubtotal(s);
             setTotal(t);
             setOrderPrice(s, t);
@@ -113,7 +115,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
                 <p className="hcol cigar-size">Size</p>
                 <p className="hcol cigar-qty">Qty</p>
                 <p className="hcol cigar-discount">DC %</p>
-                <p className="hcol cigar-price">PPB</p>
+                <p className="hcol cigar-price">$/Box</p>
 
             </div>
             {/* Cigar List */}
@@ -140,8 +142,8 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             <div className="subtotal">
                 <h5>Subtotal</h5>
                 <p>${cigars.length > 0 && subtotal}</p>
-                <h4>Total (with taxes and {isBox? "box" : "per-cigar"} discount)</h4>
-                <p className='total'>${cigars.length > 0 && total}</p>
+                <h4>Total (with taxes{boxesOff < 0 ? " and per-cigar discount" : boxesOff>0 ? " and "+boxesOff+"-box discount" : ""})</h4>
+                <p className='total'>${cigars.length > 0 && total.toFixed(2)}</p>
             </div>
 
 

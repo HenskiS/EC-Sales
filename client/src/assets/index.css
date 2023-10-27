@@ -102,13 +102,14 @@ ul {
 .submit-button{
   width: 150px;
   height: 50px;
-  background-color: rgb(78, 217, 78);
+  background-color: rgb(55, 155, 255);
   color: white;
   border: 0px;
   border-radius: 15px;
+  margin: 5px;
 }
 .submit-button:hover{
-  background-color: rgb(63, 176, 63);
+  background-color: rgb(46, 128, 210);
 }
 hr{
   /*width: 600px;*/
@@ -127,6 +128,7 @@ hr{
   border: 1px solid;
   border-radius: 5px;
   margin: 0px 0px 20px auto;/*365px;*/
+  padding: 4px;
 }
 .clientlist {
   display: flex;

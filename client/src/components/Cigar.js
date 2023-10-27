@@ -17,7 +17,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
 
     const [brands, setBrands] = useState(["fetching..."]);
     const [cigarNames, setCigarNames] = useState(["fetching..."]);
-    const [cigarBlends, setCigarBlends] = useState(["fetching..."]);
+    const [cigarBlends, setCigarBlends] = useState([""]);
     const [cigarSizes, setCigarSizes] = useState(["fetching..."]);
 
     //console.log(cigars);
