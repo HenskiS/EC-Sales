@@ -141,9 +141,9 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             {/*<Total key={key} cigars={cigars} />*/}
             <div className="subtotal">
                 <h5>Subtotal</h5>
-                <p>${cigars.length > 0 && subtotal}</p>
+                <p>${cigars.length > 0 && subtotal && subtotal.toFixed(2)}</p>
                 <h4>Total (with taxes{boxesOff < 0 ? " and per-cigar discount" : boxesOff>0 ? " and "+boxesOff+"-box discount" : ""})</h4>
-                <p className='total'>${cigars.length > 0 && total.toFixed(2)}</p>
+                <p className='total'>${cigars.length > 0 && total && total.toFixed(2)}</p>
             </div>
 
 

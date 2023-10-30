@@ -33,6 +33,7 @@ const Photos = () => {
                 {/*<img className="photo" src={image1} alt="" />*/}
                 {PhotosData.map((photo, index) => (
                     <Card 
+                        key={index}
                         src={photo.src} 
                         title={photo.title} 
                         onClick={() => getInfo(index)}
