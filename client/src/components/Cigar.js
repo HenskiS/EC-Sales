@@ -29,7 +29,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://localhost:3001/cigars/cigarbrands", config);
+                const response = await axios.get("http://192.168.1.136:3001/cigars/cigarbrands", config);
                 //console.log("got brands");
                 //console.log(response);
                 setBrands(response.data);
@@ -46,7 +46,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://localhost:3001/cigars/cigarnames", { brand: brand }, config);
+                const response = await axios.post("http://192.168.1.136:3001/cigars/cigarnames", { brand: brand }, config);
                 //console.log("got " + brand + " cigars");
                 //console.log(response);
                 setCigarNames(response.data);
@@ -63,7 +63,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://localhost:3001/cigars/cigarblends", { brand: brand , name: cigarName}, config);
+                const response = await axios.post("http://192.168.1.136:3001/cigars/cigarblends", { brand: brand , name: cigarName}, config);
                 //console.log("got " + cigarName + " blends");
                 //console.log(response);
                 setCigarBlends(response.data);
@@ -83,7 +83,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://localhost:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
+                const response = await axios.post("http://192.168.1.136:3001/cigars/cigarsizes", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " sizes");
                 //console.log(response);
                 setCigarSizes(response.data);
@@ -103,7 +103,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://localhost:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
+                const response = await axios.post("http://192.168.1.136:3001/cigars/cigarprice", { brand: brand , name: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
                 //console.log(response);
                 setCigarPrice(response.data[0]*100);

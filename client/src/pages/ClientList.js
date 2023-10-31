@@ -18,7 +18,7 @@ const ClientList = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://localhost:3001/clients/clientnames", config);
+                const response = await axios.get("http://192.168.1.136:3001/clients/clientnames", config);
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);

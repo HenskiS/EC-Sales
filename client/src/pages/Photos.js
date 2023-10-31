@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
 import CigarList from "../components/CigarList";
-import image1 from '../assets/images/devils-hand-box.jpg'
 import { useNavigate } from 'react-router';
 import { PhotosData } from "../data/PhotosData";
 import Card from "../components/Card";
@@ -26,7 +25,7 @@ const Photos = () => {
     return ( 
         <div className='content'>
             <h2>Photos</h2>
-            {info? <PhotoInfo index={infoSrc} close={() => setInfo(false)} /> : <></>}
+            {info? <PhotoInfo index={infoSrc} close={() => setInfo(false)} /> : //<></> }
             <div className="photos">
                 
                 {/*<CigarList cigars={cigars} />*/}
@@ -34,12 +33,13 @@ const Photos = () => {
                 {PhotosData.map((photo, index) => (
                     <Card 
                         key={index}
-                        src={photo.src} 
+                        src={photo.src[0]} 
                         title={photo.title} 
                         onClick={() => getInfo(index)}
                     />
                 ))}
             </div>
+            }
         </div>
     );
 }

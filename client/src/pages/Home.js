@@ -34,7 +34,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     };
-    const response = await axios.post("http://localhost:3001/orders/add", 
+    const response = await axios.post("http://192.168.1.136:3001/orders/add", 
         {client, salesman, cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
                                     total:orderTotal}}, config);
@@ -78,11 +78,11 @@ const Home = (props) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://localhost:3001/clients/getclientbyid", {id: clientID}, config);
+                const response = await axios.post("http://192.168.1.136:3001/clients/getclientbyid", {id: clientID}, config);
                 console.log("got client info");
                 //console.log(response);
                 setClient(response.data);
-                const response2 = await axios.post("http://localhost:3001/orders/getordersbyclientid", {id: clientID}, config);
+                const response2 = await axios.post("http://192.168.1.136:3001/orders/getordersbyclientid", {id: clientID}, config);
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }

@@ -1,43 +1,45 @@
-import img1 from "../assets/images/devils-hand-box.jpg"
+import img1 from "../assets/images/Devil Hand Boolit.jpg"
+import img2 from "../assets/images/Devil Hand Toro.jpg"
+import img3 from "../assets/images/Devil Hand Sixty.jpg"
 
 export const PhotosData = [
     {
-        src: img1,
+        src: [img1, img2, img3],
         title: "Devils Hand Box",
-        description: "Esteban Carreras Mr. Brownstone Maduro is a boutique ultra-premium cigar comprised of a blend of aged tobaccos from a multitude of growing regions. The cigars are wrapped in a dark Connecticut Broadleaf wrapper, underneath spicy Ecuadorian Habano binder is used with a core of filler tobaccos from two of Nicaraguans finest growing regions of Condega and Jalapa. The result aficionados, is a flavor bomb, that’s balance and delivers rich notes of dark chocolate, coffee and earth with a natural sweetness in this medium to full bodied blend."
+        description: "This delicious Nicaraguan puro features an oily, mouthwatering Corojo maduro wrapper and it is packed with tobaccos from this Central American country’s prime tobacco growing regions. When lit, the Devil’s Hand offers a flavorful, medium to full-bodied smoking experience. The Devil’s Hand is the first time Esteban Carreras has used Corojo tobacco in one of its cigars. The cigar got its curious name from the premium Corojo seeds that were smuggled out of Cuba. The “devil” being Fidel Castro and his government."
     },
     {
-        src: img1,
-        title: "Devils Hand Box",
-        description: "Description"
-    },
-    {
-        src: img1,
+        src: [img1],
         title: "Devils Hand Box",
         description: "Description"
     },
     {
-        src: img1,
+        src: [img1],
         title: "Devils Hand Box",
         description: "Description"
     },
     {
-        src: img1,
+        src: [img1],
         title: "Devils Hand Box",
         description: "Description"
     },
     {
-        src: img1,
+        src: [img1],
         title: "Devils Hand Box",
         description: "Description"
     },
     {
-        src: img1,
+        src: [img1],
         title: "Devils Hand Box",
         description: "Description"
     },
     {
-        src: img1,
+        src: [img1],
+        title: "Devils Hand Box",
+        description: "Description"
+    },
+    {
+        src: [img1],
         title: "Progeny",
         description: "Description"
     }
