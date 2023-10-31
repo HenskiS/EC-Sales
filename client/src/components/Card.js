@@ -8,8 +8,9 @@ const Card = ({ src, title, onClick }) => {
                 onClick();
             }}>
                 <img className="card-pic" src={src} alt={title} />
-                <h5 className="card-name">{title}</h5>
+                
             </a>
+            <div className="card-name"><h5 >{title}</h5></div>
         </div>
     );
 }

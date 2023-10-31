@@ -11,6 +11,9 @@
     transition: 0.3s;
     width: 200px;
     margin: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
   .card-name {
     text-align: center;
@@ -55,7 +58,7 @@
     border-radius: 5px;
 }
 .photoinfo-description {
-    margin: 20px 80px 200px 80px;
+    margin: 20px 80px 150px 80px;
     padding: 15px;
     /*border: 1px black solid;
     border-radius: 20px;
