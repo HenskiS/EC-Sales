@@ -39,6 +39,16 @@ import img38 from "../assets/images/Chupacabra Robusto Natural.jpg"
 import img39 from "../assets/images/Chupacabra Sixty Natural.jpg"
 import img40 from "../assets/images/Chupacabra Toro Natural.jpg"
 import img41 from "../assets/images/Chupacabra Chupitas Natural.jpg"
+import img42 from "../assets/images/10 Anos Torpedo.jpg"
+import img43 from "../assets/images/10 Anos Churchill.jpeg"
+import img44 from "../assets/images/10 Anos Robusto.jpg"
+import img45 from "../assets/images/10 Anos Art.jpg"
+import img46 from "../assets/images/Bloodline Habano.jpg"
+import img47 from "../assets/images/Bloodline Habano Art.png"
+import img48 from "../assets/images/Bloodline Habano Art.jpg"
+import img49 from "../assets/images/Bloodline Maduro Brunnette.jpg"
+import img50 from "../assets/images/Bloodline Maduro Robusto.jpg"
+import img51 from "../assets/images/Bloodline Maduro Art.jpg"
 
 
 export const PhotosData = [
@@ -177,12 +187,52 @@ export const PhotosData = [
         </>
     },
     {
-        title: "",
-        src: [],
-        captions: ["", "", ""],
+        title: "10 Anos Maduro",
+        src: [img42, img43, img44/*, img45*/],
         description: <>
             <ul>
-                <li><b>:</b></li>
+                <li><b>Wrapper:</b> San Andres Maduro</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <p>Esteban Carreras’ 10 Años are stellar, full-bodied cigars featuring a distinguished blend of premium fillers that’s been appropriately aged ten years. These hard-to-find smokes are genuinely satisfying from start to finish and provide a rich and robust burst of perfectly balanced flavor and zesty aromas. These box-pressed gems are a must-try for the boutique enthusiast. A rare and innovative blend that’s produced in small batches and limited quantities.</p>
+        </>
+    },
+    {
+        title: "Bloodline Habano",
+        src: [img46, img47, img48],
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Nicaraguan Habano</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <p>Esteban Carreras Bloodline cigars are made with a premium blend of 100% Nicaraguan tobaccos. Known for creating Cuban-style, full-flavored cigars that cater to the taste of seasoned cigar smokers, Carreras has toned down the strength slightly with these premium handmade cigars. Medium bodied and available in three wrapper types to deliver an abundance of mouthwatering notes that include leather, sweet spice, chocolate, nuts, pepper, and many more.</p>
+        </>
+    },
+    {
+        title: "Bloodline Maduro",
+        src: [img49, img50, img51],
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Maduro Broadleaf</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <p>The Broadleaf Maduro hits your palate like it is going to be strong but then backs off leaving the desired intense flavors behind, with the harshness that usually accompanies this flavor drift away with the smoke. Broadleaf Maduro wrapper undergoes a unique deep fermentation process to take away all the bitter flavors but the sweetness of this dark oily leaf is left behind in your memory forever.</p>
+        </>
+    },
+    {
+        title: "",
+        src: [img46, img47, img48],
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Nicaraguan Habano</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
             </ul>
             <br />
             <p></p>
@@ -190,14 +240,15 @@ export const PhotosData = [
     },
     {
         title: "",
-        src: [],
-        captions: ["", "", ""],
+        src: [img46, img47, img48],
         description: <>
             <ul>
-                <li><b>:</b></li>
+                <li><b>Wrapper:</b> Nicaraguan Habano</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
             </ul>
             <br />
             <p></p>
         </>
-    }
+    },
 ];

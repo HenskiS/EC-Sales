@@ -31,14 +31,13 @@ const Photos = () => {
                 {/*<CigarList cigars={cigars} />*/}
                 {/*<img className="photo" src={image1} alt="" />*/}
                 {PhotosData.map((photo, index) => (
-                    <>{photo.title === "" ? <></> :
+                    <Fragment key={index}>{photo.title === "" ? <></> :
                     <Card 
-                        key={index}
                         src={photo.src[0]} 
                         title={photo.title} 
                         onClick={() => getInfo(index)}
                     />
-                    }</>
+                    }</Fragment>
                 ))}
             </div>
             }
