@@ -97,7 +97,7 @@ ul {
 .submit-order{
   /*width: 600px;*/
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
 }
 .submit-button{
   width: 150px;

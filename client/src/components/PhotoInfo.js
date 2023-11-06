@@ -21,13 +21,17 @@ const PhotoInfo = ({ index, close }) => {
                 {data.src.map( (src, i) => (
                         <div key={i}>
                             <img src={src} alt="" />
-                            {data.hasOwnProperty("captions")? data.captions[i]===""?<></>:<p className="legend">{data.captions[i]}</p> : <></>}
+                            {!data.hasOwnProperty("captions")? <></> : data.captions[i]===""?<></>:<p className="legend">{data.captions[i]}</p>}
                         </div>
                     ) )}
             </Carousel>
             {/*<h5>Info for Card {index}</h5>*/}
             <IoIosArrowBack onClick={close} />
-            <div className="photoinfo-description">{data.description}</div>
+            <div className="photoinfo-description">
+                <h1>{data.title}</h1>
+                <br />
+                {data.description}
+            </div>
         </div>
         </>
     );
