@@ -38,6 +38,7 @@ const Auth = ({ setToken }) => {
             //setCookies("access_token", response.data.token)
             setToken(response.data.accessToken);
             const UserInfo = jwtDecode(response.data.accessToken).UserInfo
+            sessionStorage.setItem('accessToken', JSON.stringify(jwtDecode(response.data.accessToken)));
             console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
