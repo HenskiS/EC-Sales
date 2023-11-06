@@ -178,7 +178,7 @@ export const PhotosData = [
     },
     {
         title: "Chupacabra 10 Year Anniversary",
-        src: [img11, img12, img13, img14, img15, img16],
+        src: [img11, img12/*, img13, img14, img15, img16*/],
         
         description: <>
             <ul>
@@ -197,24 +197,69 @@ export const PhotosData = [
             <p>Esteban Carreras Chupacabra 10 Year Anniversary premium cigars celebrate a decade of success by the Chupacabra brand in a long lasting, slow burning, decadently delicious fashion. These superb handmade premium cigars are expertly fashioned at the company’s famed Tabacalera Carreras factory in Nicaragua using a gorgeous, oily, and dark San Andres Mexican wrapper followed by a perfectly aged core of Nicaraguan binder and long filler tobaccos.</p>
         </>
     },
-    
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
+    {
+        title: "Chupacabra Maduro",
+        src: [img54, img55, img56, img57],
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Nicaragua Oscuro</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <ul>
+                <li>Chupitas (4x42)(Boxes of 20)</li>
+                <li>Gorditos (5.2x56)(Boxes of 20)</li>
+                <li>Robusto (5.5x54)(Boxes of 20)</li>
+                <li>Toro (6x50)(Boxes of 20)</li>
+                <li>Sixty (6x60)(Boxes of 20)</li>
+            </ul>
+            <br />
+            <p>Esteban Carreras Chupacabra Maduro cigars are a dark and delicious Nicaraguan puros crafted with the finest aged tobaccos surrounded by a very dark and oily maduro wrapper. Boasting outstanding construction and a slow, even burn, you will enjoy a complex medium to full body smoke with creamy textured notes of pepper, chocolate, espresso, and sweet spice, all highlighted with a sweet honey-like aroma.</p>
+        </>
+    },
+    {
+        title: "Chupacabra Natural",
+        src: [img37, img38, img39, img40/*, img41*/],
+        
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Nicaragua Habano</li>
+                <li><b>Binder:</b> Nicaraguan</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <ul>
+                <li>Chupacabra Natural Chupitas (4 x 42)(Boxes of 40)</li>
+                <li>Chupacabra Natural Toro (6  x 52)(Boxes of 20)</li>
+                <li>Chupacabra Natural Sixty (6 x 60)(Boxes of 20)</li>
+                <li>Chupacabra Natural Robusto (5 x 54)(Boxes of 20)</li>
+                <li>Chupacabra Natural Gordito (6 x 56)(Boxes of 10)</li>
+            </ul>
+            <br />
+            <p>Esteban Carreras Chupacabra cigars are skillfully crafted the old-fashioned Cuban-style way with a closed foot and a Cuban-style pigtail cap. The cigar starts very peppery, but soon builds in complexity when hearty flavors of charred wood, spice, dark roast coffee, and chocolate, come into play. Chupacabra offers a well-rounded, highly enjoyable medium to full body smoking experience from start to finish.</p>
+        </>
+    },
+    {
+        title: "Covenant Maduro",
+        src: [img58, img59, img60],
+        description: <>
+            <ul>
+                <li><b>Wrapper:</b> Nicaragua Oscuro</li>
+                <li><b>Binder:</b> Nicaraguan Esteli</li>
+                <li><b>Filler:</b> Nicaraguan</li>
+            </ul>
+            <br />
+            <ul>
+                <li>Robusto Grande (5.5x54)(Boxes of 20)</li>
+                <li>Toro (6x54)(Boxes of 20)</li>
+                <li>Double Corona (7x54)(Boxes of 20)</li>
+                <li>Torpedo (6.25x54)(Boxes of 20)</li>
+            </ul>
+            <br />
+            <p>Covenant's perfectly fermented Nicaraguan Maduro Oscuro wrapper makes a seductive first impression. It's deep, dark, reddish-brown color and sheen of natural oils promise full, complex flavor. A body of aged Nicaraguan binder and filler leaves make sure the promise is kept. The smooth draw provides distinct flavors of rich chocolate with a hint of chili pepper and spice across the palate. You will find the aroma bold and lingering with floral notes.</p>
+        </>
+    },
     {
         title: "Devils Hand",
         src: [img1, img2, img3],
@@ -258,30 +303,6 @@ export const PhotosData = [
         </>
     },
     {
-        title: "Unforsaken",
-        src: [img7, img8, img9, img10],
-        description: <>
-            <ul>
-                <li><b>Country of Origin:</b> Nicaragua</li>
-                <li><b>Factory:</b> Tabacalera Carreras</li>
-                <li><b>Wrapper:</b> Ecuador (Sumatra)</li>
-                <li><b>Binder:</b> Nicaragua</li>
-                <li><b>Filler:</b> Nicaragua</li>
-            </ul>
-            <br />
-            <ul>
-                <li>Esteban Carreras Unforgiven Boolit (4 3/4 x 46)(Box of 32)</li>
-                <li>Esteban Carreras Unforgiven Toro Grande (6 x 52)(Box of 24)</li>
-                <li>Esteban Carreras Unforgiven Sesenta (6 x 60)(Box of 24)</li>
-                <li>Esteban Carreras Unforgiven Wrecking Ball (6 x 70)(Box of 24)</li>
-                <li>Esteban Carreras Unforgiven President’s Own (6 x 46)(Box of 24)</li>
-            </ul>
-            <br />
-            <p>What makes the Esteban Carreras Unforsaken unique is that this is first Esteban Carreras offering that uses top-quality tobacco that has been aged for two years in rum barrels. This amounts to one of the richest, smoothest full-flavored smokes in the brands portfolio. The cigars exhibit medium to full bodied experience notes of wood, leather, coffee bean, and spices, backed by a slight smoky sweetness imparted from the remnants of the 18-year old rum barrels.</p>
-        </>
-    },
-    
-    {
         title: "Hellcat",
         src: [img17, img18, img19, /*img20,*/ img21],
         
@@ -302,28 +323,6 @@ export const PhotosData = [
             </ul>
             <br />
             <p>Perfectly box-pressed, elegantly banded, and adorned with an old-world Cuban-style style pigtail cap, Esteban Carreras Hellcat is one of the best-looking boutique cigars available on the market today! Matching its visually stunning eye candy, you’ll savor a medium to full bodied smoke with exceptionally rich flavors of leather and earth, accented with notes of espresso, milk chocolate, cocoa and fruit.</p>
-        </>
-    },
-    
-    {
-        title: "Mr. Brownstone Natural",
-        src: [img26, img27, img28, img29, img30],
-        
-        description: <>
-            <ul>
-                <li><b>Wrapper:</b> Connecticut Broadleaf Maduro</li>
-                <li><b>Binder:</b> Ecuadorian Habano</li>
-                <li><b>Filler:</b> Nicaragua (Condega and Jalapa)</li>
-            </ul>
-            <br />
-            <ul>
-                <li>Esteban Carreras Mr. Brownstone Mainline (6 x 60)(Boxes of 20)</li>
-                <li>Esteban Carreras Mr. Brownstone Smack (6 x 52)(Boxes of 20)</li>
-                <li>Esteban Carreras Mr. Brownstone Speedball (5 x 54)(Boxes of 20)</li>
-                <li>Esteban Carreras Mr. Brownstone Boolit (4.75x46)(Boxes of 32)</li>
-            </ul>
-            <br />
-            <p>The Mr. Brownstone features one of the darkest and oiliest wrappers you'll ever find. The Nicaraguan filler and binder is perfectly blended, aged and balanced to deliver a premium experience. You fill find this to be full-flavored and slightly smoky with hints of rich, dark chocolate.  Medium to full-bodied, the cigar delivers a hearty, robust and incredibly smooth smoke, but is not overpowering.</p>
         </>
     },
     {
@@ -348,68 +347,24 @@ export const PhotosData = [
         </>
     },
     {
-        title: "Chupacabra Natural",
-        src: [img37, img38, img39, img40/*, img41*/],
+        title: "Mr. Brownstone Natural",
+        src: [img26, img27, img28, img29, img30],
         
         description: <>
             <ul>
-                <li><b>Wrapper:</b> Nicaragua Habano</li>
-                <li><b>Binder:</b> Nicaraguan</li>
-                <li><b>Filler:</b> Nicaraguan</li>
+                <li><b>Wrapper:</b> Connecticut Broadleaf Maduro</li>
+                <li><b>Binder:</b> Ecuadorian Habano</li>
+                <li><b>Filler:</b> Nicaragua (Condega and Jalapa)</li>
             </ul>
             <br />
             <ul>
-                <li>Chupacabra Natural Chupitas (4 x 42)(Boxes of 40)</li>
-                <li>Chupacabra Natural Toro (6  x 52)(Boxes of 20)</li>
-                <li>Chupacabra Natural Sixty (6 x 60)(Boxes of 20)</li>
-                <li>Chupacabra Natural Robusto (5 x 54)(Boxes of 20)</li>
-                <li>Chupacabra Natural Gordito (6 x 56)(Boxes of 10)</li>
+                <li>Esteban Carreras Mr. Brownstone Mainline (6 x 60)(Boxes of 20)</li>
+                <li>Esteban Carreras Mr. Brownstone Smack (6 x 52)(Boxes of 20)</li>
+                <li>Esteban Carreras Mr. Brownstone Speedball (5 x 54)(Boxes of 20)</li>
+                <li>Esteban Carreras Mr. Brownstone Boolit (4.75x46)(Boxes of 32)</li>
             </ul>
             <br />
-            <p>Esteban Carreras Chupacabra cigars are skillfully crafted the old-fashioned Cuban-style way with a closed foot and a Cuban-style pigtail cap. The cigar starts very peppery, but soon builds in complexity when hearty flavors of charred wood, spice, dark roast coffee, and chocolate, come into play. Chupacabra offers a well-rounded, highly enjoyable medium to full body smoking experience from start to finish.</p>
-        </>
-    },
-    
-    
-    {
-        title: "Chupacabra Maduro",
-        src: [img54, img55, img56, img57],
-        description: <>
-            <ul>
-                <li><b>Wrapper:</b> Nicaragua Oscuro</li>
-                <li><b>Binder:</b> Nicaraguan</li>
-                <li><b>Filler:</b> Nicaraguan</li>
-            </ul>
-            <br />
-            <ul>
-                <li>Chupitas (4x42)(Boxes of 20)</li>
-                <li>Gorditos (5.2x56)(Boxes of 20)</li>
-                <li>Robusto (5.5x54)(Boxes of 20)</li>
-                <li>Toro (6x50)(Boxes of 20)</li>
-                <li>Sixty (6x60)(Boxes of 20)</li>
-            </ul>
-            <br />
-            <p>Esteban Carreras Chupacabra Maduro cigars are a dark and delicious Nicaraguan puros crafted with the finest aged tobaccos surrounded by a very dark and oily maduro wrapper. Boasting outstanding construction and a slow, even burn, you will enjoy a complex medium to full body smoke with creamy textured notes of pepper, chocolate, espresso, and sweet spice, all highlighted with a sweet honey-like aroma.</p>
-        </>
-    },
-    {
-        title: "Covenant Maduro",
-        src: [img58, img59, img60],
-        description: <>
-            <ul>
-                <li><b>Wrapper:</b> Nicaragua Oscuro</li>
-                <li><b>Binder:</b> Nicaraguan Esteli</li>
-                <li><b>Filler:</b> Nicaraguan</li>
-            </ul>
-            <br />
-            <ul>
-                <li>Robusto Grande (5.5x54)(Boxes of 20)</li>
-                <li>Toro (6x54)(Boxes of 20)</li>
-                <li>Double Corona (7x54)(Boxes of 20)</li>
-                <li>Torpedo (6.25x54)(Boxes of 20)</li>
-            </ul>
-            <br />
-            <p>Covenant's perfectly fermented Nicaraguan Maduro Oscuro wrapper makes a seductive first impression. It's deep, dark, reddish-brown color and sheen of natural oils promise full, complex flavor. A body of aged Nicaraguan binder and filler leaves make sure the promise is kept. The smooth draw provides distinct flavors of rich chocolate with a hint of chili pepper and spice across the palate. You will find the aroma bold and lingering with floral notes.</p>
+            <p>The Mr. Brownstone features one of the darkest and oiliest wrappers you'll ever find. The Nicaraguan filler and binder is perfectly blended, aged and balanced to deliver a premium experience. You fill find this to be full-flavored and slightly smoky with hints of rich, dark chocolate.  Medium to full-bodied, the cigar delivers a hearty, robust and incredibly smooth smoke, but is not overpowering.</p>
         </>
     },
     {
@@ -449,6 +404,29 @@ export const PhotosData = [
             </ul>
             <br />
             <p>Extremely well balanced and medium bodied, with a lush Ecuadorian Sumatran wrapper that brings tones of cayenne pepper, creme, coffee and nuts.</p>
+        </>
+    },
+    {
+        title: "Unforsaken",
+        src: [img7, img8, img9, img10],
+        description: <>
+            <ul>
+                <li><b>Country of Origin:</b> Nicaragua</li>
+                <li><b>Factory:</b> Tabacalera Carreras</li>
+                <li><b>Wrapper:</b> Ecuador (Sumatra)</li>
+                <li><b>Binder:</b> Nicaragua</li>
+                <li><b>Filler:</b> Nicaragua</li>
+            </ul>
+            <br />
+            <ul>
+                <li>Esteban Carreras Unforgiven Boolit (4 3/4 x 46)(Box of 32)</li>
+                <li>Esteban Carreras Unforgiven Toro Grande (6 x 52)(Box of 24)</li>
+                <li>Esteban Carreras Unforgiven Sesenta (6 x 60)(Box of 24)</li>
+                <li>Esteban Carreras Unforgiven Wrecking Ball (6 x 70)(Box of 24)</li>
+                <li>Esteban Carreras Unforgiven President’s Own (6 x 46)(Box of 24)</li>
+            </ul>
+            <br />
+            <p>What makes the Esteban Carreras Unforsaken unique is that this is first Esteban Carreras offering that uses top-quality tobacco that has been aged for two years in rum barrels. This amounts to one of the richest, smoothest full-flavored smokes in the brands portfolio. The cigars exhibit medium to full bodied experience notes of wood, leather, coffee bean, and spices, backed by a slight smoky sweetness imparted from the remnants of the 18-year old rum barrels.</p>
         </>
     }
 ];
