@@ -18,7 +18,7 @@ const ClientList = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://192.168.1.136:3001/clients/clientnames", config);
+                const response = await axios.get("http://192.168.1.102:3001/clients/clientnames", config);
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
@@ -56,7 +56,7 @@ const ClientList = () => {
         <div className="clientlist content">
             <h2>Client List</h2>
 
-            {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addName={addName}/> : <></>}
+            {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addNameToList={addName}/> : <></>}
 
 
             <input type="search" className="client-search" placeholder="Search clients..." onChange={filter}/>
