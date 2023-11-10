@@ -66,7 +66,9 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 addNameToList(editClient.name);
                 close();
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error(err); 
+        }
     }
 
     useEffect(() => {

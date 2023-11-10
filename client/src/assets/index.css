@@ -12,6 +12,11 @@
 ul {
   list-style-position: inside;
 }
+
+.admin {
+  display: flex;
+  flex-direction: column;
+}
 /*.navbar {
   padding: 20px;
   display: flex;
@@ -150,6 +155,16 @@ hr{
   flex-direction: column;
   margin-top: 10px;
 }
+.ciright {
+  margin-right: 20px;
+}
+.cileft {
+  margin-right: 20px;
+
+}
+.client-info .checkbox {
+  margin-right: 5px;
+}
 .client-info-home{
   display: flex;
   flex-direction: column;
@@ -233,6 +248,7 @@ hr{
   justify-content: space-between;
   align-items: center;
   color: rgb(49, 167, 240);
+  margin-top: 15px;
 }
 .clientinfo-footer svg{
   width: 2rem;
