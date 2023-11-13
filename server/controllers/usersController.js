@@ -21,7 +21,8 @@ const getAllUsers = async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = async (req, res) => {
-    const { name, username, password, roles } = req.body
+    let { name, username, password, roles } = req.body
+    username = username.toLowerCase()
 
     // Confirm data
     if (!name || !username || !password) {
@@ -56,15 +57,16 @@ const createNewUser = async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateUser = async (req, res) => {
-    const { id, name, username, roles, active, password } = req.body
+    let { _id, name, username, roles, active, password } = req.body
+    username = username.toLowerCase()
 
     // Confirm data 
-    if (!id || !name || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
+    if (!_id || !name || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
         return res.status(400).json({ message: 'All fields except password are required' })
     }
 
     // Does the user exist to update?
-    const user = await User.findById(id).exec()
+    const user = await User.findById(_id).exec()
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' })
@@ -74,7 +76,7 @@ const updateUser = async (req, res) => {
     const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
 
     // Allow updates to the original user 
-    if (duplicate && duplicate?._id.toString() !== id) {
+    if (duplicate && duplicate?._id.toString() !== _id) {
         return res.status(409).json({ message: 'Username already taken' })
     }
 

@@ -57,12 +57,12 @@ const UserList = () => {
                     </Fragment>
                 ))}
             </div>
-            {users.map((user, index) => (
+            {/*users.map((user, index) => (
                 <Fragment key={index}>
                     <p>{user.name}</p>
                 </Fragment>
                 
-            ))}
+            ))*/}
         </Fragment>
     );
 }
