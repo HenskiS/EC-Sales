@@ -5,6 +5,7 @@
     /*justify-content: start;*/
     justify-content: space-between;
     align-items: center;
+    z-index: 1;
   }
   .logout {
     display: flex;
@@ -31,11 +32,13 @@
     top: 0;
     left: -100%;
     transition: 350ms;
+    z-index: 1;
   }
   
   .nav-menu.active {
     left: 0;
     transition: 150ms;
+    z-index: 1;
   }
   ul {
     padding-inline-start: 0px;

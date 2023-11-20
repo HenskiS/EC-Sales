@@ -50,6 +50,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             alert("Client must have a name");
             return;
         }
+        if (editClient.address1 === "") {
+            alert("Client must have an address");
+            return;
+        }
         console.log("add client");
         try {
             const token = JSON.parse(sessionStorage.getItem('token'));

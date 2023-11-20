@@ -6,6 +6,7 @@ import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import ClientSelect from '../components/ClientSelect';
 
 
 const cigarsToString = (cigars) => {
@@ -93,7 +94,7 @@ const Home = (props) => {
         //console.log("client");
         //console.log(client);
         //else setIsEditing(true);
-    }, []);
+    }, [clientID]);
 
     const setOrderPrice = (subtotal, total) => {
         setOrderSubtotal(subtotal);
@@ -113,8 +114,8 @@ const Home = (props) => {
                     {/*<input type='text' className='cust-input' placeholder="" value={client.name}></input>*/}
                     {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
                     <div className="client-info-home">
-                        {clientID ? <></> : <p>Select a client from Client List...</p>}
-                        <p className="client-name">{client.name}</p>
+                        <ClientSelect setClientID={setClientID} />
+                        {/*<p className="client-name">{client.name}</p>*/}
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
                         <p className="client-address">{client.address2}</p>
@@ -132,8 +133,6 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {/*{error && <div>{error}</div>}*/}
-            {/*isPending && <div>Loading...</div>*/}
             {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} displayButton />}
             <hr />
             
