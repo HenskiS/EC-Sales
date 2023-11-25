@@ -43,7 +43,7 @@ const ClientSelect = ({ setClientID }) => {
 
     return (
         <Select options={clientNames} placeholder="Select a client..."
-        defaultInputValue={clientName}
+        defaultInputValue={clientName? clientName : ""}
         onChange={e=>{console.log(e); setClientID(e.value); setClientName(e.value)}} />
     )
 }
