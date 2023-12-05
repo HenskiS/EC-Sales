@@ -286,6 +286,10 @@ hr{
   width: 120px;
   margin: auto;
 }
+.cigar-brand-and-name{
+  width: 290px;
+  margin: auto
+}
 .cigar-blend{
   width: 100px;
   margin: auto;

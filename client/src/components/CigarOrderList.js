@@ -121,8 +121,9 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton, taxes}) => {
             {/*<h3>{cigs}</h3>*/}
             {/* Cigar List Header */}
             <div className="cigar">
-                <p className="hcol cigar-brand">Brand</p>
-                <p className="hcol cigar-name">Name</p>
+                {/*<p className="hcol cigar-brand">Brand</p>
+                <p className="hcol cigar-name">Name</p>*/}
+                <p className="hcol cigar-brand-and-name">Name</p>
                 <p className="hcol cigar-blend">Blend</p>
                 <p className="hcol cigar-size">Size</p>
                 <p className="hcol cigar-qty">Qty</p>
