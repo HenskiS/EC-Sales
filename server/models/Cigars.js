@@ -3,11 +3,7 @@ const mongoose =  require("mongoose");
 
 
 const CigarSchema = new mongoose.Schema({
-    brand: {
-        type: String,
-        required: true
-    },
-    name: {
+    brandAndName: {
         type: String,
         required: true
     },

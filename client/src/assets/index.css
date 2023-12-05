@@ -313,7 +313,16 @@ hr{
 .hcol{
   text-align: center;
   margin: auto;
-}/*
+}
+.trash {
+  height: 23px;
+  align-self: center;
+  margin-right: 8px;
+}
+.css-b62m3t-container {
+  width: 280px;
+}
+/*
 .hcol.cigar-brand{
   width: 140px;
 }

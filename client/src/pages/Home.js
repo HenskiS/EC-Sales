@@ -14,8 +14,8 @@ const cigarsToString = (cigars) => {
         return !cigar.hidden;
     });
     return notHiddenCigars.map((cigar) => {
-        let s = cigar.brand;
-        s += " " + cigar.name;
+        let s = "";//cigar.brand;
+        s += cigar.name; //" " + cigar.name;
         s += cigar.blend !== "" ? " " + cigar.blend : "";
         s += " " + cigar.size;
         s += ", Qty: " + cigar.qty;
