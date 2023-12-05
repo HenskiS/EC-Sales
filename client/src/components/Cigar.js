@@ -13,6 +13,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     const [cigarQty, setCigarQty] = useState("");
     const [cigarDiscount, setCigarDiscount] = useState("");
     const [cigarPrice, setCigarPrice] = useState("");
+    const [boxQuantity, setBoxQuantity] = useState();
 
     const [cigarNames, setCigarNames] = useState(["fetching..."]);
     const [cigarBlends, setCigarBlends] = useState([""]);
@@ -85,10 +86,17 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/cigarprice", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
+                const response = await axios.post("http://192.168.1.102:3001/cigars/priceandqty", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
-                //console.log(response);
-                setCigarPrice(response.data[0]*100);
+                console.log(response);
+                if (response.data.length) {
+                    setCigarPrice(response.data[0].priceBox*100);
+                    setBoxQuantity(response.data[0].quantityBox)
+                }
+                else {
+                    setCigarPrice("");
+                    setBoxQuantity("")
+                }
             } catch (err) { console.error(err); }
         }
         if (cigarName) {
@@ -104,6 +112,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {onCigarChange(cid, "discount", cigarDiscount);}, [cigarDiscount])
     useEffect(() => {onCigarChange(cid, "qty", cigarQty);}, [cigarQty])
     useEffect(() => {onCigarChange(cid, "price", cigarPrice);}, [cigarPrice])
+    useEffect(() => {onCigarChange(cid, "boxQty", boxQuantity);}, [boxQuantity])
 
     const [hidden, setHidden] = useState(false);
     return (

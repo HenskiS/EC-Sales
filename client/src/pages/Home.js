@@ -133,7 +133,7 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} displayButton />}
+            {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} displayButton />}
             <hr />
             
             <div className="submit-order">

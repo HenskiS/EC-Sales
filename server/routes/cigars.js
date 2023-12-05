@@ -71,13 +71,14 @@ router.post("/cigarsizes", async (req, res) => {
     }
 });
 
-router.post("/cigarprice", async (req, res) => {
+router.post("/priceandqty", async (req, res) => {
     const { brandAndName, blend, sizeName }  = req.body;
     if (blend === "") {
         CigarModel.where({ brandAndName })
         //.where({ name })
         .where({ sizeName })
-        .distinct("priceBox")
+        //.distinct("priceBox")
+        .select('priceBox quantityBox')
         .exec()
         .then(cigars => res.json(cigars))
         .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
@@ -87,7 +88,8 @@ router.post("/cigarprice", async (req, res) => {
         //.where({ name })
         .where({ blend })
         .where({ sizeName })
-        .distinct("priceBox")
+        //.distinct("priceBox")
+        .select('priceBox quantityBox')
         .exec()
         .then(cigars => res.json(cigars))
         .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
