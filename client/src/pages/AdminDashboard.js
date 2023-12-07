@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import axios from "../api/axios.js";
 import RepInfo from "../components/RepInfo.js";
 import UserList from "../components/UserList.js";
+import Orders from "../components/Orders.js";
 
 const AdminDashboard = () => {
 
@@ -30,6 +31,7 @@ const AdminDashboard = () => {
             <h1>Admin Dashboard</h1>
 
             <UserList />
+            <Orders />
             
         </div>
     );
