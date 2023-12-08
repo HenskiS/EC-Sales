@@ -17,7 +17,18 @@ router.use(verifyJWT)
 // get all cigars
 router.get("/", async (req, res) => {
     CigarModel//.where({brand: "Esteban Carreras"})
-    .distinct("brandAndName")
+    //.distinct("brandAndName")
+    .find()
+    .sort('brandAndName')
+    .sort('blend')
+    .exec()
+    .then(cigars => res.json(cigars))
+    .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
+});
+router.get("/names", async (req, res) => {
+    CigarModel//.where({brand: "Esteban Carreras"})
+    //.distinct("brandAndName")
+    .distinct('brandAndName')
     .exec()
     .then(cigars => res.json(cigars))
     .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));

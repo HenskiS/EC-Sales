@@ -69,7 +69,7 @@ const Orders = () => {
             <h3>Sales Totals</h3>
             <hr />
             {totals.map((total, index) => (
-                <p>{users[index].name}: ${total}</p>
+                <p key={index}>{users[index].name}: ${total}</p>
             ))}
             <br />
             <h3>Orders</h3>

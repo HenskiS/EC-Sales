@@ -326,28 +326,23 @@ hr{
 .css-b62m3t-container {
   width: 280px;
 }
-/*
-.hcol.cigar-brand{
-  width: 140px;
-}
-.hcol.cigar-blend{
-  width: 110px;
-}
-.hcol.cigar-name{
-  width: 120px;
-}
-.hcol.cigar-qty{
-  width: 40px;
-}
-.hcol.cigar-discount{
-  width: 38px;
-}
-.hcol.cigar-price{
-  width: 40px;
-}*/
 .add-cigar{
   size: 100px;
   margin: auto;
   display: flex;
   justify-content: center;
+}
+table, th, td {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.cigar-col::placeholder{
+  color: #AAA;
+}
+.row-selected{
+  /*background-color: #c3eaa9;*/
+  background-color: rgb(195, 225, 255);
 }

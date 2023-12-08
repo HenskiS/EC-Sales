@@ -28,7 +28,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://192.168.1.102:3001/cigars/", config);
+                const response = await axios.get("http://192.168.1.102:3001/cigars/names", config);
                 //console.log("/get cigars");
                 //console.log(response.data);
                 setCigarNames(response.data);

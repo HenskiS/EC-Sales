@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment, useRef } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
 import CigarOrderList from '../components/CigarOrderList';
+import CigarOrderList2 from '../components/CigarOrderList2';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
@@ -133,7 +134,7 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} displayButton />}
+            {cigars && <CigarOrderList2 cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} displayButton />}
             <hr />
             
             <div className="submit-order">

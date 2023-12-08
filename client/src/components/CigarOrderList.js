@@ -145,6 +145,7 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton, taxes}) => {
             {displayButton ? <div className='cigar add-cigar'>
                 <button onClick={() => {
                     console.log('click! adding cigar...');
+                    console.log(cigars)
                     let id = cigs ? cigars[cigs - 1].id + 1 : 1;
                     cigars.push({name: "", blend: "", size: "", qty: '', discount: '', price:"", hidden: false, boxQty:0, id: id});
                     setCigs(cigs + 1); // literally just a counter but it forces the cigar list to update when the button is pressed
