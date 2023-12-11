@@ -11,18 +11,22 @@ import ClientSelect from '../components/ClientSelect';
 
 
 const cigarsToString = (cigars) => {
-    const notHiddenCigars = cigars.filter(function (cigar) {
-        return !cigar.hidden;
+    const notZeroCigars = cigars.filter(function (cigar) {
+        return cigar.qty > 0;
     });
-    return notHiddenCigars.map((cigar) => {
+    return notZeroCigars.map((cigar) => {
         let s = "";//cigar.brand;
-        s += cigar.name; //" " + cigar.name;
-        s += cigar.blend !== "" ? " " + cigar.blend : "";
-        s += " " + cigar.size;
+        s += cigar.brandAndName; //" " + cigar.name;
+        if (cigar.hasOwnProperty("blend")) {
+            if (cigar.blend !== "") s += " " + cigar.blend
+        }
+        s += " " + cigar.sizeName;
         s += ", Qty: " + cigar.qty;
-        s += cigar.discount === "" ? "" : cigar.discount === "100" ? " Discount: Box" : " Discount: " + cigar.discount + "%";
+        if (cigar.hasOwnProperty("discount")) {
+            if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
+        }
         return s;
-    })
+    });
 }
 const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) => {
     if (client.name === "") {
@@ -39,7 +43,8 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
     const response = await axios.post("http://192.168.1.102:3001/orders/add", 
         {client, salesman, cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
-                                    total:orderTotal}}, config);
+                                    tax:orderTotal.tax,
+                                    total:orderTotal.total}}, config);
     console.log("Order submission response:");
     console.log(response);
     if ("success" in response.data) {
@@ -145,7 +150,7 @@ const Home = (props) => {
                 }}>Submit Order</button>
             </div>
             <hr />
-            {/*console.log(orders)*/}
+            {console.log(orders)}
             {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>

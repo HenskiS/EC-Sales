@@ -146,7 +146,10 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
     let summary = notZeroCigars.map((cigar) => {
         let s = "";//cigar.brand;
         s += cigar.brandAndName; //" " + cigar.name;
-        s += cigar.blend !== "" ? " " + cigar.blend : "";
+        //s += cigar.blend !== "" ? " " + cigar.blend : "";
+        if (cigar.hasOwnProperty("blend")) {
+            if (cigar.blend !== "") s += " " + cigar.blend
+        }
         s += " " + cigar.sizeName;
         s += ", Qty: " + cigar.qty;
         if (cigar.hasOwnProperty("discount")) {
