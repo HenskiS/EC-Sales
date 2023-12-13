@@ -48,14 +48,17 @@ function getSubtotal(cigars, setIsBox) {
 }
 function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
     //check if box discount or manual
-    const discounts = cigars.map(c => c.discount).filter(function (value) {
+    let nonZeroCigars = cigars.filter(function (c) {
+        return c.qty > 0
+    })
+    const discounts = nonZeroCigars.map(c => c.discount).filter(function (value) {
         return !Number.isNaN(value) && value !== "" && value > 0;
     });
 
     let isBox = !(discounts.length > 0);
     setIsBox( isBox );
     
-    let prices = cigars.map(priceWithDiscount).filter(function (value) {
+    let prices = nonZeroCigars.map(priceWithDiscount).filter(function (value) {
         return  !Number.isNaN(value.priceBox) && value.priceBox !== "" && 
                 !Number.isNaN(value.qty) && value.qty !== "";
     });
@@ -82,7 +85,7 @@ function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
         //return prices.reduce((a, b) => a.price + b.price)/100;
-        let taxAmount = taxes ? cigars.map(tax).reduce(sum) : 0
+        let taxAmount = taxes ? nonZeroCigars.map(tax).reduce(sum) : 0
         return {total: Math.ceil(prices.reduce(sum) + taxAmount)/100,
                 tax: taxAmount/100};
     }

@@ -1,5 +1,6 @@
 /*import express from "express";
 import { OrderModel } from '../models/Orders.js'*/
+const sendEmail = require("../middleware/emailHandler");
 const express =  require("express");
 const OrderModel =  require('../models/Orders.js');
 const verifyJWT = require('../middleware/verifyJWT');
@@ -61,7 +62,8 @@ router.post("/salesmantotal", async (req, res) => {
 
 router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
-
+    sendEmail(req.body)
+    /*
     const newOrder = new OrderModel( 
         {
             client: req.body.client,
@@ -69,7 +71,7 @@ router.post("/add", async (req, res) => {
             cigars: req.body.cigars,
             date: req.body.date
         })
-    await newOrder.save();
+    await newOrder.save();*/
 
     res.json({ success: "Order Added Successfully!"})
 });

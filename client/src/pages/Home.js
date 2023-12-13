@@ -41,10 +41,14 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
         headers: { Authorization: `Bearer ${token}` }
     };
     const response = await axios.post("http://192.168.1.102:3001/orders/add", 
-        {client, salesman, cigars: {cigars: cigarsToString(cigars),
+        {client, salesman,  cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
                                     tax:orderTotal.tax,
-                                    total:orderTotal.total}}, config);
+                                    total:orderTotal.total,
+                                    discount:orderTotal.tax + orderSubtotal - orderTotal.total},
+                            cigarData: cigars.filter(function (cigar) {
+                                return cigar.qty > 0;
+                            })}, config);
     console.log("Order submission response:");
     console.log(response);
     if ("success" in response.data) {
@@ -150,7 +154,7 @@ const Home = (props) => {
                 }}>Submit Order</button>
             </div>
             <hr />
-            {console.log(orders)}
+            {/*console.log(orders)*/}
             {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>

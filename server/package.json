@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "carbone": "^3.5.5",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
@@ -23,6 +24,7 @@
     "mongoose": "^7.4.4",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
+    "pdf-creator-node": "^2.3.5",
     "uuid": "^9.0.1"
   }
 }
