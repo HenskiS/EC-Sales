@@ -28,7 +28,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://192.168.1.102:3001/cigars/names", config);
+                const response = await axios.get("http://192.168.1.103:3001/cigars/names", config);
                 //console.log("/get cigars");
                 //console.log(response.data);
                 setCigarNames(response.data);
@@ -46,7 +46,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/cigarblends", { brandAndName: cigarName}, config);
+                const response = await axios.post("http://192.168.1.103:3001/cigars/cigarblends", { brandAndName: cigarName}, config);
                 console.log("got " + cigarName + " blends");
                 console.log(response);
                 setCigarBlends(response.data[0]? response.data : []);
@@ -66,7 +66,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/cigarsizes", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
+                const response = await axios.post("http://192.168.1.103:3001/cigars/cigarsizes", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " sizes");
                 //console.log(response);
                 setCigarSizes(response.data);
@@ -86,7 +86,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/priceandqty", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
+                const response = await axios.post("http://192.168.1.103:3001/cigars/priceandqty", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
                 //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
                 console.log(response);
                 if (response.data.length) {

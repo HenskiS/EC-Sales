@@ -110,7 +110,7 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://192.168.1.102:3001/cigars/", config);
+                const response = await axios.get("http://192.168.1.103:3001/cigars/", config);
                 console.log("got all cigars");
                 console.log(response);
                 setAllCigars(response.data)
@@ -228,6 +228,8 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
                 <p>${cigars.length > 0 && subtotal && subtotal.toFixed(2)}</p>
                 <h5>Taxes</h5>
                 <p>${taxAmount && taxAmount > 0 && taxAmount.toFixed(2)}</p>
+                <h5>{boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""} Discount</h5>
+                <p>${total&&(subtotal+taxAmount-total).toFixed(2)}</p>
                 <h4>Total{boxesOff < 0 ? " (with per-cigar discount)" : boxesOff>0 ? " (with "+boxesOff+"-box discount)" : ""}</h4>
                 <p className='total'>${cigars.length > 0 && total && total.toFixed(2)}</p>
             </div>

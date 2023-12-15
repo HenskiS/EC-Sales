@@ -14,6 +14,9 @@ const config = {
         pass: process.env.EMAIL_PASS
     }
 }
+var options = {
+    convertTo : 'pdf'
+};
 
 const send = (data) => {
     const transporter = nodemailer.createTransport(config)
@@ -27,14 +30,25 @@ const send = (data) => {
 }
 
 const sendEmail = (data) => {
-    console.log(data)
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-    carbone.render('./template1.odt', data, function(err, result){
+
+    console.log(data)
+    let event = new Date()
+
+    // British English uses day-month-year order and 24-hour time without AM/PM
+    console.log("\n\n\n\n------TIME------")
+    let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
+    console.log(time)
+
+    carbone.render('./template2.odt', data, options, function(err, result){
         if (err) {
           return console.log(err);
         }
         // write the result
-        fs.writeFileSync('result2.odt', result);
+        fs.writeFileSync(`Order ${time}.pdf`, result);
       });
 // ----data format-----
     // data.client
@@ -43,12 +57,22 @@ const sendEmail = (data) => {
     // data.cigars.subtotal
     // data.cigars.tax
     // data.cigars.total
-    const data2 = {
+
+    const data2 = 
+    {
         "from": "Esteban Carreras <estebancarrerassales@gmail.com>",
         "to": "henryschreiner@mac.com",
-        "subject": "Why? Because I Can!",
-        "text": "Ahoy-hoy"
+        "subject": "Order Summary",
+        "text": "Attached is a PDF of your order.",
+        "attachments": [
+        {
+            "filename": `Order ${time}.pdf`,
+            "path": `Order ${time}.pdf`
+        }
+        ]
     }
+    //console.log('Waiting...');
+    sleep(20000).then(() => { send(data2); console.log('done waiting!'); });
     //send(data2)
 }
 
