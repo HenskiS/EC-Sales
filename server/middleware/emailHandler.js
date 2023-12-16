@@ -38,18 +38,11 @@ const sendEmail = (data) => {
     console.log(data)
     let event = new Date()
 
-    // British English uses day-month-year order and 24-hour time without AM/PM
     console.log("\n\n\n\n------TIME------")
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     console.log(time)
 
-    carbone.render('./template2.odt', data, options, function(err, result){
-        if (err) {
-          return console.log(err);
-        }
-        // write the result
-        fs.writeFileSync(`Order ${time}.pdf`, result);
-      });
+    
 // ----data format-----
     // data.client
     // data.salesman
@@ -67,12 +60,22 @@ const sendEmail = (data) => {
         "attachments": [
         {
             "filename": `Order ${time}.pdf`,
-            "path": `Order ${time}.pdf`
+            "path": `./orders/Order ${time}.pdf`
         }
         ]
     }
     //console.log('Waiting...');
-    sleep(20000).then(() => { send(data2); console.log('done waiting!'); });
+    carbone.render('./template.odt', data, options, function(err, result){
+        if (err) {
+          return console.log(err);
+        }
+        // write the result
+        fs.writeFile(`./orders/Order ${time}.pdf`, result, (err) => {
+            if (err) console.error(err)
+            else {send(data2); console.log("----SENT----");}
+        })
+      });
+    //sleep(20000).then(() => { send(data2); console.log('done waiting!'); });
     //send(data2)
 }
 
