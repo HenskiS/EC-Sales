@@ -30,31 +30,35 @@ const send = (data) => {
 }
 
 const sendEmail = (data) => {
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
 
     console.log(data)
     let event = new Date()
 
-    console.log("\n\n\n\n------TIME------")
+    console.log("----SEND EMAIL----")
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     console.log(time)
 
     
-// ----data format-----
+    // ----data format-----
     // data.client
     // data.salesman
     // data.cigars.cigars
     // data.cigars.subtotal
     // data.cigars.tax
     // data.cigars.total
+    let cc = []
+    if (data.client.email && data.client.email !== "") {
+        cc.push(data.client.email)
+    }
+    if (data.emails && data.emails.length > 0) {
+        cc.push.apply(cc, data.emails)
+    }
 
     const data2 = 
     {
         "from": "Esteban Carreras <estebancarrerassales@gmail.com>",
         "to": "henryschreiner@mac.com",
+        "cc": cc,
         "subject": "Order Summary",
         "text": "Attached is a PDF of your order.",
         "attachments": [
@@ -72,7 +76,7 @@ const sendEmail = (data) => {
         // write the result
         fs.writeFile(`./orders/Order ${time}.pdf`, result, (err) => {
             if (err) console.error(err)
-            else {send(data2); console.log("----SENT----");}
+            else {send(data2); console.log("-------SENT-------");}
         })
       });
     //sleep(20000).then(() => { send(data2); console.log('done waiting!'); });

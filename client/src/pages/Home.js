@@ -1,13 +1,14 @@
 import { useState, useEffect, Fragment, useRef } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
-import CigarOrderList from '../components/CigarOrderList';
 import CigarOrderList2 from '../components/CigarOrderList2';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import ClientSelect from '../components/ClientSelect';
+import { ReactMultiEmail, isEmail } from 'react-multi-email'
+import 'react-multi-email/dist/style.css';
 
 
 const cigarsToString = (cigars) => {
@@ -28,7 +29,7 @@ const cigarsToString = (cigars) => {
         return s;
     });
 }
-const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) => {
+const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, emails) => {
     if (client.name === "") {
         alert("No client selected!");
         return;}
@@ -48,7 +49,8 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
                                     discount:orderTotal.tax + orderSubtotal - orderTotal.total},
                             cigarData: cigars.filter(function (cigar) {
                                 return cigar.qty > 0;
-                            })}, config);
+                            }),
+                            emails: emails}, config);
     console.log("Order submission response:");
     console.log(response);
     if ("success" in response.data) {
@@ -67,12 +69,14 @@ const Home = (props) => {
     const [queryParameters] = useSearchParams();
     const [clientName, setClientName] = useState(queryParameters.get("name"));
     const [clientID, setClientID] = useState(queryParameters.get("id"));
+    const [emails, setEmails] = useState([]);
     //console.log("Client ID: " + clientID);
 
     
     const [client, setClient] = useState({
         _id: "",
         name: "",
+        email: "",
         phone: "",
         address1: "",
         address2: "",
@@ -91,7 +95,7 @@ const Home = (props) => {
                 };
                 const response = await axios.post("http://192.168.1.103:3001/clients/getclientbyid", {id: clientID}, config);
                 console.log("got client info");
-                //console.log(response);
+                console.log(response);
                 setClient(response.data);
                 const response2 = await axios.post("http://192.168.1.103:3001/orders/getordersbyclientid", {id: clientID}, config);
                 setOrders(response2.data);
@@ -126,6 +130,7 @@ const Home = (props) => {
                     <div className="client-info-home">
                         <ClientSelect setClientID={setClientID} />
                         {/*<p className="client-name">{client.name}</p>*/}
+                        <p className="client-phone">{client.email}</p>
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
                         <p className="client-address">{client.address2}</p>
@@ -146,15 +151,29 @@ const Home = (props) => {
             {cigars && <CigarOrderList2 cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} displayButton />}
             <hr />
             
+            <div className="cc-emails">
+                <label>CC Order Summary (optional):</label>
+                <ReactMultiEmail 
+                    placeholder='Input email address(es)'
+                    emails={emails}
+                    onChange={(emails) => {setEmails(emails)}}
+                    getLabel={(email, index, removeEmail) => (
+                        <div data-tag key={index}>
+                        <div data-tag-item>{email}</div>
+                        <span data-tag-handle onClick={() => removeEmail(index)}>×</span>
+                        </div>
+                    )}/>
+            </div>
+
             <div className="submit-order">
                 <button className='submit-button' onClick={() => {
                     console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name});
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name}, emails);
                 }}>Submit Order</button>
             </div>
             <hr />
-            {/*console.log(orders)*/}
+            
             {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>

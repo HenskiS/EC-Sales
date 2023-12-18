@@ -226,7 +226,7 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
             <div className="subtotal">
                 <h5>Subtotal</h5>
                 <p>${cigars.length > 0 && subtotal && subtotal.toFixed(2)}</p>
-                <h5>Taxes</h5>
+                <h5>CA Taxes</h5>
                 <p>${taxAmount && taxAmount > 0 && taxAmount.toFixed(2)}</p>
                 <h5>{boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""} Discount</h5>
                 <p>${total&&(subtotal+taxAmount-total).toFixed(2)}</p>

@@ -7,6 +7,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     const [client, setClient] = useState({
         _id: "",
         name: "",
+        email: "",
         phone: "",
         address1: "",
         address2: "",
@@ -17,6 +18,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     const [editClient, setEditClient] = useState({
         _id: "",
         name: "",
+        email: "",
         phone: "",
         address1: "",
         address2: "",
@@ -107,6 +109,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             </div>
             <div className="client-info">
                 {/*<h4 className="client-name">{client.name}</h4>*/}
+                <p className="client-phone">{client.email}</p>
                 <p className="client-phone">{client.phone}</p>
                 <p className="client-address">{client.address1}</p>
                 <p className="client-address">{client.address2}</p>
@@ -136,6 +139,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <span>
                     <label htmlFor="name">Name</label>
                     <input type="text" className="client-name" id="name" defaultValue={editClient.name} onChange={e => setEditClient({...editClient, name: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="email">Email</label>
+                    <input type="text" className="client-phone" id="email" defaultValue={editClient.email} onChange={e => setEditClient({...editClient, email: e.target.value})}/>
                 </span>
                 <span>
                     <label htmlFor="phone">Phone</label>

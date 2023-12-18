@@ -44,6 +44,7 @@ router.post("/updateclientbyid", async (req, res) => {
     ClientModel.findByIdAndUpdate({_id: id}, 
         {
             name: client.name,
+            email: client.email,
             phone: client.phone,
             address1: client.address1,
             address2: client.address2,
@@ -67,6 +68,7 @@ router.post("/add", async (req, res) => {
     const newClient = new ClientModel( 
         {
             name: client.name,
+            email: client.email,
             phone: client.phone,
             address1: client.address1,
             address2: client.address2,
