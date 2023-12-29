@@ -13,7 +13,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         address2: "",
         city: "",
         state: "",
-        zip: ""
+        zip: "",
+        corediscount: ""
     });
     const [editClient, setEditClient] = useState({
         _id: "",
@@ -24,7 +25,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         address2: "",
         city: "",
         state: "",
-        zip: ""
+        zip: "",
+        corediscount: ""
     });
 
     const [isEditing, setIsEditing] = useState(false);
@@ -115,6 +117,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <p className="client-address">{client.address2}</p>
                 <p className="client-city">{client.city}</p>
                 <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                <p className="client-state-and-zip">{client.corediscount? client.corediscount + "% off core line cigars" : "No discount"}</p>
             </div>
             <div className="clientinfo-footer">
                 {/*<h5>Info for Client {id}</h5>*/}
@@ -167,6 +170,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <span>
                     <label htmlFor="zip">Zip</label>
                     <input type="text" className="client-state-and-zip" id="zip" defaultValue={editClient.zip} onChange={e => setEditClient({...editClient, zip: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="zip">Core Line Discount</label>
+                    <input type="text" className="client-state-and-zip" id="zip" defaultValue={editClient.corediscount} onChange={e => setEditClient({...editClient, corediscount: e.target.value})}/>
                 </span>
             </div>
             <div className="clientinfo-footer">

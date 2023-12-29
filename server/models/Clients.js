@@ -27,6 +27,10 @@ const ClientSchema = new mongoose.Schema({
     },
     zip: {
         type: String
+    },
+    corediscount: {
+        type: Number,
+        default: 0
     }
     //orders: [String]
     

@@ -37,6 +37,19 @@ router.post("/getclientbyid", async (req, res) => {
     .then(clients => res.json(clients))
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
 });
+router.post("/getdiscountbyid", async (req, res) => {
+    //const { brand }  = req.body;
+    const id = req.body.id;
+    console.log("\n\n\n\n\n\n")
+    console.log("id: " + req.body.id)
+    ClientModel//.where({ brand })
+    //.distinct("name")
+    .findOne({ _id: id })
+    .select("corediscount")
+    .exec()
+    .then(clients => res.json(clients))
+    .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
+});
 
 router.post("/updateclientbyid", async (req, res) => {
     const client = req.body.editClient;
@@ -50,7 +63,8 @@ router.post("/updateclientbyid", async (req, res) => {
             address2: client.address2,
             city: client.city,
             state: client.state,
-            zip: client.zip
+            zip: client.zip,
+            corediscount: client.corediscount
         }, {new: true}) // new option returns modified doc rather than original
     .then(client => res.json(client))
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
@@ -74,7 +88,8 @@ router.post("/add", async (req, res) => {
             address2: client.address2,
             city: client.city,
             state: client.state,
-            zip: client.zip
+            zip: client.zip,
+            corediscount: client.corediscount
         })
     await newClient.save();
 

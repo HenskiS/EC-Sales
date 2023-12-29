@@ -29,6 +29,17 @@ const cigarsToString = (cigars) => {
         return s;
     });
 }
+const updateClient = async (client) => {
+    try {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        const response = await axios.post("http://192.168.1.103:3001/clients/updateclientbyid", {editClient: client}, config);
+        console.log("updated client info");
+        console.log(response);
+    } catch (err) { console.error(err); }
+}
 const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, emails) => {
     if (client.name === "") {
         alert("No client selected!");
@@ -53,6 +64,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
                             emails: emails}, config);
     console.log("Order submission response:");
     console.log(response);
+    updateClient(client)
     if ("success" in response.data) {
         alert("Order Submission Successful!") 
         window.location.reload()
@@ -82,7 +94,8 @@ const Home = (props) => {
         address2: "",
         city: "",
         state: "",
-        zip: ""
+        zip: "",
+        corediscount: ""
     });
     const [orders, setOrders] = useState([]);
 
@@ -97,6 +110,9 @@ const Home = (props) => {
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);
+                if (response.data.hasOwnProperty("corediscount")) {
+                    setClient(response.data)
+                } else setClient({...response.data, corediscount: ""})
                 const response2 = await axios.post("http://192.168.1.103:3001/orders/getordersbyclientid", {id: clientID}, config);
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
@@ -136,6 +152,10 @@ const Home = (props) => {
                         <p className="client-address">{client.address2}</p>
                         <p className="client-city">{client.city}</p>
                         <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                        {client._id !== "" && <span className="ca-tax-span">
+                            <label htmlFor="tax-input">Core Line Discount:</label>
+                            <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
+                        </span>}
                     </div>
                 </div>
                 <div className="salesrep">
@@ -148,7 +168,7 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {cigars && <CigarOrderList2 cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} displayButton />}
+            {cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />}
             <hr />
             
             <div className="cc-emails">

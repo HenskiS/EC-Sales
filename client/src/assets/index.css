@@ -213,7 +213,7 @@ hr{
   margin: 0px 0px 5px 0px;
 }
 .ClientInfo {
-  width: 60%;
+  width: 40%;
   /*height: 60vh;*/
   position: fixed;
   align-self: center;
@@ -268,7 +268,7 @@ hr{
   display: flex;
 }
 .client-info label{
-  width: 80px;
+  width: 100px;
 }
 .cigar{
   /*width: 600px;*/
@@ -345,4 +345,33 @@ table, th, td {
 .row-selected{
   /*background-color: #c3eaa9;*/
   background-color: rgb(195, 225, 255);
+}
+.ca-tax-input{
+  width: 30px;
+  margin-left: 10px;
+  text-align: center;
+}
+.ca-tax-span{
+  margin-left: 0px;
+}
+.save-tax-button{
+  width: 50px;
+  height: 35px;
+  background-color: rgb(55, 155, 255);
+  color: white;
+  border: 0px;
+  border-radius: 15px;
+  margin: 5px 10px;
+}
+.save-tax-button:active{
+  background-color: rgb(46, 128, 210);
+}
+input[type=number]{
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -24,7 +24,9 @@ function price(item){
 }
 function priceWithDiscount(item){
     if (item.hidden) return {price:0, qty:0};
-    return {price: item.priceBox * 100 * (item.discount ? 100 - item.discount : 100)/100, qty: item.qty};
+    //console.log("priceBox: " + item.priceBox + "discount: " + item.discount)
+    //console.log({price: item.priceBox * 100 * (item.discount ? 100 - parseFloat(item.discount) : 100)/100, qty: item.qty})
+    return {price: item.priceBox * 100 * (item.discount ? 100 - parseFloat(item.discount) : 100)/100, qty: item.qty};
 }
 function sum(prev, next){
     return prev + next;
@@ -92,7 +94,7 @@ function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
     else return 0;
 }
 
-const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
+const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
 
     const [cigs, setCigs] = useState(cigars.length); // cigs is a counter, only used to update the list onClick 'Add Cigar'
     const [key, setKey] = useState(5);
@@ -102,6 +104,8 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
     const [isBox, setIsBox] = useState(true);
     const [boxesOff, setBoxesOff] = useState("");
     const [allCigars, setAllCigars] = useState([]);
+    const [coreLineDiscount, setCoreLineDiscount] = useState(client.coreLineDiscount)
+    const [summary, setSummary] = useState([])
 
     useEffect(() => {
         const getCigars = async () => {
@@ -120,14 +124,58 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
         .catch(console.error);
     }, [])
 
+    useEffect(() => {
+        setCoreLineDiscount(client.corediscount)
+    }, [client])
+
+    useEffect(() => {
+        //console.log("coreLineDiscount: " + coreLineDiscount)
+        for (let i = 0; i < cigars.length; i++) {
+            if (cigars[i].brandAndName.includes("Esteban Carreras")) {
+                cigars[i].discount = coreLineDiscount
+            }
+        }
+    }, [coreLineDiscount, cigs])
+
+    /*useEffect(() => {
+        const getDiscount = async () => {
+            console.log("client in getDiscount():")
+            console.log(client)
+            if (client._id !== "") {
+                try {
+                    console.log("getting coreline...")
+                    const token = JSON.parse(sessionStorage.getItem('token'));
+                    const config = {
+                        headers: { Authorization: `Bearer ${token}` }
+                    };
+                    const response = await axios.post("http://192.168.1.103:3001/clients/getdiscountbyid", {id: client._id}, config);
+                    console.log("got coreline discount");
+                    console.log(response);
+                    setCoreLineDiscount(response.data.corediscount)
+                } catch (err) { console.error(err); }
+            }
+        }
+        getDiscount()
+        .catch(console.error);
+    }, [])
+
+    useEffect(() => {
+        setCoreLineDiscount(client.corediscount)
+    }, [cigs])
+*/
 
     const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
+        setCigs(cigs+1)
+        //setCoreLineDiscount(client.hasOwnProperty("corediscount")?client.corediscount:"")
         let index = cigars.findIndex(c => c.id === cid);
         if (index === -1) {
             cigars.push({...allCigars[cid], id: cid})
         }
         index = cigars.findIndex(c => c.id === cid);
+        if (cigars[index].brandAndName.includes("Esteban Carreras")) {
+            cigars[index].discount = coreLineDiscount
+        }
         if (cigars[index][field] === value) return;
         else {
             //console.log("id: " + cid + ", field: " + field + ", value: " + value);
@@ -135,7 +183,7 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
             //console.log(cigars);
             setKey(key*-1);
             let s = getSubtotal(cigars, setIsBox);
-            let t = getTotal(cigars, setIsBox, setBoxesOff, taxes);
+            let t = getTotal(cigars, setIsBox, setBoxesOff, taxes, coreLineDiscount);
             setSubtotal(s);
             setTotal(t.total);
             setTaxAmount(t.tax);
@@ -143,23 +191,25 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
         }
         console.log(cigars)
     }
-    const notZeroCigars = cigars.filter(function (cigar) {
-        return cigar.qty > 0;
-    });
-    let summary = notZeroCigars.map((cigar) => {
-        let s = "";//cigar.brand;
-        s += cigar.brandAndName; //" " + cigar.name;
-        //s += cigar.blend !== "" ? " " + cigar.blend : "";
-        if (cigar.hasOwnProperty("blend")) {
-            if (cigar.blend !== "") s += " " + cigar.blend
-        }
-        s += " " + cigar.sizeName;
-        s += ", Qty: " + cigar.qty;
-        if (cigar.hasOwnProperty("discount")) {
-            if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
-        }
-        return s;
-    });
+    useEffect(() => {
+        const notZeroCigars = cigars.filter(function (cigar) {
+            return cigar.qty > 0;
+        });
+        setSummary(notZeroCigars.map((cigar) => {
+            let s = "";//cigar.brand;
+            s += cigar.brandAndName; //" " + cigar.name;
+            //s += cigar.blend !== "" ? " " + cigar.blend : "";
+            if (cigar.hasOwnProperty("blend")) {
+                if (cigar.blend !== "") s += " " + cigar.blend
+            }
+            s += " " + cigar.sizeName;
+            s += ", Qty: " + cigar.qty;
+            if (cigar.hasOwnProperty("discount")) {
+                if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
+            }
+            return s;
+        }))
+    }, [cigs])
 
     return ( 
         <div className="cigar-list">
@@ -188,11 +238,21 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
                     <td><input className='cigar-qty cigar-col' type="number" defaultValue="" min={1} placeholder='Qty' 
                     onChange={(e) => {
                         onCigarChange(index, 'qty', e.target.value === "" ? 0 : parseInt(e.target.value));
+                        //if (cigar.brandAndName.includes("Esteban Carreras")) onCigarChange(index, 'discount', coreLineDiscount);
                         if (e.target.value === "" || e.target.value === 0) cigar.set = false
                         else cigar.set = true
                     }} /></td>
-                    <td><input className='cigar-qty cigar-col' type="number" defaultValue="" min={0} placeholder='% off' 
-                    onChange={(e) => {onCigarChange(index, 'discount', e.target.value);}} /></td>
+                    {cigar.brandAndName.includes("Esteban Carreras")?
+                        <td><input className='cigar-qty cigar-col' type="number" value={client.corediscount === 0? "":client.corediscount} min={0} placeholder='% off' 
+                        onChange={(e) => {  onCigarChange(index, 'discount', e.target.value);
+                                            //setCoreLineDiscount(e.target.value);
+                                            setClient({...client, corediscount: e.target.value})}} />
+                        </td>
+                    :
+                        <td><input className='cigar-qty cigar-col' type="number" defaultValue="" min={0} placeholder='% off' 
+                            onChange={(e) => {  onCigarChange(index, 'discount', e.target.value);}} />
+                        </td>
+                    }
                 </tr>
             ))}
             </tbody>
@@ -230,7 +290,7 @@ const CigarOrderList2 = ({cigars, setOrderPrice, displayButton, taxes}) => {
                 <p>${taxAmount && taxAmount > 0 && taxAmount.toFixed(2)}</p>
                 <h5>{boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""} Discount</h5>
                 <p>${total&&(subtotal+taxAmount-total).toFixed(2)}</p>
-                <h4>Total{boxesOff < 0 ? " (with per-cigar discount)" : boxesOff>0 ? " (with "+boxesOff+"-box discount)" : ""}</h4>
+                <h4>Total</h4>
                 <p className='total'>${cigars.length > 0 && total && total.toFixed(2)}</p>
             </div>
 
