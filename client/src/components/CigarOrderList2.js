@@ -7,16 +7,14 @@ import * as IoIcons from 'react-icons/io';
 import Cigar from './Cigar';
 import Total from './Total';
 
-function tax(item){
+
+function tax(item, taxCents) {
+
     if (item.hidden) return 0
-    else if (item.quantityBox === 4) return 232 * item.qty
-    else if (item.quantityBox === 10) return 580 * item.qty
-    else if (item.quantityBox === 20) return 1160 * item.qty
-    else if (item.quantityBox === 24) return 1392 * item.qty
-    else if (item.quantityBox === 25) return 1450 * item.qty
-    else if (item.quantityBox === 32) return 1856 * item.qty
-    else if (item.quantityBox === 40) return 2320 * item.qty
-    else return 0
+    else {
+        console.log("taxCents:"+taxCents)
+        return item.quantityBox * parseFloat(taxCents) * item.qty
+    }
 }
 function price(item){
     if (item.hidden) return 0;
@@ -48,7 +46,7 @@ function getSubtotal(cigars, setIsBox) {
     }
     else return 0;
 }
-function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
+function getTotal(cigars, setIsBox, setBoxesOff, taxes, taxCents) {
     //check if box discount or manual
     let nonZeroCigars = cigars.filter(function (c) {
         return c.qty > 0
@@ -87,7 +85,7 @@ function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
         //return prices.reduce((a, b) => a.price + b.price)/100;
-        let taxAmount = taxes ? nonZeroCigars.map(tax).reduce(sum) : 0
+        let taxAmount = taxes ? nonZeroCigars.map(n => tax(n, taxCents)).reduce(sum) : 0
         return {total: Math.ceil(prices.reduce(sum) + taxAmount)/100,
                 tax: taxAmount/100};
     }
@@ -106,6 +104,24 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
     const [allCigars, setAllCigars] = useState([]);
     const [coreLineDiscount, setCoreLineDiscount] = useState(client.coreLineDiscount)
     const [summary, setSummary] = useState([])
+    const [taxCents, setTaxCents] = useState()
+
+    useEffect(() => {
+        // get CA tax amount
+        const getTax = async () => {
+            try {
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.get("http://192.168.1.102:3001/orders/catax/", config);
+                console.log("got CA tax info");
+                console.log(response);
+                setTaxCents(response.data);
+            } catch (err) { console.error(err); }
+        }
+        getTax();
+    }, [])
 
     useEffect(() => {
         const getCigars = async () => {
@@ -114,7 +130,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.get("http://192.168.1.103:3001/cigars/", config);
+                const response = await axios.get("http://192.168.1.102:3001/cigars/", config);
                 console.log("got all cigars");
                 console.log(response);
                 setAllCigars(response.data)
@@ -137,32 +153,6 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
         }
     }, [coreLineDiscount, cigs])
 
-    /*useEffect(() => {
-        const getDiscount = async () => {
-            console.log("client in getDiscount():")
-            console.log(client)
-            if (client._id !== "") {
-                try {
-                    console.log("getting coreline...")
-                    const token = JSON.parse(sessionStorage.getItem('token'));
-                    const config = {
-                        headers: { Authorization: `Bearer ${token}` }
-                    };
-                    const response = await axios.post("http://192.168.1.103:3001/clients/getdiscountbyid", {id: client._id}, config);
-                    console.log("got coreline discount");
-                    console.log(response);
-                    setCoreLineDiscount(response.data.corediscount)
-                } catch (err) { console.error(err); }
-            }
-        }
-        getDiscount()
-        .catch(console.error);
-    }, [])
-
-    useEffect(() => {
-        setCoreLineDiscount(client.corediscount)
-    }, [cigs])
-*/
 
     const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
@@ -183,7 +173,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
             //console.log(cigars);
             setKey(key*-1);
             let s = getSubtotal(cigars, setIsBox);
-            let t = getTotal(cigars, setIsBox, setBoxesOff, taxes, coreLineDiscount);
+            let t = getTotal(cigars, setIsBox, setBoxesOff, taxes, taxCents);
             setSubtotal(s);
             setTotal(t.total);
             setTaxAmount(t.tax);
@@ -234,7 +224,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
                     <td key={index+.2}>{cigar.blend}</td>
                     <td key={index+.3}>{cigar.sizeName}</td>
                     <td key={index+.4}>{cigar.size}</td>
-                    <td key={index+.5}>{cigar.priceBox}</td>
+                    <td key={index+.5}>${cigar.priceBox}</td>
                     <td><input className='cigar-qty cigar-col' type="number" defaultValue="" min={1} placeholder='Qty' 
                     onChange={(e) => {
                         onCigarChange(index, 'qty', e.target.value === "" ? 0 : parseInt(e.target.value));

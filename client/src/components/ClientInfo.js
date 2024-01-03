@@ -40,7 +40,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.103:3001/clients/updateclientbyid", {editClient}, config);
+                const response = await axios.post("http://192.168.1.102:3001/clients/updateclientbyid", {editClient}, config);
                 console.log("updated client info");
                 console.log(response);
                 setClient(editClient);
@@ -64,7 +64,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.post("http://192.168.1.103:3001/clients/add", {editClient}, config);
+            const response = await axios.post("http://192.168.1.102:3001/clients/add", {editClient}, config);
             if ("exists" in response.data) {alert("A client with this name already exists.");}
             else {
                 console.log("added client:");
@@ -86,7 +86,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.103:3001/clients/getclientbyid", {id}, config);
+                const response = await axios.post("http://192.168.1.102:3001/clients/getclientbyid", {id}, config);
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);

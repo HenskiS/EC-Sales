@@ -13,6 +13,18 @@ const saveTax = async (tax) => {
         console.log(response.data);
     } catch (err) { console.error(err); }
 }
+export const getTax = async () => {
+    try {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        const response = await axios.get("/orders/catax/", config);
+        console.log("got CA tax info");
+        console.log(response);
+        return response.data;
+    } catch (err) { console.error(err); }
+}
 
 const Tax = () => {
     const [tax, setTax] = useState("")
@@ -49,4 +61,4 @@ const Tax = () => {
 
 }
 
-export default Tax
+export default Tax;

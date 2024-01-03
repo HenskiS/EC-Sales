@@ -35,7 +35,7 @@ const updateClient = async (client) => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        const response = await axios.post("http://192.168.1.103:3001/clients/updateclientbyid", {editClient: client}, config);
+        const response = await axios.post("http://192.168.1.102:3001/clients/updateclientbyid", {editClient: client}, config);
         console.log("updated client info");
         console.log(response);
     } catch (err) { console.error(err); }
@@ -52,7 +52,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     };
-    const response = await axios.post("http://192.168.1.103:3001/orders/add", 
+    const response = await axios.post("http://192.168.1.102:3001/orders/add", 
         {client, salesman,  cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
                                     tax:orderTotal.tax,
@@ -106,14 +106,14 @@ const Home = (props) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };
-                const response = await axios.post("http://192.168.1.103:3001/clients/getclientbyid", {id: clientID}, config);
+                const response = await axios.post("http://192.168.1.102:3001/clients/getclientbyid", {id: clientID}, config);
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);
                 if (response.data.hasOwnProperty("corediscount")) {
                     setClient(response.data)
                 } else setClient({...response.data, corediscount: ""})
-                const response2 = await axios.post("http://192.168.1.103:3001/orders/getordersbyclientid", {id: clientID}, config);
+                const response2 = await axios.post("http://192.168.1.102:3001/orders/getordersbyclientid", {id: clientID}, config);
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
