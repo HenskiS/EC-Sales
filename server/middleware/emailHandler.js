@@ -54,6 +54,8 @@ const sendEmail = (data) => {
         cc.push.apply(cc, data.emails)
     }
 
+    if (!data.client.company || data.client.company === "") data.client.company = data.client.name
+
     const data2 = 
     {
         "from": "Esteban Carreras <estebancarrerassales@gmail.com>",

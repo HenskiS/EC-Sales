@@ -6,7 +6,8 @@ const allowedOrigins = [
     'http://192.168.1.103:3000',
     'http://192.168.1.18:3000',
     'http://192.168.1.17:3000',
-    'https://www.google.com'
+    'https://www.google.com',
+    'http://127.0.0.1'
 ]
 
 module.exports = allowedOrigins;

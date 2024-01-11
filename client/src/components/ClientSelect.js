@@ -26,9 +26,14 @@ const ClientSelect = ({ setClientID }) => {
                     if ( a.name.split(" ").slice(-1) > b.name.split(" ").slice(-1) ) return 1;
                     return 0;
                 })
-                const reformattedData = names.map((data) => {
+                let names2 = response.data.sort((a,b)=>{
+                    if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) < (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return -1;
+                    if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) > (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return 1;
+                    return 0;
+                }).filter(n => (" " + n.company?.toLowerCase() + n.name?.toLowerCase()).length > 1 && (n.hasOwnProperty("company") || (n.hasOwnProperty("name") && n.name !== " ")))
+                const reformattedData = names2.map((data) => {
                     return {
-                      label: data.name,
+                      label: data.company? data.company : data.name,
                       value: data._id
                     };
                 })

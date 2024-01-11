@@ -5,12 +5,29 @@ const mongoose =  require("mongoose");
 const ClientSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+    },
+    company: {
+        type: String,
     },
     email: {
         type: String
     },
     phone: {
+        type: String
+    },
+    ext: {
+        type: String
+    },
+    mobile: {
+        type: String
+    },
+    contact: {
+        type: String
+    },
+    title: {
+        type: String
+    },
+    website: {
         type: String
     },
     address1: {

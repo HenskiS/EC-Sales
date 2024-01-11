@@ -270,6 +270,15 @@ hr{
 .client-info label{
   width: 100px;
 }
+#client-ext-label{
+  width: 30px;
+}
+#ext{
+  width: 50px;
+}
+.client-ext{
+  width: 40px;
+}
 .cigar{
   /*width: 600px;*/
   display: flex;

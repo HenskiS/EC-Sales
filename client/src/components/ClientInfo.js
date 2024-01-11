@@ -9,24 +9,37 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         name: "",
         email: "",
         phone: "",
+        ext: "",
+        mobile: "",
         address1: "",
         address2: "",
         city: "",
         state: "",
         zip: "",
-        corediscount: ""
+        corediscount: "",
+        company: "",
+        contact: "",
+        website: "",
+        title: ""
+
     });
     const [editClient, setEditClient] = useState({
         _id: "",
         name: "",
         email: "",
         phone: "",
+        ext: "",
+        mobile: "",
         address1: "",
         address2: "",
         city: "",
         state: "",
         zip: "",
-        corediscount: ""
+        corediscount: "",
+        company: "",
+        contact: "",
+        website: "",
+        title: ""
     });
 
     const [isEditing, setIsEditing] = useState(false);
@@ -50,8 +63,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     }
 
     const addClient = async () => {
-        if (editClient.name === "") {
-            alert("Client must have a name");
+        if (editClient.name === "" && editClient.name === "") {
+            alert("Client must have a name or company");
             return;
         }
         if (editClient.address1 === "") {
@@ -106,24 +119,28 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         <div className="ClientInfo">
             <div className="clientinfo-header">
                 {/*<h5>Info for Client {id}</h5>*/}
-                <h2 className="client-name">{client.name}</h2>
+                <h2 className="client-name">{ client.hasOwnProperty("company") ? client.company : client.name }</h2>
                 <IoIosClose onClick={close} />
             </div>
             <div className="client-info">
                 {/*<h4 className="client-name">{client.name}</h4>*/}
-                <p className="client-phone">{client.email}</p>
-                <p className="client-phone">{client.phone}</p>
-                <p className="client-address">{client.address1}</p>
-                <p className="client-address">{client.address2}</p>
-                <p className="client-city">{client.city}</p>
+                { client.company? <p className="client-phone">Name: {client.name}</p> : <></> }
+                { client.contact? <p className="client-phone">Contact: {client.contact}</p> : <></> }
+                { client.title?   <p className="client-phone">Title: {client.title}</p> : <></> }
+                <p className="client-phone">Email: {client.email}</p>
+                <p className="client-phone">Phone: {client.phone} {client.ext ? "Ext: " + client.ext : ""}</p>
+                <p className="client-address">Address 1: {client.address1}</p>
+                { client.address2? <p className="client-address">Address 2: {client.address2}</p> : <></> }
+                { client.mobile? <p className="client-address">Mobile: {client.mobile}</p> : <></> }
+                <p className="client-city">City: {client.city}</p>
                 <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
-                <p className="client-state-and-zip">{client.corediscount? client.corediscount + "% off core line cigars" : "No discount"}</p>
+                { client.website? <p className="client-state-and-zip">Website: {client.website}</p> : <></> }
+                { client.corediscount? <p className="client-state-and-zip">{client.corediscount + "% off core line cigars"}</p> : <></> }
             </div>
             <div className="clientinfo-footer">
-                {/*<h5>Info for Client {id}</h5>*/}
                 <IoMdCreate onClick={() => setIsEditing(true)} />
                 <button className="client-button">
-                    <Link to={"/order/?name="+client.name+"&id="+client._id}>
+                    <Link to={"/order/?name="+(client.company? client.company : client.name)+"&id="+client._id}>
                         <IoMdPaper className="client-order-icon" />
                         Start Order
                     </Link>
@@ -140,8 +157,20 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             <div className="client-info">
                 {/*<h4 className="client-name">{client.name}</h4>*/}
                 <span>
+                    <label htmlFor="company">Company</label>
+                    <input type="text" className="client-name" id="company" defaultValue={editClient.company} onChange={e => setEditClient({...editClient, company: e.target.value})}/>
+                </span>
+                <span>
                     <label htmlFor="name">Name</label>
                     <input type="text" className="client-name" id="name" defaultValue={editClient.name} onChange={e => setEditClient({...editClient, name: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="contact">Contact</label>
+                    <input type="text" className="client-name" id="contact" defaultValue={editClient.contact} onChange={e => setEditClient({...editClient, contact: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="title">Title</label>
+                    <input type="text" className="client-name" id="title" defaultValue={editClient.title} onChange={e => setEditClient({...editClient, title: e.target.value})}/>
                 </span>
                 <span>
                     <label htmlFor="email">Email</label>
@@ -150,6 +179,12 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <span>
                     <label htmlFor="phone">Phone</label>
                     <input type="text" className="client-phone" id="phone" defaultValue={editClient.phone} onChange={e => setEditClient({...editClient, phone: e.target.value})}/>
+                    <label id="client-ext-label" htmlFor="ext">Ext</label>
+                    <input type="text" className="client-ext" id="ext" defaultValue={editClient.ext} onChange={e => setEditClient({...editClient, ext: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="mobile">Mobile</label>
+                    <input type="text" className="client-address" id="mobile" defaultValue={editClient.mobile} onChange={e => setEditClient({...editClient, mobile: e.target.value})}/>
                 </span>
                 <span>
                     <label htmlFor="add1">Address 1</label>
@@ -170,6 +205,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <span>
                     <label htmlFor="zip">Zip</label>
                     <input type="text" className="client-state-and-zip" id="zip" defaultValue={editClient.zip} onChange={e => setEditClient({...editClient, zip: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="website">Website</label>
+                    <input type="text" className="client-state-and-zip" id="website" defaultValue={editClient.website} onChange={e => setEditClient({...editClient, website: e.target.value})}/>
                 </span>
                 <span>
                     <label htmlFor="zip">Core Line Discount</label>

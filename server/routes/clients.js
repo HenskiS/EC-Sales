@@ -56,9 +56,14 @@ router.post("/updateclientbyid", async (req, res) => {
     const id = client._id;
     ClientModel.findByIdAndUpdate({_id: id}, 
         {
+            company: client.company,
             name: client.name,
+            contact: client.contact,
             email: client.email,
             phone: client.phone,
+            ext: client.ext,
+            mobile: client.mobile,
+            title: client.title,
             address1: client.address1,
             address2: client.address2,
             city: client.city,
@@ -81,9 +86,14 @@ router.post("/add", async (req, res) => {
 
     const newClient = new ClientModel( 
         {
+            company: client.company? client.company :  client.name,
             name: client.name,
+            contact: client.contact,
             email: client.email,
             phone: client.phone,
+            ext: client.ext,
+            mobile: client.mobile,
+            title: client.title,
             address1: client.address1,
             address2: client.address2,
             city: client.city,
@@ -96,5 +106,5 @@ router.post("/add", async (req, res) => {
     res.json({ success: "Client Registered Successfully!"})
 });
 
-//export { router as clientRouter };
+
 module.exports= router

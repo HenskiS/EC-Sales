@@ -82,7 +82,6 @@ const Home = (props) => {
     const [clientName, setClientName] = useState(queryParameters.get("name"));
     const [clientID, setClientID] = useState(queryParameters.get("id"));
     const [emails, setEmails] = useState([]);
-    //console.log("Client ID: " + clientID);
 
     
     const [client, setClient] = useState({
@@ -144,8 +143,10 @@ const Home = (props) => {
                     {/*<input type='text' className='cust-input' placeholder="" value={client.name}></input>*/}
                     {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
                     <div className="client-info-home">
-                        <ClientSelect setClientID={setClientID} />
-                        {/*<p className="client-name">{client.name}</p>*/}
+                        { <ClientSelect setClientID={setClientID} /> }
+                        {!clientID? <p>Select a client from the Client List</p> :
+                        <>
+                        {/* client.company? <p className="client-name">{client.company}</p> : <p className="client-name">{client.name}</p> */}
                         <p className="client-phone">{client.email}</p>
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
@@ -156,6 +157,8 @@ const Home = (props) => {
                             <label htmlFor="tax-input">Core Line Discount:</label>
                             <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
                         </span>}
+                        </>
+                        }
                     </div>
                 </div>
                 <div className="salesrep">
@@ -168,7 +171,7 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />}
+            {clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />}
             <hr />
             
             <div className="cc-emails">
