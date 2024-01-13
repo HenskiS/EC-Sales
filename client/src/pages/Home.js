@@ -144,7 +144,7 @@ const Home = (props) => {
                     {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
                     <div className="client-info-home">
                         { <ClientSelect setClientID={setClientID} /> }
-                        {!clientID? <p>Select a client from the Client List</p> :
+                        {!clientID? <></> :
                         <>
                         {/* client.company? <p className="client-name">{client.company}</p> : <p className="client-name">{client.name}</p> */}
                         <p className="client-phone">{client.email}</p>
