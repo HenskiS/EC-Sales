@@ -214,6 +214,7 @@ hr{
 }
 .ClientInfo {
   width: 60%;
+  max-width: 700px;
   /*height: 60vh;*/
   position: fixed;
   align-self: center;
