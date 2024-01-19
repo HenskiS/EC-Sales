@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { IoIosClose, IoMdCreate, IoMdPaper } from "react-icons/io"
+import { IoIosClose, IoMdCreate, IoMdPaper, IoMdTrash } from "react-icons/io"
 import axios from "axios";
 
 const ClientInfo = ({ id, close, addNameToList }) => {
@@ -91,6 +91,27 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             console.error(err); 
         }
     }
+    const deleteClient = async (id) => {
+        if (window.confirm("Are you sure you want to delete " + client.name + "?")) {
+            console.log("deleting client...")
+            try {
+                const token = JSON.parse(sessionStorage.getItem('token'));
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const response = await axios.post("http://192.168.1.102:3001/clients/delete", {id}, config);
+                console.log("response:")
+                console.log(response.data)
+                close()
+                window.location.reload()
+            } catch (err) { 
+                console.error(err); 
+            }
+        }
+        else {
+            console.log("not deleting " + client.name)
+        }
+    }
 
     useEffect(() => {
         const getClient = async () => {
@@ -139,6 +160,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             </div>
             <div className="clientinfo-footer">
                 <IoMdCreate onClick={() => setIsEditing(true)} />
+                <IoMdTrash onClick={() => deleteClient(id)} className="trashicon" />
+                <div className="spacer"></div>
                 <button className="client-button">
                     <Link to={"/order/?name="+(client.company? client.company : client.name)+"&id="+client._id}>
                         <IoMdPaper className="client-order-icon" />

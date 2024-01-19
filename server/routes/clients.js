@@ -27,6 +27,16 @@ router.get("/clientnames", async (req, res) => {
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
 });
 
+router.post("/delete", async (req, res) => {
+    //const { brand }  = req.body;
+    ClientModel//.where({ brand })
+    //.distinct("name")
+    .findOneAndDelete({_id: req.body.id})
+    .exec()
+    .then(clients => res.json(clients))
+    .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
+});
+
 router.post("/getclientbyid", async (req, res) => {
     //const { brand }  = req.body;
     const id = req.body.id;

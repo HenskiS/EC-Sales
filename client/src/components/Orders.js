@@ -69,7 +69,7 @@ const Orders = () => {
             <h3>Sales Totals</h3>
             <hr />
             {totals.map((total, index) => (
-                <p key={index}>{users[index].name}: ${total}</p>
+                <p key={index}>{users[index].name}: ${total.toFixed(2)}</p>
             ))}
             <br />
             <h3>Orders</h3>

@@ -224,7 +224,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
                     <td key={index+.2}>{cigar.blend}</td>
                     <td key={index+.3}>{cigar.sizeName}</td>
                     <td key={index+.4}>{cigar.size}</td>
-                    <td key={index+.5}>${cigar.priceBox}</td>
+                    <td key={index+.5}>${cigar.priceBox.toFixed(2)}</td>
                     <td><input className='cigar-qty cigar-col' type="number" defaultValue="" min={1} placeholder='Qty' 
                     onChange={(e) => {
                         onCigarChange(index, 'qty', e.target.value === "" ? 0 : parseInt(e.target.value));

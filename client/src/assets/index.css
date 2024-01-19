@@ -246,7 +246,7 @@ hr{
 }
 .clientinfo-footer {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   align-items: center;
   color: rgb(49, 167, 240);
   margin-top: 15px;
@@ -384,4 +384,10 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+.spacer {
+  flex-grow: 1;
+}
+.trashicon {
+  color: rgb(255, 51, 51)
 }
