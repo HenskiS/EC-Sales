@@ -5,21 +5,13 @@ const saveTax = async (tax) => {
     console.log("saving tax...")
     try {
         console.log("inside try catch")
-        const token = JSON.parse(sessionStorage.getItem('token'));
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        const response = await axios.post("/orders/catax/", {tax}, config);
+        const response = await axios.post("/orders/catax/", {tax});
         console.log(response.data);
     } catch (err) { console.error(err); }
 }
 export const getTax = async () => {
     try {
-        const token = JSON.parse(sessionStorage.getItem('token'));
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        const response = await axios.get("/orders/catax/", config);
+        const response = await axios.get("/orders/catax/");
         console.log("got CA tax info");
         console.log(response);
         return response.data;
@@ -33,11 +25,7 @@ const Tax = () => {
         // get CA tax amount
         const getTax = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("/orders/catax/", config);
+                const response = await axios.get("/orders/catax/");
                 console.log("got CA tax info");
                 console.log(response);
                 setTax(response.data);

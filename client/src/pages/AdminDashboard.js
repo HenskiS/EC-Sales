@@ -14,11 +14,7 @@ const AdminDashboard = () => {
         console.log("getSalesmanTotal")
         let total = 0
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.post("/orders/salesmantotal", {id}, config);
+            const response = await axios.post("/orders/salesmantotal", {id});
             console.log("got salesman total");
             console.log(response);
             total = response.data;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, Fragment } from "react";
 import useToken from '../hooks/useToken';
-import axios from 'axios';
+import axios from '../api/axios';
 import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
@@ -14,11 +14,7 @@ const ClientList = () => {
     useEffect(() => {
         const getClients = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("http://192.168.1.102:3001/clients/clientnames", config);
+                const response = await axios.get("/clients/clientnames");
                 //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);

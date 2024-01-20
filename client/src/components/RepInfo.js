@@ -60,11 +60,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         console.log("update user");
         console.log(editUser)
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.patch("/users/", editUser, config);
+            const response = await axios.patch("/users/", editUser);
             console.log(response.data.message);
             setUser(editUser);
             setIsEditing(false);
@@ -98,11 +94,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         }
         console.log("add user");
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.post("/users/", editUser, config);
+            const response = await axios.post("/users/", editUser);
                 console.log(response.data.message);
                 setUser(editUser);
                 setIsEditing(false);

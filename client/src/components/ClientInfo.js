@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { IoIosClose, IoMdCreate, IoMdPaper, IoMdTrash } from "react-icons/io"
-import axios from "axios";
+import axios from '../api/axios';
 
 const ClientInfo = ({ id, close, addNameToList }) => {
     const [client, setClient] = useState({
@@ -49,11 +49,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         if (client !== editClient) {
             console.log("there's been a change here...");
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/clients/updateclientbyid", {editClient}, config);
+                const response = await axios.post("/clients/updateclientbyid", {editClient});
                 console.log("updated client info");
                 console.log(response);
                 setClient(editClient);
@@ -73,11 +69,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         }
         console.log("add client");
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.post("http://192.168.1.102:3001/clients/add", {editClient}, config);
+            const response = await axios.post("/clients/add", {editClient});
             if ("exists" in response.data) {alert("A client with this name already exists.");}
             else {
                 console.log("added client:");
@@ -95,11 +87,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         if (window.confirm("Are you sure you want to delete " + client.name + "?")) {
             console.log("deleting client...")
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/clients/delete", {id}, config);
+                const response = await axios.post("/clients/delete", {id});
                 console.log("response:")
                 console.log(response.data)
                 close()
@@ -116,11 +104,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/clients/getclientbyid", {id}, config);
+                const response = await axios.post("/clients/getclientbyid", {id});
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);

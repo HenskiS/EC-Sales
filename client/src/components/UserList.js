@@ -10,11 +10,7 @@ const UserList = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("/users/", config);
+                const response = await axios.get("/users/");
                 console.log("got users info");
                 console.log(response);
                 setUsers(response.data);

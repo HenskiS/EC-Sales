@@ -11,11 +11,11 @@ const Orders = () => {
         console.log("getSalesmanTotal")
         let total = 0
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
+            /*const token = JSON.parse(sessionStorage.getItem('token'));
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.post("/orders/salesmantotal", {id}, config);
+            };*/
+            const response = await axios.post("/orders/salesmantotal", {id});
             console.log("got salesman total");
             console.log(response);
             total = response.data;
@@ -26,11 +26,7 @@ const Orders = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("/users/", config);
+                const response = await axios.get("/users/");
                 //console.log("got users info");
                 //console.log(response);
                 setUsers(response.data);
@@ -49,11 +45,7 @@ const Orders = () => {
     useEffect(() => {
         const getOrders = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("/orders/ordersminuscigars/", config);
+                const response = await axios.get("/orders/ordersminuscigars/");
                 console.log("got orders info");
                 console.log(response);
                 setOrders(response.data.reverse());
@@ -69,7 +61,7 @@ const Orders = () => {
             <h3>Sales Totals</h3>
             <hr />
             {totals.map((total, index) => (
-                <p key={index}>{users[index].name}: ${total.toFixed(2)}</p>
+                <p key={index}>{users[index].name}: ${Number(total).toFixed(2)}</p>
             ))}
             <br />
             <h3>Orders</h3>

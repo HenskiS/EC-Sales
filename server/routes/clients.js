@@ -3,6 +3,7 @@ import { ClientModel } from '../models/Clients.js'*/
 const express =  require("express");
 const ClientModel =  require('../models/Clients.js');
 const verifyJWT = require('../middleware/verifyJWT');
+const cors =  require('cors');
 
 const router = express.Router();
 router.use(verifyJWT)

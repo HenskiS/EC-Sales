@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CigarData } from '../data/CigarData';
-import axios from 'axios';
+import axios from '../api/axios';
 
 import { FaAlignCenter } from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
@@ -110,11 +110,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
         // get CA tax amount
         const getTax = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("http://192.168.1.102:3001/orders/catax/", config);
+                const response = await axios.get("/orders/catax/");
                 console.log("got CA tax info");
                 console.log(response);
                 setTaxCents(response.data);
@@ -126,11 +122,11 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
     useEffect(() => {
         const getCigars = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
+                /*const token = JSON.parse(sessionStorage.getItem('token'));
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("http://192.168.1.102:3001/cigars/", config);
+                };*/
+                const response = await axios.get("/cigars/");
                 console.log("got all cigars");
                 console.log(response);
                 setAllCigars(response.data)
@@ -141,22 +137,25 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
     }, [])
 
     useEffect(() => {
+        console.log("set corediscount: " + client.corediscount)
         setCoreLineDiscount(client.corediscount)
     }, [client])
 
     useEffect(() => {
         //console.log("coreLineDiscount: " + coreLineDiscount)
+        console.log("onCigarChange coreLineDiscount: " + coreLineDiscount)
         for (let i = 0; i < cigars.length; i++) {
             if (cigars[i].brandAndName.includes("Esteban Carreras")) {
-                cigars[i].discount = coreLineDiscount
+                //cigars[i].discount = coreLineDiscount
+                onCigarChange(cigars[i].id, 'discount', coreLineDiscount)
             }
         }
-    }, [coreLineDiscount, cigs])
+    }, [coreLineDiscount])
 
 
     const onCigarChange = (cid, field, value) => {
         //console.log("id: " + cid);
-        setCigs(cigs+1)
+        //setCigs(cigs+1)
         //setCoreLineDiscount(client.hasOwnProperty("corediscount")?client.corediscount:"")
         let index = cigars.findIndex(c => c.id === cid);
         if (index === -1) {
@@ -166,8 +165,8 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
         if (cigars[index].brandAndName.includes("Esteban Carreras")) {
             cigars[index].discount = coreLineDiscount
         }
-        if (cigars[index][field] === value) return;
-        else {
+        //if (cigars[index][field] === value) return;
+        //else {
             //console.log("id: " + cid + ", field: " + field + ", value: " + value);
             cigars[index][field] = value;
             //console.log(cigars);
@@ -178,10 +177,13 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
             setTotal(t.total);
             setTaxAmount(t.tax);
             setOrderPrice(s, t);
-        }
+        //}
         console.log(cigars)
+        setCigs(cigs+1)
     }
     useEffect(() => {
+        
+        console.log("updating summary...")
         const notZeroCigars = cigars.filter(function (cigar) {
             return cigar.qty > 0;
         });
@@ -199,7 +201,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
             }
             return s;
         }))
-    }, [cigs])
+    }, [cigs, coreLineDiscount])
 
     return ( 
         <div className="cigar-list">

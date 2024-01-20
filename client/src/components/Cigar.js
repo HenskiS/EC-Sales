@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
+import axios from '../api/axios';
 import { IoMdTrash } from 'react-icons/io';
 import Select from 'react-select'
 
@@ -24,11 +24,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getCigars = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("http://192.168.1.102:3001/cigars/names", config);
+                const response = await axios.get("/cigars/names");
                 //console.log("/get cigars");
                 //console.log(response.data);
                 setCigarNames(response.data);
@@ -42,11 +38,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getBlends = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/cigarblends", { brandAndName: cigarName}, config);
+                const response = await axios.post("/cigars/cigarblends", { brandAndName: cigarName});
                 console.log("got " + cigarName + " blends");
                 console.log(response);
                 setCigarBlends(response.data[0]? response.data : []);
@@ -62,11 +54,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getSizes = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/cigarsizes", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""}, config);
+                const response = await axios.post("/cigars/cigarsizes", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : ""});
                 //console.log("got " + cigarName + " " + cigarBlend + " sizes");
                 //console.log(response);
                 setCigarSizes(response.data);
@@ -82,11 +70,7 @@ const Cigar = ({ onCigarChange, cid/*, cigarDelete */}) => {
     useEffect(() => {
         const getPrice = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/cigars/priceandqty", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize}, config);
+                const response = await axios.post("/cigars/priceandqty", { brandAndName: cigarName, blend: cigarBlends.length > 0 ? cigarBlend : "", sizeName: cigarSize});
                 //console.log("got " + cigarName + " " + cigarBlend + " price: " + response.data);
                 console.log(response);
                 if (response.data.length) {

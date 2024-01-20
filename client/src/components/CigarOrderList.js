@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CigarData } from '../data/CigarData';
-import axios from 'axios';
+import axios from '../api/axios';
 
 import { FaAlignCenter } from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';

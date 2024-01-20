@@ -5,7 +5,7 @@ import CigarOrderList2 from '../components/CigarOrderList2';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import axios from '../api/axios';
 import ClientSelect from '../components/ClientSelect';
 import { ReactMultiEmail, isEmail } from 'react-multi-email'
 import 'react-multi-email/dist/style.css';
@@ -31,11 +31,7 @@ const cigarsToString = (cigars) => {
 }
 const updateClient = async (client) => {
     try {
-        const token = JSON.parse(sessionStorage.getItem('token'));
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        const response = await axios.post("http://192.168.1.102:3001/clients/updateclientbyid", {editClient: client}, config);
+        const response = await axios.post("/clients/updateclientbyid", {editClient: client});
         console.log("updated client info");
         console.log(response);
     } catch (err) { console.error(err); }
@@ -48,11 +44,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
         alert("No cigars added!");
         return;}
     
-    const token = JSON.parse(sessionStorage.getItem('token'));
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    const response = await axios.post("http://192.168.1.102:3001/orders/add", 
+    const response = await axios.post("/orders/add", 
         {client, salesman,  cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
                                     tax:orderTotal.tax,
@@ -61,7 +53,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
                             cigarData: cigars.filter(function (cigar) {
                                 return cigar.qty > 0;
                             }),
-                            emails: emails}, config);
+                            emails: emails});
     console.log("Order submission response:");
     console.log(response);
     updateClient(client)
@@ -101,18 +93,14 @@ const Home = (props) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/clients/getclientbyid", {id: clientID}, config);
+                const response = await axios.post("/clients/getclientbyid", {id: clientID});
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);
                 if (response.data.hasOwnProperty("corediscount")) {
                     setClient(response.data)
                 } else setClient({...response.data, corediscount: ""})
-                const response2 = await axios.post("http://192.168.1.102:3001/orders/getordersbyclientid", {id: clientID}, config);
+                const response2 = await axios.post("/orders/getordersbyclientid", {id: clientID});
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
