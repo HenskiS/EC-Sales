@@ -1,29 +1,43 @@
 import { useState, useEffect, Fragment, useRef } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
-import CigarOrderList from '../components/CigarOrderList';
+import CigarOrderList2 from '../components/CigarOrderList2';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import axios from '../api/axios';
+import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
+import { ReactMultiEmail, isEmail } from 'react-multi-email'
+import 'react-multi-email/dist/style.css';
 
 
 const cigarsToString = (cigars) => {
-    const notHiddenCigars = cigars.filter(function (cigar) {
-        return !cigar.hidden;
+    const notZeroCigars = cigars.filter(function (cigar) {
+        return cigar.qty > 0;
     });
-    return notHiddenCigars.map((cigar) => {
-        let s = cigar.brand;
-        s += " " + cigar.name;
-        s += cigar.blend !== "" ? " " + cigar.blend : "";
-        s += " " + cigar.size;
+    return notZeroCigars.map((cigar) => {
+        let s = "";//cigar.brand;
+        s += cigar.brandAndName; //" " + cigar.name;
+        if (cigar.hasOwnProperty("blend")) {
+            if (cigar.blend !== "") s += " " + cigar.blend
+        }
+        s += " " + cigar.sizeName;
         s += ", Qty: " + cigar.qty;
-        s += cigar.discount === "" ? "" : cigar.discount === "100" ? " Discount: Box" : " Discount: " + cigar.discount + "%";
+        if (cigar.hasOwnProperty("discount")) {
+            if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
+        }
         return s;
-    })
+    });
 }
-const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) => {
+const updateClient = async (client) => {
+    try {
+        const response = await axios.post("/api/clients/updateclientbyid", {editClient: client}, config());
+        console.log("updated client info");
+        console.log(response);
+    } catch (err) { console.error(err); }
+}
+const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, emails) => {
     if (client.name === "") {
         alert("No client selected!");
         return;}
@@ -31,16 +45,19 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman) 
         alert("No cigars added!");
         return;}
     
-    const token = JSON.parse(sessionStorage.getItem('token'));
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    const response = await axios.post("http://192.168.1.102:3001/orders/add", 
-        {client, salesman, cigars: {cigars: cigarsToString(cigars),
+    const response = await axios.post("/api/orders/add", 
+        {client, salesman,  cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
-                                    total:orderTotal}}, config);
+                                    tax:orderTotal.tax,
+                                    total:orderTotal.total,
+                                    discount:orderTotal.tax + orderSubtotal - orderTotal.total},
+                            cigarData: cigars.filter(function (cigar) {
+                                return cigar.qty > 0;
+                            }),
+                            emails: emails}, config());
     console.log("Order submission response:");
     console.log(response);
+    updateClient(client)
     if ("success" in response.data) {
         alert("Order Submission Successful!") 
         window.location.reload()
@@ -57,33 +74,34 @@ const Home = (props) => {
     const [queryParameters] = useSearchParams();
     const [clientName, setClientName] = useState(queryParameters.get("name"));
     const [clientID, setClientID] = useState(queryParameters.get("id"));
-    //console.log("Client ID: " + clientID);
+    const [emails, setEmails] = useState([]);
 
     
     const [client, setClient] = useState({
         _id: "",
         name: "",
+        email: "",
         phone: "",
         address1: "",
         address2: "",
         city: "",
         state: "",
-        zip: ""
+        zip: "",
+        corediscount: ""
     });
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         const getClient = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.post("http://192.168.1.102:3001/clients/getclientbyid", {id: clientID}, config);
+                const response = await axios.post("/api/clients/getclientbyid", {id: clientID}, config());
                 console.log("got client info");
-                //console.log(response);
+                console.log(response);
                 setClient(response.data);
-                const response2 = await axios.post("http://192.168.1.102:3001/orders/getordersbyclientid", {id: clientID}, config);
+                if (response.data.hasOwnProperty("corediscount")) {
+                    setClient(response.data)
+                } else setClient({...response.data, corediscount: ""})
+                const response2 = await axios.post("/api/orders/getordersbyclientid", {id: clientID}, config());
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
@@ -114,13 +132,22 @@ const Home = (props) => {
                     {/*<input type='text' className='cust-input' placeholder="" value={client.name}></input>*/}
                     {/*<p>949-555-0179 <br /> 124 Conch St. <br /> San Clemente <br /> CA 92673</p>*/}
                     <div className="client-info-home">
-                        <ClientSelect setClientID={setClientID} />
-                        {/*<p className="client-name">{client.name}</p>*/}
+                        { <ClientSelect setClientID={setClientID} /> }
+                        {!clientID? <></> :
+                        <>
+                        {/* client.company? <p className="client-name">{client.company}</p> : <p className="client-name">{client.name}</p> */}
+                        <p className="client-phone">{client.email}</p>
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
                         <p className="client-address">{client.address2}</p>
                         <p className="client-city">{client.city}</p>
                         <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                        {client._id !== "" && <span className="ca-tax-span">
+                            <label htmlFor="tax-input">Core Line Discount:</label>
+                            <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
+                        </span>}
+                        </>
+                        }
                     </div>
                 </div>
                 <div className="salesrep">
@@ -133,18 +160,32 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {cigars && <CigarOrderList cigars={cigars} setOrderPrice={setOrderPrice} displayButton />}
+            {clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />}
             <hr />
             
+            <div className="cc-emails">
+                <label>CC Order Summary (optional):</label>
+                <ReactMultiEmail 
+                    placeholder='Input email address(es)'
+                    emails={emails}
+                    onChange={(emails) => {setEmails(emails)}}
+                    getLabel={(email, index, removeEmail) => (
+                        <div data-tag key={index}>
+                        <div data-tag-item>{email}</div>
+                        <span data-tag-handle onClick={() => removeEmail(index)}>×</span>
+                        </div>
+                    )}/>
+            </div>
+
             <div className="submit-order">
                 <button className='submit-button' onClick={() => {
                     console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name});
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name}, emails);
                 }}>Submit Order</button>
             </div>
             <hr />
-            {/*console.log(orders)*/}
+            
             {!orders.length? <></> : <h3>Previously Ordered Cigars</h3>}
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>

@@ -214,6 +214,7 @@ hr{
 }
 .ClientInfo {
   width: 60%;
+  max-width: 700px;
   /*height: 60vh;*/
   position: fixed;
   align-self: center;
@@ -245,7 +246,7 @@ hr{
 }
 .clientinfo-footer {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   align-items: center;
   color: rgb(49, 167, 240);
   margin-top: 15px;
@@ -268,7 +269,16 @@ hr{
   display: flex;
 }
 .client-info label{
-  width: 80px;
+  width: 100px;
+}
+#client-ext-label{
+  width: 30px;
+}
+#ext{
+  width: 50px;
+}
+.client-ext{
+  width: 40px;
 }
 .cigar{
   /*width: 600px;*/
@@ -285,6 +295,10 @@ hr{
 .cigar-name{
   width: 120px;
   margin: auto;
+}
+.cigar-brand-and-name{
+  width: 290px;
+  margin: auto
 }
 .cigar-blend{
   width: 100px;
@@ -313,28 +327,67 @@ hr{
 .hcol{
   text-align: center;
   margin: auto;
-}/*
-.hcol.cigar-brand{
-  width: 140px;
 }
-.hcol.cigar-blend{
-  width: 110px;
+.trash {
+  height: 23px;
+  align-self: center;
+  margin-right: 8px;
 }
-.hcol.cigar-name{
-  width: 120px;
+.css-b62m3t-container {
+  width: 280px;
 }
-.hcol.cigar-qty{
-  width: 40px;
-}
-.hcol.cigar-discount{
-  width: 38px;
-}
-.hcol.cigar-price{
-  width: 40px;
-}*/
 .add-cigar{
   size: 100px;
   margin: auto;
   display: flex;
   justify-content: center;
+}
+table, th, td {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.cigar-col::placeholder{
+  color: #AAA;
+}
+.row-selected{
+  /*background-color: #c3eaa9;*/
+  background-color: rgb(195, 225, 255);
+}
+.ca-tax-input{
+  width: 30px;
+  margin-left: 10px;
+  text-align: center;
+}
+.ca-tax-span{
+  margin-left: 0px;
+}
+.save-tax-button{
+  width: 50px;
+  height: 35px;
+  background-color: rgb(55, 155, 255);
+  color: white;
+  border: 0px;
+  border-radius: 15px;
+  margin: 5px 10px;
+}
+.save-tax-button:active{
+  background-color: rgb(46, 128, 210);
+}
+input[type=number]{
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.spacer {
+  flex-grow: 1;
+}
+.trashicon {
+  color: rgb(255, 51, 51)
 }

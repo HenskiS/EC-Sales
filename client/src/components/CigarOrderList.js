@@ -1,13 +1,24 @@
 import { useEffect, useState } from 'react';
 import { CigarData } from '../data/CigarData';
-import axios from 'axios';
+import axios from '../api/axios';
+import {config} from "../api/axios.js";
 
 import { FaAlignCenter } from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
 import Cigar from './Cigar';
 import Total from './Total';
 
-
+function tax(item){
+    if (item.hidden) return 0
+    else if (item.boxQty === 4) return 232 * item.qty
+    else if (item.boxQty === 10) return 580 * item.qty
+    else if (item.boxQty === 20) return 1160 * item.qty
+    else if (item.boxQty === 24) return 1392 * item.qty
+    else if (item.boxQty === 25) return 1450 * item.qty
+    else if (item.boxQty === 32) return 1856 * item.qty
+    else if (item.boxQty === 40) return 2320 * item.qty
+    else return 0
+}
 function price(item){
     if (item.hidden) return 0;
     return item.price * item.qty;
@@ -36,7 +47,7 @@ function getSubtotal(cigars, setIsBox) {
     }
     else return 0;
 }
-function getTotal(cigars, setIsBox, setBoxesOff) {
+function getTotal(cigars, setIsBox, setBoxesOff, taxes) {
     //check if box discount or manual
     const discounts = cigars.map(c => {if (!c.hidden) return c.discount}).filter(function (value) {
         return !Number.isNaN(value) && value !== "" && value > 0;
@@ -73,12 +84,13 @@ function getTotal(cigars, setIsBox, setBoxesOff) {
     //return cigars.map(price).reduce(sum)/100;
     if (prices.length > 0) {
         //return prices.reduce((a, b) => a.price + b.price)/100;
-        return Math.ceil(prices.reduce(sum))/100;
+        let taxAmount = taxes ? cigars.map(tax).reduce(sum) : 0
+        return Math.ceil(prices.reduce(sum) + taxAmount)/100;
     }
     else return 0;
 }
 
-const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
+const CigarOrderList = ({cigars, setOrderPrice, displayButton, taxes}) => {
 
     const [cigs, setCigs] = useState(cigars.length); // cigs is a counter, only used to update the list onClick 'Add Cigar'
     const [key, setKey] = useState(5);
@@ -97,11 +109,12 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             //console.log(cigars);
             setKey(key*-1);
             let s = getSubtotal(cigars, setIsBox);
-            let t = getTotal(cigars, setIsBox, setBoxesOff);
+            let t = getTotal(cigars, setIsBox, setBoxesOff, taxes);
             setSubtotal(s);
             setTotal(t);
             setOrderPrice(s, t);
         }
+        //console.log(cigars)
     }
 
     return ( 
@@ -109,8 +122,9 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             {/*<h3>{cigs}</h3>*/}
             {/* Cigar List Header */}
             <div className="cigar">
-                <p className="hcol cigar-brand">Brand</p>
-                <p className="hcol cigar-name">Name</p>
+                {/*<p className="hcol cigar-brand">Brand</p>
+                <p className="hcol cigar-name">Name</p>*/}
+                <p className="hcol cigar-brand-and-name">Name</p>
                 <p className="hcol cigar-blend">Blend</p>
                 <p className="hcol cigar-size">Size</p>
                 <p className="hcol cigar-qty">Qty</p>
@@ -132,8 +146,9 @@ const CigarOrderList = ({cigars, setOrderPrice, displayButton}) => {
             {displayButton ? <div className='cigar add-cigar'>
                 <button onClick={() => {
                     console.log('click! adding cigar...');
+                    console.log(cigars)
                     let id = cigs ? cigars[cigs - 1].id + 1 : 1;
-                    cigars.push({brand: "", name: "", blend: "", size: "", qty: '', discount: '', price:"", hidden: false, id: id});
+                    cigars.push({name: "", blend: "", size: "", qty: '', discount: '', price:"", hidden: false, boxQty:0, id: id});
                     setCigs(cigs + 1); // literally just a counter but it forces the cigar list to update when the button is pressed
                 }}>Add cigar</button>
             </div> : <div></div>}

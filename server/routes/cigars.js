@@ -16,8 +16,19 @@ router.use(verifyJWT)
 // GET cigars/
 // get all cigars
 router.get("/", async (req, res) => {
-    CigarModel.where({brand: "Esteban Carreras"})
-    .distinct("name")
+    CigarModel//.where({brand: "Esteban Carreras"})
+    //.distinct("brandAndName")
+    .find()
+    .sort('brandAndName')
+    .sort('blend')
+    .exec()
+    .then(cigars => res.json(cigars))
+    .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
+});
+router.get("/names", async (req, res) => {
+    CigarModel//.where({brand: "Esteban Carreras"})
+    //.distinct("brandAndName")
+    .distinct('brandAndName')
     .exec()
     .then(cigars => res.json(cigars))
     .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
@@ -41,9 +52,9 @@ router.post("/cigarnames", async (req, res) => {
 });
 
 router.post("/cigarblends", async (req, res) => {
-    const { brand, name }  = req.body;
-    CigarModel.where({ brand })
-    .where({ name })
+    const { brandAndName }  = req.body;
+    CigarModel.where({ brandAndName })
+    //.where({ name })
     .distinct("blend")
     .exec()
     .then(cigars => res.json(cigars))
@@ -51,18 +62,18 @@ router.post("/cigarblends", async (req, res) => {
 });
 
 router.post("/cigarsizes", async (req, res) => {
-    const { brand, name, blend }  = req.body;
+    const { brandAndName, blend }  = req.body;
     if (blend === "") {
-        CigarModel.where({ brand })
-        .where({ name })
+        CigarModel.where({ brandAndName })
+        //.where({ name })
         .distinct("sizeName")
         .exec()
         .then(cigars => res.json(cigars))
         .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
     }
     else {
-        CigarModel.where({ brand })
-        .where({ name })
+        CigarModel.where({ brandAndName })
+        //.where({ name })
         .where({ blend })
         .distinct("sizeName")
         .exec()
@@ -71,23 +82,25 @@ router.post("/cigarsizes", async (req, res) => {
     }
 });
 
-router.post("/cigarprice", async (req, res) => {
-    const { brand, name, blend, sizeName }  = req.body;
+router.post("/priceandqty", async (req, res) => {
+    const { brandAndName, blend, sizeName }  = req.body;
     if (blend === "") {
-        CigarModel.where({ brand })
-        .where({ name })
+        CigarModel.where({ brandAndName })
+        //.where({ name })
         .where({ sizeName })
-        .distinct("priceBox")
+        //.distinct("priceBox")
+        .select('priceBox quantityBox')
         .exec()
         .then(cigars => res.json(cigars))
         .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
     }
     else {
-        CigarModel.where({ brand })
-        .where({ name })
+        CigarModel.where({ brandAndName })
+        //.where({ name })
         .where({ blend })
         .where({ sizeName })
-        .distinct("priceBox")
+        //.distinct("priceBox")
+        .select('priceBox quantityBox')
         .exec()
         .then(cigars => res.json(cigars))
         .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));

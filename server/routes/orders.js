@@ -1,11 +1,31 @@
 /*import express from "express";
 import { OrderModel } from '../models/Orders.js'*/
+const sendEmail = require("../middleware/emailHandler");
 const express =  require("express");
 const OrderModel =  require('../models/Orders.js');
 const verifyJWT = require('../middleware/verifyJWT');
 
 const router = express.Router();
 router.use(verifyJWT)
+
+const fs = require('fs');
+const fileName = './config/tax.json';
+const file = require('../config/tax.json');
+
+router.get("/catax", async (req, res) => {
+    res.json(file.tax)
+})
+
+router.post("/catax", async (req, res) => {
+    file.tax = req.body.tax;
+    fs.writeFileSync(fileName, JSON.stringify(file), function writeJSON(err) {
+        if (err) res.status(404).json(err);
+        console.log(JSON.stringify(file));
+        console.log('writing to ' + fileName);
+        res.json({success: "Success!"}) 
+    });
+    res.json({success: "Success!"}) 
+})
 
 router.get("/ordersminuscigars", async (req, res) => {
     // Get all users from MongoDB
@@ -61,7 +81,8 @@ router.post("/salesmantotal", async (req, res) => {
 
 router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
-
+    sendEmail(req.body)
+    
     const newOrder = new OrderModel( 
         {
             client: req.body.client,

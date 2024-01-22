@@ -1,7 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "../api/axios.js";
+import {config} from "../api/axios.js";
 import RepInfo from "../components/RepInfo.js";
 import UserList from "../components/UserList.js";
+import Orders from "../components/Orders.js";
+import Tax from "../components/Tax.js";
 
 const AdminDashboard = () => {
 
@@ -12,11 +15,7 @@ const AdminDashboard = () => {
         console.log("getSalesmanTotal")
         let total = 0
         try {
-            const token = JSON.parse(sessionStorage.getItem('token'));
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.post("/orders/salesmantotal", {id}, config);
+            const response = await axios.post("/api/orders/salesmantotal", {id}, config());
             console.log("got salesman total");
             console.log(response);
             total = response.data;
@@ -30,6 +29,8 @@ const AdminDashboard = () => {
             <h1>Admin Dashboard</h1>
 
             <UserList />
+            <Tax />
+            <Orders />
             
         </div>
     );

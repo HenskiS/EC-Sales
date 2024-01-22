@@ -1,12 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import axios from '../api/axios'
+import {config} from "../api/axios.js";
 import { useCookies } from 'react-cookie';
 import {useNavigate} from "react-router-dom";
 import PropTypes from 'prop-types';
 import AuthContext from "../context/AuthProvider";
 import jwtDecode from 'jwt-decode'
 
-const LOGIN_URL = '/auth/';
+const LOGIN_URL = '/api/auth/';
 
 const Auth = ({ setToken }) => {
     const credentials = JSON.parse(localStorage.getItem('credentials'))
@@ -31,12 +32,14 @@ const Auth = ({ setToken }) => {
                 {
                     headers: { 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`},
-                    //withCredentials: true
+                    withCredentials: true
                 }
             );
             //console.log(response);
             //setCookies("access_token", response.data.token)
             setToken(response.data.accessToken);
+            // set cookie
+
             const UserInfo = jwtDecode(response.data.accessToken).UserInfo
             sessionStorage.setItem('accessToken', JSON.stringify(jwtDecode(response.data.accessToken)));
             console.log(JSON.stringify(response?.data));

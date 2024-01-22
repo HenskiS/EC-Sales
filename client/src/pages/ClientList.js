@@ -3,30 +3,27 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, Fragment } from "react";
 import useToken from '../hooks/useToken';
-import axios from 'axios';
+import axios from '../api/axios';
+import {config} from "../api/axios.js";
 import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
 
     const [clientNames, setClientNames] = useState(["loading..."]);
-    const [filteredClientNames, setFilteredClientNames] = useState(clientNames);
+    const [filteredClientNames, setFilteredClientNames] = useState(["loading..."]);
     const [listCounter, setListCounter] = useState(0);
     useEffect(() => {
         const getClients = async () => {
             try {
-                const token = JSON.parse(sessionStorage.getItem('token'));
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                const response = await axios.get("http://192.168.1.102:3001/clients/clientnames", config);
-                //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+                const response = await axios.get("/api/clients/clientnames", config());
+                //const response = await axios.get("/apihttps://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
-                const names = response.data.sort((a,b)=>{
-                    if ( a.name.split(" ").slice(-1) < b.name.split(" ").slice(-1) ) return -1;
-                    if ( a.name.split(" ").slice(-1) > b.name.split(" ").slice(-1) ) return 1;
+                let names = response.data.sort((a,b)=>{
+                    if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) < (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return -1;
+                    if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) > (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return 1;
                     return 0;
-                })
+                }).filter(n => (" " + n.company?.toLowerCase() + n.name?.toLowerCase()).length > 1 && (n.hasOwnProperty("company") || (n.hasOwnProperty("name") && n.name !== " ")))
                 setClientNames(names);
                 setFilteredClientNames(names);
             } catch (err) { console.error(err); }
@@ -41,7 +38,7 @@ const ClientList = () => {
     }
 
     const filter = (e) => {
-        setFilteredClientNames(clientNames.filter(n => n.name.toLowerCase().includes(e.target.value.toLowerCase())))
+        setFilteredClientNames(clientNames.filter(n => ("" + (n.company ? n.company : n.name) + (n.city ? ", " + n.city : "") + (n.state? " " + n.state : "")).toLowerCase().includes(e.target.value.toLowerCase())))
     }
 
     const [info, setInfo] = useState(false);
@@ -66,12 +63,13 @@ const ClientList = () => {
                     <button onClick={() => getInfo("")}>Add client</button>
                 </div>
                 <hr />
-                {filteredClientNames.map((client, index) => (
+                {filteredClientNames[0]==="loading..."? <h5>loading...</h5> :
+                filteredClientNames.map((client, index) => (
                     <Fragment key={index}>
                     <button className="clientnames" onClick={() => {
                         //alert(clientNames[index]);
                         getInfo(client._id);}} >
-                        {client.name}
+                        { (client.company ? client.company : client.name) + (client.city ? ", " + client.city : "") + (client.state? " " + client.state : "") }
                     </button>
                     <hr />
                     </Fragment>

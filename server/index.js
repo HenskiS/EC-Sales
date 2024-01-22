@@ -24,11 +24,11 @@ app.use(cookieParser())
 //app.use("/", express.static(path.join(__dirname, "public")))
 app.use(express.static('public')) // same thing as previous line, just shorter
 app.use("/", require('./routes/root'))
-app.use("/auth", require('./routes/auth'))
-app.use("/users", require('./routes/users'))
-app.use("/cigars", require("./routes/cigars"))
-app.use("/clients", require("./routes/clients"))
-app.use("/orders", require("./routes/orders"))
+app.use("/api/auth", require('./routes/auth'))
+app.use("/api/users", require('./routes/users'))
+app.use("/api/cigars", require("./routes/cigars"))
+app.use("/api/clients", require("./routes/clients"))
+app.use("/api/orders", require("./routes/orders"))
 
 app.all('*', (req, res) => {
     res.status(404)
