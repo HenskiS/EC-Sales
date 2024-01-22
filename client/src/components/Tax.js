@@ -1,17 +1,18 @@
 import { Fragment, useEffect, useState } from "react"
 import axios from "../api/axios";
+import {config} from "../api/axios.js";
 
 const saveTax = async (tax) => {
     console.log("saving tax...")
     try {
         console.log("inside try catch")
-        const response = await axios.post("/orders/catax/", {tax});
+        const response = await axios.post("/api/orders/catax/", {tax}, config());
         console.log(response.data);
     } catch (err) { console.error(err); }
 }
 export const getTax = async () => {
     try {
-        const response = await axios.get("/orders/catax/");
+        const response = await axios.get("/api/orders/catax/", config());
         console.log("got CA tax info");
         console.log(response);
         return response.data;
@@ -25,7 +26,7 @@ const Tax = () => {
         // get CA tax amount
         const getTax = async () => {
             try {
-                const response = await axios.get("/orders/catax/");
+                const response = await axios.get("/api/orders/catax/", config());
                 console.log("got CA tax info");
                 console.log(response);
                 setTax(response.data);

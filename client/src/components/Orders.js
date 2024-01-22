@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "../api/axios";
+import {config} from "../api/axios.js";
 
 const Orders = () => {
 
@@ -15,7 +16,7 @@ const Orders = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };*/
-            const response = await axios.post("/orders/salesmantotal", {id});
+            const response = await axios.post("/api/orders/salesmantotal", {id}, config());
             console.log("got salesman total");
             console.log(response);
             total = response.data;
@@ -26,7 +27,7 @@ const Orders = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const response = await axios.get("/users/");
+                const response = await axios.get("/api/users/", config());
                 //console.log("got users info");
                 //console.log(response);
                 setUsers(response.data);
@@ -45,7 +46,7 @@ const Orders = () => {
     useEffect(() => {
         const getOrders = async () => {
             try {
-                const response = await axios.get("/orders/ordersminuscigars/");
+                const response = await axios.get("/api/orders/ordersminuscigars/", config());
                 console.log("got orders info");
                 console.log(response);
                 setOrders(response.data.reverse());

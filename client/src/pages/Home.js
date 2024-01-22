@@ -6,6 +6,7 @@ import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
 import { useNavigate } from 'react-router';
 import axios from '../api/axios';
+import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
 import { ReactMultiEmail, isEmail } from 'react-multi-email'
 import 'react-multi-email/dist/style.css';
@@ -31,7 +32,7 @@ const cigarsToString = (cigars) => {
 }
 const updateClient = async (client) => {
     try {
-        const response = await axios.post("/clients/updateclientbyid", {editClient: client});
+        const response = await axios.post("/api/clients/updateclientbyid", {editClient: client}, config());
         console.log("updated client info");
         console.log(response);
     } catch (err) { console.error(err); }
@@ -44,7 +45,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
         alert("No cigars added!");
         return;}
     
-    const response = await axios.post("/orders/add", 
+    const response = await axios.post("/api/orders/add", 
         {client, salesman,  cigars: {cigars: cigarsToString(cigars),
                                     subtotal:orderSubtotal,
                                     tax:orderTotal.tax,
@@ -53,7 +54,7 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
                             cigarData: cigars.filter(function (cigar) {
                                 return cigar.qty > 0;
                             }),
-                            emails: emails});
+                            emails: emails}, config());
     console.log("Order submission response:");
     console.log(response);
     updateClient(client)
@@ -93,14 +94,14 @@ const Home = (props) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const response = await axios.post("/clients/getclientbyid", {id: clientID});
+                const response = await axios.post("/api/clients/getclientbyid", {id: clientID}, config());
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);
                 if (response.data.hasOwnProperty("corediscount")) {
                     setClient(response.data)
                 } else setClient({...response.data, corediscount: ""})
-                const response2 = await axios.post("/orders/getordersbyclientid", {id: clientID});
+                const response2 = await axios.post("/api/orders/getordersbyclientid", {id: clientID}, config());
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }

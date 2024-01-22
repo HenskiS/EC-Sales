@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "../api/axios.js";
+import {config} from "../api/axios.js";
 import RepInfo from "../components/RepInfo.js";
 
 const UserList = () => {
@@ -10,7 +11,7 @@ const UserList = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const response = await axios.get("/users/");
+                const response = await axios.get("/api/users/", config());
                 console.log("got users info");
                 console.log(response);
                 setUsers(response.data);

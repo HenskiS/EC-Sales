@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { IoIosClose, IoMdCreate, IoMdPaper, IoMdTrash } from "react-icons/io"
 import axios from '../api/axios';
+import {config} from "../api/axios.js";
 
 const ClientInfo = ({ id, close, addNameToList }) => {
     const [client, setClient] = useState({
@@ -49,7 +50,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         if (client !== editClient) {
             console.log("there's been a change here...");
             try {
-                const response = await axios.post("/clients/updateclientbyid", {editClient});
+                const response = await axios.post("/api/clients/updateclientbyid", {editClient}, config());
                 console.log("updated client info");
                 console.log(response);
                 setClient(editClient);
@@ -69,7 +70,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         }
         console.log("add client");
         try {
-            const response = await axios.post("/clients/add", {editClient});
+            const response = await axios.post("/api/clients/add", {editClient}, config());
             if ("exists" in response.data) {alert("A client with this name already exists.");}
             else {
                 console.log("added client:");
@@ -87,7 +88,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         if (window.confirm("Are you sure you want to delete " + client.name + "?")) {
             console.log("deleting client...")
             try {
-                const response = await axios.post("/clients/delete", {id});
+                const response = await axios.post("/api/clients/delete", {id}, config());
                 console.log("response:")
                 console.log(response.data)
                 close()
@@ -104,7 +105,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     useEffect(() => {
         const getClient = async () => {
             try {
-                const response = await axios.post("/clients/getclientbyid", {id});
+                const response = await axios.post("/api/clients/getclientbyid", {id}, config());
                 console.log("got client info");
                 console.log(response);
                 setClient(response.data);

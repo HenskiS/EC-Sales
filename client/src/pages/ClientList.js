@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState, Fragment } from "react";
 import useToken from '../hooks/useToken';
 import axios from '../api/axios';
+import {config} from "../api/axios.js";
 import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
@@ -14,8 +15,8 @@ const ClientList = () => {
     useEffect(() => {
         const getClients = async () => {
             try {
-                const response = await axios.get("/clients/clientnames");
-                //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+                const response = await axios.get("/api/clients/clientnames", config());
+                //const response = await axios.get("/apihttps://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
                 let names = response.data.sort((a,b)=>{

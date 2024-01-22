@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "../api/axios.js";
+import {config} from "../api/axios.js";
 import RepInfo from "../components/RepInfo.js";
 import UserList from "../components/UserList.js";
 import Orders from "../components/Orders.js";
@@ -14,7 +15,7 @@ const AdminDashboard = () => {
         console.log("getSalesmanTotal")
         let total = 0
         try {
-            const response = await axios.post("/orders/salesmantotal", {id});
+            const response = await axios.post("/api/orders/salesmantotal", {id}, config());
             console.log("got salesman total");
             console.log(response);
             total = response.data;

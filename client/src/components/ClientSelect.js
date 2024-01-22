@@ -1,5 +1,6 @@
 import Select from 'react-select'
 import axios from '../api/axios'
+import {config} from "../api/axios.js";
 import { useState, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom"
 
@@ -13,8 +14,8 @@ const ClientSelect = ({ setClientID }) => {
     useEffect(() => {
         const getClients = async () => {
             try {
-                const response = await axios.get("/clients/clientnames");
-                //const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+                const response = await axios.get("/api/clients/clientnames", config());
+                //const response = await axios.get("/apihttps://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
                 const names = response.data.sort((a,b)=>{

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { IoIosClose, IoMdCreate, IoMdPaper } from "react-icons/io"
 import axios from "../api/axios";
+import {config} from "../api/axios.js";
 
 const RepInfo = ({ rep, close, addNameToList }) => {
 
@@ -60,7 +61,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         console.log("update user");
         console.log(editUser)
         try {
-            const response = await axios.patch("/users/", editUser);
+            const response = await axios.patch("/api/users/", editUser, config());
             console.log(response.data.message);
             setUser(editUser);
             setIsEditing(false);
@@ -94,7 +95,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         }
         console.log("add user");
         try {
-            const response = await axios.post("/users/", editUser);
+            const response = await axios.post("/api/users/", editUser, config());
                 console.log(response.data.message);
                 setUser(editUser);
                 setIsEditing(false);

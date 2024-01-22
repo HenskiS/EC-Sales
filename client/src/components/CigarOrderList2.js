@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CigarData } from '../data/CigarData';
 import axios from '../api/axios';
+import {config} from "../api/axios.js";
 
 import { FaAlignCenter } from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
@@ -110,7 +111,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
         // get CA tax amount
         const getTax = async () => {
             try {
-                const response = await axios.get("/orders/catax/");
+                const response = await axios.get("/api/orders/catax/", config());
                 console.log("got CA tax info");
                 console.log(response);
                 setTaxCents(response.data);
@@ -126,7 +127,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
                 const config = {
                     headers: { Authorization: `Bearer ${token}` }
                 };*/
-                const response = await axios.get("/cigars/");
+                const response = await axios.get("/api/cigars/", config());
                 console.log("got all cigars");
                 console.log(response);
                 setAllCigars(response.data)
