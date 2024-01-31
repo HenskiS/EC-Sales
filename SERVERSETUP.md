@@ -1,10 +1,11 @@
 ## Server setup
 * * *
+Follow these instructions once you've already set up your droplet, git cloned the app into /apps/ECSales, copied the necessary data with [mongodb compass](https://www.digitalocean.com/community/tutorials/how-to-use-mongodb-compass) into [mongodb](https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04), and configured the backend server with `pm2 start "npm run start"` and `pm2 save`
 **Create the folders for your build files**
 ```mkdir -p /var/www/ecsales.work/html```
 
 **Move all build files into this folder**
-So if you build your files on your personal computer, run:
+So if you build your files on your personal computer (*after which you should double check the title and icons of index.html*), run **on your own computer**:
 ```scp -r ./build/* username@server_ip:/var/www/ecsales.work/html```
 
 **Get Origin Certificate from Cloudflare account.**
