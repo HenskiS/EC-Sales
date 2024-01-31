@@ -1,20 +1,20 @@
 ## Server setup
 * * *
 **Create the folders for your build files**
-`mkdir -p /var/www/ecsales.work/html`
+```mkdir -p /var/www/ecsales.work/html```
 
 **Move all build files into this folder**
 So if you build your files on your personal computer, run:
-`scp -r ./build/* username@server_ip:/var/www/ecsales.work/html`
+```scp -r ./build/* username@server_ip:/var/www/ecsales.work/html```
 
 **Get Origin Certificate from Cloudflare account.**
 **For this setup, set SSL/TLS encryption mode to Full (strict)**
 
 **Paste certificate into the following file**
-`sudo nano /etc/ssl/cert.pem`
+```sudo nano /etc/ssl/cert.pem```
 
 **Paste the private key into the following file**
-`sudo nano /etc/ssl/key.pem`
+```sudo nano /etc/ssl/key.pem```
 
 **Allow nginx in ufw firewall**
 ```
@@ -70,7 +70,7 @@ server {
 
 
 **Create Cloudlfare certificate file**
-`sudo nano /etc/ssl/cloudflare.crt`
+```sudo nano /etc/ssl/cloudflare.crt```
 
 **Paste in the following Cloudflare certificate:**
 ```
@@ -112,7 +112,7 @@ fVQ6VpyjEXdiIXWUq/o=
 ```
 
 **Now, link your sites-available site to sites-enable.**
-`ln -s /etc/nginx/sites-available/ecsales.work /etc/nginx/sites-enable/ecsales.work`
+```ln -s /etc/nginx/sites-available/ecsales.work /etc/nginx/sites-enable/ecsales.work```
 **Then, restart nginx**
 ```
 sudo nginx -t
