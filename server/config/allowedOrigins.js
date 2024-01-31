@@ -1,5 +1,7 @@
 const allowedOrigins = [
     'http://localhost',
+    'https://ecsales.work',
+    'https://www.ecsales.work',
     'http://192.168.*',
     'http://localhost:3000',
     'http://192.168.1.184:3000',

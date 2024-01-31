@@ -18,11 +18,11 @@ const ClientSelect = ({ setClientID }) => {
                 //const response = await axios.get("/apihttps://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
-                const names = response.data.sort((a,b)=>{
+                /*const names = response.data.sort((a,b)=>{
                     if ( a.name.split(" ").slice(-1) < b.name.split(" ").slice(-1) ) return -1;
                     if ( a.name.split(" ").slice(-1) > b.name.split(" ").slice(-1) ) return 1;
                     return 0;
-                })
+                })*/
                 let names2 = response.data.sort((a,b)=>{
                     if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) < (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return -1;
                     if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) > (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return 1;
