@@ -391,3 +391,15 @@ input::-webkit-inner-spin-button {
 .trashicon {
   color: rgb(255, 51, 51)
 }
+.orderpdf {
+  text-align: start;
+  font-size: 16px;
+  background-color: #ffffff;
+  border: 0px;
+}
+.orderpdf-selected {
+  text-align: start;
+  font-size: 16px;
+  background-color: #7CBDFF;
+  border: 0px;
+}

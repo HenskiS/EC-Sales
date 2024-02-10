@@ -40,6 +40,10 @@ const OrderSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+
+    filename: {
+        type: String
     }
 
 });

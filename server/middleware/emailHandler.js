@@ -29,14 +29,14 @@ const send = (data) => {
     })
 }
 
-const sendEmail = (data) => {
+const sendEmail = (data, time) => {
 
     console.log(data)
-    let event = new Date()
+    //let event = new Date()
 
     console.log("----SEND EMAIL----")
-    let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
-    console.log(time)
+    //let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
+    //console.log(time)
 
     
     // ----data format-----

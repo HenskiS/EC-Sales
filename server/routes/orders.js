@@ -4,6 +4,7 @@ const sendEmail = require("../middleware/emailHandler");
 const express =  require("express");
 const OrderModel =  require('../models/Orders.js');
 const verifyJWT = require('../middleware/verifyJWT');
+const path = require('path');
 
 const router = express.Router();
 router.use(verifyJWT)
@@ -81,19 +82,38 @@ router.post("/salesmantotal", async (req, res) => {
 
 router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
-    sendEmail(req.body)
+    let event = new Date()
+    let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
+    
+    sendEmail(req.body, time)
     
     const newOrder = new OrderModel( 
         {
             client: req.body.client,
             salesman: req.body.salesman,
             cigars: req.body.cigars,
-            date: req.body.date
+            date: req.body.date,
+            filename: `Order ${time}.pdf`
         })
     await newOrder.save();
 
     res.json({ success: "Order Added Successfully!"})
 });
+
+router.get('/pdfs/:filename', (req, res) => {
+    const { filename } = req.params;
+    const filePath = path.join('./orders/', filename);
+  
+    fs.access(filePath, fs.constants.R_OK, err => {
+      if (err) {
+        return res.status(404).json({ error: 'PDF not found.' });
+      }
+  
+      // Stream the file to the client
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+    });
+  });
 
 
 //export { router as orderRouter };

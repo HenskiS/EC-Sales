@@ -55,6 +55,15 @@ const Orders = () => {
         getOrders();
     }, [])
 
+    const [pdfList, setPdfList] = useState([]);
+    const [selectedPdf, setSelectedPdf] = useState(null);
+
+    const handlePdfClick = (pdfFileName) => {
+        if (pdfFileName === selectedPdf)
+            setSelectedPdf("")
+        else
+            setSelectedPdf(pdfFileName);
+    };
 
     return (
         <Fragment>
@@ -69,13 +78,63 @@ const Orders = () => {
             <hr />
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>
-                    <p>{new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.name}</p>
+                    <button className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
+                        onClick={() => handlePdfClick(order.filename)} >
+                        {new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.name}
+                    </button>
                     
                 </Fragment>
             ))}
+            {selectedPdf && (
+                <PdfViewer pdfFileName={selectedPdf} />
+            )}
         </Fragment>
     )
-
 }
+
+const PdfViewer = ({ pdfFileName }) => {
+
+    const [pdfUrl, setPdfUrl] = useState('');
+    const [pdfErr, setPdfErr] = useState(false);
+
+    useEffect(() => {
+        const fetchPdf = async () => {
+            try {
+                setPdfErr(false)
+
+                const response = await axios.get(`/api/orders/pdfs/${pdfFileName}`, {
+                    ...config(), 
+                    responseType: 'blob'
+                });
+                const blob = new Blob([response.data], { type: 'application/pdf' })
+                const url = URL.createObjectURL(blob)
+                setPdfUrl(url)
+
+            } catch (err) { console.error('Error fetching PDF:', err); setPdfErr(true) }
+        }
+
+        fetchPdf();
+
+        return () => {
+            // Clean up URL object when component unmounts
+            URL.revokeObjectURL(pdfUrl);
+        }
+
+    }, [pdfFileName])
+    
+    return (
+      <div>
+        <h3>PDF Viewer</h3>
+        {pdfErr? <p style={{color: "red"}}><i>Error fetching {pdfFileName}</i></p> : 
+        <iframe
+          title="PDF Viewer"
+          src={pdfUrl}
+          width="100%"
+          height="600px"
+          headers={config()}
+        />}
+      </div>
+    );
+  };
 
 export default Orders
