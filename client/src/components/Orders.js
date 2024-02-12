@@ -78,8 +78,8 @@ const Orders = () => {
             <hr />
             {!orders.length? <></> : orders.map((order, index) => (
                 <Fragment key={index}>
-                    <button className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
-                        onClick={() => handlePdfClick(order.filename)} >
+                    <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
+                        onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
                         {new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.name}
                     </button>
                     

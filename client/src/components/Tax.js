@@ -10,14 +10,7 @@ const saveTax = async (tax) => {
         console.log(response.data);
     } catch (err) { console.error(err); }
 }
-export const getTax = async () => {
-    try {
-        const response = await axios.get("/api/orders/catax/", config());
-        console.log("got CA tax info");
-        console.log(response);
-        return response.data;
-    } catch (err) { console.error(err); }
-}
+
 
 const Tax = () => {
     const [tax, setTax] = useState("")

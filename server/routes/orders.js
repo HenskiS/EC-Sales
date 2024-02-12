@@ -28,6 +28,21 @@ router.post("/catax", async (req, res) => {
     res.json({success: "Success!"}) 
 })
 
+router.get("/emails", async (req, res) => {
+    res.json(file.emails)
+})
+
+router.post("/emails", async (req, res) => {
+    file.emails = req.body.emails;
+    fs.writeFileSync(fileName, JSON.stringify(file), function writeJSON(err) {
+        if (err) res.status(404).json(err);
+        console.log(JSON.stringify(file));
+        console.log('writing to ' + fileName);
+        res.json({success: "Success!"}) 
+    });
+    res.json({success: "Success!"}) 
+})
+
 router.get("/ordersminuscigars", async (req, res) => {
     // Get all users from MongoDB
     const orders = await OrderModel.find().select('-cigars.cigars').lean()
@@ -84,7 +99,7 @@ router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
     let event = new Date()
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
-    
+    let filename = `Order ${time}.pdf`
     sendEmail(req.body, time)
     
     const newOrder = new OrderModel( 
@@ -92,8 +107,8 @@ router.post("/add", async (req, res) => {
             client: req.body.client,
             salesman: req.body.salesman,
             cigars: req.body.cigars,
-            date: req.body.date,
-            filename: `Order ${time}.pdf`
+            filename: filename,
+            date: req.body.date
         })
     await newOrder.save();
 

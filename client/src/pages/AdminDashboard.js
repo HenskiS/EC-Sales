@@ -5,6 +5,7 @@ import RepInfo from "../components/RepInfo.js";
 import UserList from "../components/UserList.js";
 import Orders from "../components/Orders.js";
 import Tax from "../components/Tax.js";
+import Emails from "../components/Emails.js";
 
 const AdminDashboard = () => {
 
@@ -30,6 +31,7 @@ const AdminDashboard = () => {
 
             <UserList />
             <Tax />
+            <Emails />
             <Orders />
             
         </div>

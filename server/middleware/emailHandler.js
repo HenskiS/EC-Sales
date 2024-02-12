@@ -3,6 +3,8 @@ require('dotenv').config()
 const fs = require('fs');
 const carbone = require('carbone');
 
+const fileName = './config/tax.json';
+const file = require('../config/tax.json');
 
 const config = {
     service: "gmail",
@@ -46,9 +48,12 @@ const sendEmail = (data, time) => {
     // data.cigars.subtotal
     // data.cigars.tax
     // data.cigars.total
-    let cc = []
+    let cc = file.emails?.length >= 1 ? file.emails : []
     if (data.client.email && data.client.email !== "") {
         cc.push(data.client.email)
+    }
+    if (data.salesman.email && data.salesman.email !== "") {
+        cc.push(data.salesman.email)
     }
     if (data.emails && data.emails.length > 0) {
         cc.push.apply(cc, data.emails)
@@ -59,8 +64,8 @@ const sendEmail = (data, time) => {
     const data2 = 
     {
         "from": "Esteban Carreras <estebancarrerassales@gmail.com>",
-        "to": "henryschreiner@mac.com",
-        "cc": cc,
+        "to": cc[0], //"henryschreiner@mac.com",
+        "cc": cc.slice(1),
         "subject": "Order Summary",
         "text": "Attached is a PDF of your order.",
         "attachments": [
