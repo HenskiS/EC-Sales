@@ -31,6 +31,8 @@ const RepInfo = ({ rep, close, addNameToList }) => {
 
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    
+    const [isChangePassword, setIsChangePassword] = useState(false)
 
     const [isEditing, setIsEditing] = useState(!rep);
 
@@ -38,7 +40,8 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         if (editUser.name === rep.name &&
             editUser.username === rep.username &&
             editUser.roles.toString() === rep.roles.toString() &&
-            editUser.active === rep.active) {
+            editUser.active === rep.active &&
+            !isChangePassword) {
             setIsEditing(false)
             return
         }
@@ -49,15 +52,15 @@ const RepInfo = ({ rep, close, addNameToList }) => {
         if (editUser.roles.length === 0) {
             alert("User must have one or more roles");
             return;
-        }/*
-        if (password === "") {
+        }
+        if (isChangePassword && password === "") {
             alert("Password cannot be blank")
             return
         }
-        if (password!==confirmPassword) {
+        if (isChangePassword && password!==confirmPassword) {
             alert("Passwords do not match")
             return
-        }*/
+        }
         console.log("update user");
         console.log(editUser)
         try {
@@ -165,14 +168,19 @@ const RepInfo = ({ rep, close, addNameToList }) => {
                         <label htmlFor="active">Active</label>
                     </span>
                 </div>
-                {rep?<></>:<div className="client-info ciright">
+                {//rep?<></>:
+                <div className="client-info ciright">
+                    <span>
+                        <input type="checkbox" id="changepass" className="checkbox" checked={isChangePassword} onChange={()=>{setIsChangePassword(!isChangePassword);}}/>
+                        <label htmlFor="changepass" className="changePassword">Change Password</label>
+                    </span>
                     <span>
                         <label htmlFor="pwd">Password</label>
-                        <input type="password" className="client-phone" id="pwd" onChange={e => {setPassword(e.target.value); setEditUser({...editUser, password: e.target.value})}}/>
+                        <input disabled={!isChangePassword} type="password" className="client-phone" id="pwd" onChange={e => {setPassword(e.target.value); setEditUser({...editUser, password: e.target.value})}}/>
                     </span>
                     <span>
                         <label htmlFor="cpwd">Confirm Password</label>
-                        <input type="password" className="client-phone" id="cpwd" onChange={e => setConfirmPassword(e.target.value)}/>
+                        <input disabled={!isChangePassword} type="password" className="client-phone" id="cpwd" onChange={e => setConfirmPassword(e.target.value)}/>
                     </span>
                 </div>}
             </div>

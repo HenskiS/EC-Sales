@@ -228,6 +228,7 @@ hr{
   padding: 25px;
   border: 1px solid black;
   border-radius: 15px;
+  z-index: 1;
 }
 .clientinfo-header {
   display: flex;
@@ -411,4 +412,7 @@ input::-webkit-inner-spin-button {
   font-size: 16px;
   background-color: #7CBDFF;
   border: 0px;
+}
+label.changePassword {
+  width: 140px;
 }
