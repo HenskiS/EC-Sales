@@ -3,12 +3,12 @@
   "name": "Esteban Carreras Sales",
   "icons": [
     {
-      "src": "ecfavicon.ico",
+      "src": "favicon.ico",
       "sizes": "24x24",
       "type": "image/x-icon"
     },
     {
-      "src": "eclogo192.png",
+      "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     }
