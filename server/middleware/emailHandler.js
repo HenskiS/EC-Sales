@@ -48,7 +48,7 @@ const sendEmail = (data, time) => {
     // data.cigars.subtotal
     // data.cigars.tax
     // data.cigars.total
-    let cc = file.emails?.length >= 1 ? file.emails : []
+    let cc = file.emails?.length >= 1 ? file.emails.concat() : []
     if (data.client.email && data.client.email !== "") {
         cc.push(data.client.email)
     }
