@@ -21,7 +21,7 @@ const getAllUsers = async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = async (req, res) => {
-    let { name, username, password, roles } = req.body
+    let { name, username, email, password, roles } = req.body
     username = username.toLowerCase()
 
     // Confirm data
@@ -40,8 +40,8 @@ const createNewUser = async (req, res) => {
     const hashedPwd = await bcrypt.hash(password, 10) // 10 salt rounds
 
     const userObject = (!Array.isArray(roles) || !roles.length)
-        ? { name, username, "password": hashedPwd }
-        : { name, username, "password": hashedPwd, roles }
+        ? { name, username, email, "password": hashedPwd }
+        : { name, username, email, "password": hashedPwd, roles }
 
     // Create and store new user 
     const user = await User.create(userObject)
@@ -57,7 +57,7 @@ const createNewUser = async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateUser = async (req, res) => {
-    let { _id, name, username, roles, active, password } = req.body
+    let { _id, name, username, email, roles, active, password } = req.body
     username = username.toLowerCase()
 
     // Confirm data 
@@ -82,6 +82,7 @@ const updateUser = async (req, res) => {
 
     user.name = name
     user.username = username
+    user.email = email
     user.roles = roles
     user.active = active
 

@@ -8,12 +8,14 @@ const RepInfo = ({ rep, close, addNameToList }) => {
 
     const [user, setUser] = useState(rep?rep:{
         name: "",
+        email: "",
         username: "",
         password: "",
         roles: []
     });
     const [editUser, setEditUser] = useState(rep?rep:{
         name: "",
+        email: "",
         username: "",
         password: "",
         roles: []
@@ -32,13 +34,14 @@ const RepInfo = ({ rep, close, addNameToList }) => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     
-    const [isChangePassword, setIsChangePassword] = useState(false)
+    const [isChangePassword, setIsChangePassword] = useState(rep? false : true) // true if new user
 
     const [isEditing, setIsEditing] = useState(!rep);
 
     const updateUser = async () => {
         if (editUser.name === rep.name &&
             editUser.username === rep.username &&
+            editUser.email === rep.email &&
             editUser.roles.toString() === rep.roles.toString() &&
             editUser.active === rep.active &&
             !isChangePassword) {
@@ -131,6 +134,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
             <div className="client-info">
                 {/*<h4 className="client-name">{client.name}</h4>*/}
                 <p className="client-phone">Username: {user.username}</p>
+                <p className="client-phone">Email: {user.email}</p>
                 <p className="client-phone">Roles: {user.roles.join(", ")}</p>
                 <p className="client-phone">Active: {user.active?"True":"False"}</p>
             </div>
@@ -158,6 +162,10 @@ const RepInfo = ({ rep, close, addNameToList }) => {
                         <input type="text" className="client-phone" id="username" defaultValue={editUser.username} onChange={e => setEditUser({...editUser, username: e.target.value})}/>
                     </span>
                     <span>
+                        <label htmlFor="email">Email</label>
+                        <input type="text" className="client-phone" id="email" defaultValue={editUser.email} onChange={e => setEditUser({...editUser, email: e.target.value})}/>
+                    </span>
+                    <span>
                         <input type="checkbox" className="client-address checkbox" id="employee" checked={isEmployee} onChange={() => setIsEmployee(!isEmployee)}/>
                         <label htmlFor="employee"> Employee</label>
                         <input type="checkbox" className="client-address checkbox" id="admin" checked={isAdmin} onChange={() => setIsAdmin(!isAdmin)}/>
@@ -168,12 +176,12 @@ const RepInfo = ({ rep, close, addNameToList }) => {
                         <label htmlFor="active">Active</label>
                     </span>
                 </div>
-                {//rep?<></>:
+                
                 <div className="client-info ciright">
-                    <span>
+                    {!rep? <></> : <span>
                         <input type="checkbox" id="changepass" className="checkbox" checked={isChangePassword} onChange={()=>{setIsChangePassword(!isChangePassword);}}/>
                         <label htmlFor="changepass" className="changePassword">Change Password</label>
-                    </span>
+                    </span>}
                     <span>
                         <label htmlFor="pwd">Password</label>
                         <input disabled={!isChangePassword} type="password" className="client-phone" id="pwd" onChange={e => {setPassword(e.target.value); setEditUser({...editUser, password: e.target.value})}}/>
@@ -182,7 +190,7 @@ const RepInfo = ({ rep, close, addNameToList }) => {
                         <label htmlFor="cpwd">Confirm Password</label>
                         <input disabled={!isChangePassword} type="password" className="client-phone" id="cpwd" onChange={e => setConfirmPassword(e.target.value)}/>
                     </span>
-                </div>}
+                </div>
             </div>
             <div className="clientinfo-footer">
                 {/*<h5>Info for Client {id}</h5>*/}

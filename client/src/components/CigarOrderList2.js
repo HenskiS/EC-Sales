@@ -198,7 +198,7 @@ const CigarOrderList2 = ({client, setClient, cigars, setOrderPrice, taxes}) => {
             s += " " + cigar.sizeName;
             s += ", Qty: " + cigar.qty;
             if (cigar.hasOwnProperty("discount")) {
-                if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
+                if (cigar.discount && cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
             }
             return s;
         }))

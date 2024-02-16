@@ -23,7 +23,8 @@ const OrderSchema = new mongoose.Schema({
     salesman: {
         type: {
             _id: mongoose.Schema.Types.ObjectId,
-            name: String
+            name: String,
+            email: String
         },
         required: true
     },

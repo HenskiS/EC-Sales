@@ -181,7 +181,7 @@ const Home = (props) => {
                 <button className='submit-button' onClick={() => {
                     console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name}, emails);
+                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
                 }}>Submit Order</button>
             </div>
             <hr />
