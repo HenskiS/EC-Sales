@@ -6,6 +6,7 @@ import UserList from "../components/UserList.js";
 import Orders from "../components/Orders.js";
 import Tax from "../components/Tax.js";
 import Emails from "../components/Emails.js";
+import CigarsController from "../components/CigarsController.js";
 
 const AdminDashboard = () => {
 
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
             <Tax />
             <Emails />
             <Orders />
+            <CigarsController />
             
         </div>
     );

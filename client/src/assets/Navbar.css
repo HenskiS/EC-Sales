@@ -83,7 +83,7 @@
     align-items: center;
   }
   
-  span {
+  .nav-menu span {
     margin-left: 16px;
   }
 /*.navbar{

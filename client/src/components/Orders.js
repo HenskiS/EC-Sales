@@ -76,15 +76,19 @@ const Orders = () => {
             <br />
             <h3>Orders</h3>
             <hr />
-            {!orders.length? <></> : orders.map((order, index) => (
-                <Fragment key={index}>
-                    <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
-                        onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
-                        {new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.name}
-                    </button>
-                    
-                </Fragment>
-            ))}
+
+            <div className="order-list">
+                {!orders.length? <></> : orders.map((order, index) => (
+                    <Fragment key={index}>
+                        <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
+                            onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
+                            {new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.name}
+                        </button>
+                        
+                    </Fragment>
+                ))}
+            </div>
+
             {selectedPdf && (
                 <PdfViewer pdfFileName={selectedPdf} />
             )}

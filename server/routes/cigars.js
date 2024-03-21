@@ -25,6 +25,22 @@ router.get("/", async (req, res) => {
     .then(cigars => res.json(cigars))
     .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
 });
+router.patch("/", async (req, res) => {
+    const { _id, brandAndName, blend, size, sizeName, priceEach, priceBox, quantityBox } = req.body
+    const cigar = await CigarModel.findById(_id).exec()
+    if (!cigar) {
+        return res.status(400).json({ message: 'Cigar not found' })
+    }
+    if (req.body.hasOwnProperty('brandAndName')) cigar.brandAndName = brandAndName
+    if (req.body.hasOwnProperty('blend')) cigar.blend = blend 
+    if (req.body.hasOwnProperty('size')) cigar.size = size 
+    if (req.body.hasOwnProperty('sizeName')) cigar.sizeName = sizeName
+    if (req.body.hasOwnProperty('priceEach')) cigar.priceEach = priceEach
+    if (req.body.hasOwnProperty('priceBox')) cigar.priceBox = priceBox
+    if (req.body.hasOwnProperty('quantityBox')) cigar.quantityBox = quantityBox
+    const updatedCigar = await cigar.save()
+    res.json({message: `${updatedCigar.brandAndName} updated`})
+});
 router.get("/names", async (req, res) => {
     CigarModel//.where({brand: "Esteban Carreras"})
     //.distinct("brandAndName")
