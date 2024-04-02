@@ -151,8 +151,8 @@ const Home = (props) => {
                     </div>
                 </div>
                 <div className="salesrep">
-                    <p>Esteban Carreras </p> 
-                    <p>915 Calle Amanecer </p> 
+                    <p>Esteban Carreras Cigar Co.</p> 
+                    <p>6505 Ladera Brisa </p> 
                     <p>San Clemente </p> 
                     <p>CA 92673 </p> 
                     <p>{UserInfo.name} </p> 
