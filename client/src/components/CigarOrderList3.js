@@ -8,7 +8,8 @@ const CigarOrderList3 = () => {
         addCigar, 
         updateQuantity, 
         updateDiscount, 
-        removeCigar 
+        removeCigar,
+        subtotal
     } = useContext(CigarContext)
     const [cigars, setCigars] = useState()
     const [taxCents, setTaxCents] = useState()
@@ -88,7 +89,7 @@ const CigarOrderList3 = () => {
             })}
             <div className="subtotal">
                 <h5>Subtotal</h5>
-                <p>${/*cigars.length > 0 && subtotal && subtotal.toFixed(2)*/}</p>
+                <p>${subtotal && subtotal.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
                 <p>${/*taxAmount && taxAmount > 0 && taxAmount.toFixed(2)*/}</p>
                 <h5>{/*boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""*/} Discount</h5>
