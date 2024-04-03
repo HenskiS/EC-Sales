@@ -10,6 +10,7 @@ import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
 import { ReactMultiEmail, isEmail } from 'react-multi-email'
 import 'react-multi-email/dist/style.css';
+import CigarOrderList3 from '../components/CigarOrderList3.js';
 
 
 const cigarsToString = (cigars) => {
@@ -144,7 +145,7 @@ const Home = (props) => {
                         <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
                         {client._id !== "" && <span className="ca-tax-span">
                             <label htmlFor="tax-input">Core Line Discount:</label>
-                            <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
+                            <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount ?? ""} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
                         </span>}
                         </>
                         }
@@ -160,7 +161,8 @@ const Home = (props) => {
                 </div>
             </div>
             <h3>Cigars</h3>
-            {clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />}
+            {/*clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />*/}
+            {clientID && cigars && <CigarOrderList3 />}
             <hr />
             
             <div className="cc-emails">
