@@ -1,16 +1,19 @@
 import { useEffect, useState, useContext } from "react"
 import axios, { config } from "../api/axios"
-import CigarContext from "../context/CigarsContext"
+import OrderContext from "../context/OrderContext"
 
 
 const CigarOrderList3 = () => {
     const { cigars: cart, 
+        client,
         addCigar, 
         updateQuantity, 
         updateDiscount, 
         removeCigar,
-        subtotal
-    } = useContext(CigarContext)
+        subtotal,
+        total,
+        taxAmount
+    } = useContext(OrderContext)
     const [cigars, setCigars] = useState()
     const [taxCents, setTaxCents] = useState()
 
@@ -62,7 +65,7 @@ const CigarOrderList3 = () => {
                             <td>${cigar.priceBox.toFixed(2)}</td>
                             {/* Quantity */}
                             <td>
-                                <input className='cigar-qty cigar-col' type="number" defaultValue="" min={1} placeholder='Qty' 
+                                <input className='cigar-qty cigar-col' type="number" defaultValue={cart.find(oldCigar => oldCigar._id === cigar._id)?.quantity ?? "" } min={1} placeholder='Qty' 
                                     onChange={ (e) => { updateQuantity(cigar, e.target.value);  } } 
                                 />
                             </td>
@@ -91,11 +94,11 @@ const CigarOrderList3 = () => {
                 <h5>Subtotal</h5>
                 <p>${subtotal && subtotal.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
-                <p>${/*taxAmount && taxAmount > 0 && taxAmount.toFixed(2)*/}</p>
+                <p>${Math.ceil(taxAmount/100).toFixed(2)/*taxAmount && taxAmount > 0 && taxAmount.toFixed(2)*/}</p>
                 <h5>{/*boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""*/} Discount</h5>
                 <p>${/*total&&(subtotal+taxAmount-total).toFixed(2)*/}</p>
                 <h4>Total</h4>
-                <p className='total'>${/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
+                <p className='total'>${total/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
             </div>
         </div>
     )

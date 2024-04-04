@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useRef } from 'react';
+import { useState, useEffect, Fragment, useRef, useContext } from 'react';
 import { useSearchParams } from "react-router-dom"
 import CigarList from '../components/CigarList';
 import CigarOrderList2 from '../components/CigarOrderList2';
@@ -11,6 +11,7 @@ import ClientSelect from '../components/ClientSelect';
 import { ReactMultiEmail, isEmail } from 'react-multi-email'
 import 'react-multi-email/dist/style.css';
 import CigarOrderList3 from '../components/CigarOrderList3.js';
+import OrderContext from '../context/OrderContext.js';
 
 
 const cigarsToString = (cigars) => {
@@ -77,6 +78,8 @@ const Home = (props) => {
     const [clientID, setClientID] = useState(queryParameters.get("id"));
     const [emails, setEmails] = useState([]);
 
+    const { setOrderClient } = useContext(OrderContext)
+
     
     const [client, setClient] = useState({
         _id: "",
@@ -114,6 +117,10 @@ const Home = (props) => {
         //console.log(client);
         //else setIsEditing(true);
     }, [clientID]);
+
+    useEffect(() => {
+        setOrderClient(client)
+    }, [client])
 
     const setOrderPrice = (subtotal, total) => {
         setOrderSubtotal(subtotal);

@@ -6,19 +6,19 @@ import './assets/card.css';
 import App from './App';
 import { AuthProvider } from './context/AuthProvider';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { CigarProvider } from './context/CigarsContext';
+import { OrderProvider } from './context/OrderContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <CigarProvider>
+      <OrderProvider>
       <BrowserRouter>
         <Routes>
           <Route path='/*' element={<App />} />
         </Routes>
       </BrowserRouter>
-      </CigarProvider>
+      </OrderProvider>
     </AuthProvider>
   </React.StrictMode>
 );
