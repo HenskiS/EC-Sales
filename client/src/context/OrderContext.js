@@ -23,6 +23,8 @@ export const OrderProvider = ({ children }) => {
     const [total, setTotal] = useState(0);
     const [taxCents, setTaxCents] = useState()
     const [taxAmount, setTaxAmount] = useState()
+    const [isBoxDiscount, setIsBoxDiscount] = useState(true)
+    const [boxesOff, setBoxesOff] = useState()
     const [client, setClient] = useState({
         _id: "",
         name: "",
@@ -53,6 +55,7 @@ export const OrderProvider = ({ children }) => {
         if (!cigars.length) {
             setSubtotal(0)
             setTaxAmount(0)
+            setBoxesOff(0)
         }
         else {
             // subtotal
@@ -64,6 +67,12 @@ export const OrderProvider = ({ children }) => {
                 const t = cigars.map(c => tax(c, taxCents)).reduce(sum)
                 setTaxAmount(t)
             } else setTaxAmount(0)
+            // boxes off
+            if (isBoxDiscount) {
+                let boxes = Math.floor(cigars.map((cigar) => {return cigar.quantity}).reduce(sum)/8)
+                if (boxes > 3) boxes = 3
+                setBoxesOff(boxes)
+            } else setBoxesOff(0)
         }
     } , [cigars, client])
 
@@ -94,7 +103,8 @@ export const OrderProvider = ({ children }) => {
 
     return (
         <OrderContext.Provider value={{ client, setClient, 
-                                        cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, 
+                                        cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar,
+                                        isBoxDiscount, setIsBoxDiscount, boxesOff,
                                         subtotal, total, taxAmount }}>
             {children}
         </OrderContext.Provider>

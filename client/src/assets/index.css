@@ -426,3 +426,32 @@ label.changePassword {
   margin-top: 5px;
   padding: 4px;
 }
+.reset-order {
+  display: flex;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+.reset-order button{
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+.summary {
+  display: flex;
+}
+.summary input{
+  margin-right: 5px;
+  width: 75px;
+}
+.summary input::placeholder{
+  color: #AAA;
+}
+.discount-toggle {
+  display: flex;
+  margin-top: 5px;
+}
+.discount-toggle p{
+  margin: 0px 5px;
+}
+.boxes-available{
+  color: blue;
+}

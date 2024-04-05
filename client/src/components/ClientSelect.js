@@ -43,7 +43,7 @@ const ClientSelect = ({ setClientID }) => {
         .catch(console.error);
     }, []);
 
-    const { client, setClient } = useContext(OrderContext)
+    const { client } = useContext(OrderContext)
 
 
     return (

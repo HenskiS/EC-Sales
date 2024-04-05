@@ -81,20 +81,6 @@ const Home = (props) => {
     const [clientName, setClientName] = useState(queryParameters.get("name"));
     const [clientID, setClientID] = useState(queryParameters.get("id")??client._id);
     const [emails, setEmails] = useState([]);
-
-    
-    /*const [client, setClient] = useState({
-        _id: "",
-        name: "",
-        email: "",
-        phone: "",
-        address1: "",
-        address2: "",
-        city: "",
-        state: "",
-        zip: "",
-        corediscount: ""
-    });*/
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {

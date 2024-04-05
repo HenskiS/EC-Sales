@@ -2,7 +2,8 @@ import { useEffect, useState, useContext } from "react"
 import axios, { config } from "../api/axios"
 import OrderContext from "../context/OrderContext"
 import { useNavigate } from "react-router"
-
+import Toggle from 'react-toggle'
+import "react-toggle/style.css"
 
 const CigarOrderList3 = () => {
     
@@ -12,6 +13,7 @@ const CigarOrderList3 = () => {
         setCigars: setCart,
         client,
         addCigar,
+        isBoxDiscount, setIsBoxDiscount, boxesOff,
         updateQuantity,
         updateDiscount,
         removeCigar,
@@ -79,16 +81,28 @@ const CigarOrderList3 = () => {
                 </tbody>
             </table>
             
-            <button onClick={() => {setCart([]); 
-                navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
-                window.location.reload() }}>
-                    Reset Order
-            </button>
+            <div className="reset-order">
+                <button onClick={() => {setCart([]); 
+                    navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
+                    window.location.reload() }}>
+                        Reset Order
+                </button>
+            </div>
             <br />
             <h3>Summary</h3>
             <hr />
+            <div className="discount-toggle">
+                <p>% Discount</p>
+                <Toggle checked={isBoxDiscount} icons={{
+                    checked: null,
+                    unchecked: null,
+                    }} 
+                    onChange={(e) => setIsBoxDiscount(e.target.checked) }
+                />
+                <p>Box Discount</p>
+                {isBoxDiscount? <p className="boxes-available"><b>{ boxesOff }</b></p> : <></>}
+            </div>
             {cart.map((cigar, index) => {
-                console.log(cigar)
                 let s = ""
                 s += cigar.brandAndName
                 if (cigar.hasOwnProperty("blend")) {
@@ -99,7 +113,14 @@ const CigarOrderList3 = () => {
                 }
                 s += ", Qty: " + cigar.quantity;
                 return (
-                    <p key={index}>{s}</p>
+                    <div className="summary" key={index}>
+                        { isBoxDiscount?
+                        <input type="number" placeholder="Boxes off" />
+                        :
+                        <input type="number" placeholder="% off" />}
+
+                        <p>{s}</p>
+                    </div>
                 )
             })}
             <div className="subtotal">
