@@ -1,8 +1,9 @@
 import Select from 'react-select'
 import axios from '../api/axios'
 import {config} from "../api/axios.js";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from "react-router-dom"
+import OrderContext from '../context/OrderContext.js';
 
 const ClientSelect = ({ setClientID }) => {
     const [clientNames, setClientNames] = useState(["loading..."]);
@@ -42,10 +43,12 @@ const ClientSelect = ({ setClientID }) => {
         .catch(console.error);
     }, []);
 
+    const { client, setClient } = useContext(OrderContext)
+
 
     return (
         <Select options={clientNames} placeholder="Select a client..."
-        defaultInputValue={clientName? clientName : ""}
+        defaultInputValue={clientName?? client.name ?? ""}
         onChange={e=>{console.log(e); setClientID(e.value); setClientName(e.value)}} />
     )
 }

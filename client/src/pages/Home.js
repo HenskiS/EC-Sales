@@ -4,7 +4,6 @@ import CigarList from '../components/CigarList';
 import CigarOrderList2 from '../components/CigarOrderList2';
 import useFetch from '../hooks/useFetch';
 import useToken from '../hooks/useToken';
-import { useNavigate } from 'react-router';
 import axios from '../api/axios';
 import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
@@ -22,12 +21,14 @@ const cigarsToString = (cigars) => {
         let s = "";//cigar.brand;
         s += cigar.brandAndName; //" " + cigar.name;
         if (cigar.hasOwnProperty("blend")) {
-            if (cigar.blend !== "") s += " " + cigar.blend
+            if (cigar.blend) s += " " + cigar.blend
         }
-        s += " " + cigar.sizeName;
+        if (cigar.hasOwnProperty("sizeName")) {
+            if (cigar.sizeName) s += " " + cigar.sizeName
+        }
         s += ", Qty: " + cigar.qty;
         if (cigar.hasOwnProperty("discount")) {
-            if (cigar.discount !== "") s += ", Discount: " + cigar.discount + "%"
+            if (cigar.discount) s += ", Discount: " + cigar.discount + "%"
         }
         return s;
     });
@@ -66,7 +67,10 @@ const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, 
     }
 }
 
+
 const Home = (props) => {
+
+    const { client, setClient } = useContext(OrderContext)
 
     const previousCigars= [];
     const [cigars, setCigars] = useState([]);
@@ -75,13 +79,11 @@ const Home = (props) => {
     
     const [queryParameters] = useSearchParams();
     const [clientName, setClientName] = useState(queryParameters.get("name"));
-    const [clientID, setClientID] = useState(queryParameters.get("id"));
+    const [clientID, setClientID] = useState(queryParameters.get("id")??client._id);
     const [emails, setEmails] = useState([]);
 
-    const { setOrderClient } = useContext(OrderContext)
-
     
-    const [client, setClient] = useState({
+    /*const [client, setClient] = useState({
         _id: "",
         name: "",
         email: "",
@@ -92,7 +94,7 @@ const Home = (props) => {
         state: "",
         zip: "",
         corediscount: ""
-    });
+    });*/
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -101,7 +103,7 @@ const Home = (props) => {
                 const response = await axios.post("/api/clients/getclientbyid", {id: clientID}, config());
                 console.log("got client info");
                 console.log(response);
-                setClient(response.data);
+                //setClient(response.data);
                 if (response.data.hasOwnProperty("corediscount")) {
                     setClient(response.data)
                 } else setClient({...response.data, corediscount: ""})
@@ -109,7 +111,7 @@ const Home = (props) => {
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
-        if (clientID) {
+        if (clientID || clientID !== client._id) {
             getClient()
             .catch(console.error);
         }
@@ -118,9 +120,9 @@ const Home = (props) => {
         //else setIsEditing(true);
     }, [clientID]);
 
-    useEffect(() => {
-        setOrderClient(client)
-    }, [client])
+    /*useEffect(() => {
+        setClient(client)
+    }, [client])*/
 
     const setOrderPrice = (subtotal, total) => {
         setOrderSubtotal(subtotal);

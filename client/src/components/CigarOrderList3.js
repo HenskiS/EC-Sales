@@ -1,14 +1,19 @@
 import { useEffect, useState, useContext } from "react"
 import axios, { config } from "../api/axios"
 import OrderContext from "../context/OrderContext"
+import { useNavigate } from "react-router"
 
 
 const CigarOrderList3 = () => {
+    
+    const navigate = useNavigate()
+
     const { cigars: cart, 
+        setCigars: setCart,
         client,
-        addCigar, 
-        updateQuantity, 
-        updateDiscount, 
+        addCigar,
+        updateQuantity,
+        updateDiscount,
         removeCigar,
         subtotal,
         total,
@@ -73,17 +78,24 @@ const CigarOrderList3 = () => {
                     ))}
                 </tbody>
             </table>
+            
+            <button onClick={() => {setCart([]); 
+                navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
+                window.location.reload() }}>
+                    Reset Order
+            </button>
             <br />
             <h3>Summary</h3>
             <hr />
             {cart.map((cigar, index) => {
+                console.log(cigar)
                 let s = ""
                 s += cigar.brandAndName
                 if (cigar.hasOwnProperty("blend")) {
-                    if (cigar.blend !== "") s += " " + cigar.blend
+                    if (cigar.blend) s += " " + cigar.blend
                 }
                 if (cigar.hasOwnProperty("sizeName")) {
-                    if (cigar.sizeName !== "") s += " " + cigar.sizeName
+                    if (cigar.sizeName) s += " " + cigar.sizeName
                 }
                 s += ", Qty: " + cigar.quantity;
                 return (

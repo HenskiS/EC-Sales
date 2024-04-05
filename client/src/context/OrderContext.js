@@ -23,7 +23,18 @@ export const OrderProvider = ({ children }) => {
     const [total, setTotal] = useState(0);
     const [taxCents, setTaxCents] = useState()
     const [taxAmount, setTaxAmount] = useState()
-    const [client, setClient] = useState()
+    const [client, setClient] = useState({
+        _id: "",
+        name: "",
+        email: "",
+        phone: "",
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        zip: "",
+        corediscount: ""
+    })
 
     useEffect(() => {
         // get CA tax amount
@@ -82,8 +93,8 @@ export const OrderProvider = ({ children }) => {
     }
 
     return (
-        <OrderContext.Provider value={{ client, setOrderClient: setClient, 
-                                        cigars, addCigar, updateQuantity, updateDiscount, removeCigar, 
+        <OrderContext.Provider value={{ client, setClient, 
+                                        cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, 
                                         subtotal, total, taxAmount }}>
             {children}
         </OrderContext.Provider>
