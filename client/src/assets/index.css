@@ -437,6 +437,7 @@ label.changePassword {
 }
 .summary {
   display: flex;
+  margin: 3px 0px;
 }
 .summary input{
   margin-right: 5px;
@@ -447,11 +448,33 @@ label.changePassword {
 }
 .discount-toggle {
   display: flex;
-  margin-top: 5px;
-}
-.discount-toggle p{
-  margin: 0px 5px;
+  margin: 5px 0px;
+  margin-left: 30%;
 }
 .boxes-available{
   color: blue;
+  margin-left: 3px;
+}
+.box-buttons {
+  display: flex;
+  margin-right: 5px;
+}
+.box-buttons p{
+  margin: 0 5px;
+}
+.box-buttons button{
+  border: 1px solid grey;
+  border-radius: 50%;
+}
+.box-buttons button:disabled{
+  background-color: white;
+}
+.box-buttons .plus {
+  background-color: lightgreen;
+}
+.box-buttons .minus {
+  background-color: pink;
+}
+.react-toggle {
+  margin: 0px 5px;
 }

@@ -13,7 +13,7 @@ const CigarOrderList3 = () => {
         setCigars: setCart,
         client,
         addCigar,
-        isBoxDiscount, setIsBoxDiscount, boxesOff,
+        isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
         updateQuantity,
         updateDiscount,
         removeCigar,
@@ -100,7 +100,7 @@ const CigarOrderList3 = () => {
                     onChange={(e) => setIsBoxDiscount(e.target.checked) }
                 />
                 <p>Box Discount</p>
-                {isBoxDiscount? <p className="boxes-available"><b>{ boxesOff }</b></p> : <></>}
+                {isBoxDiscount? <p className="boxes-available"><b>{ boxesOff-boxesUsed } available</b></p> : <></>}
             </div>
             {cart.map((cigar, index) => {
                 let s = ""
@@ -115,7 +115,17 @@ const CigarOrderList3 = () => {
                 return (
                     <div className="summary" key={index}>
                         { isBoxDiscount?
-                        <input type="number" placeholder="Boxes off" />
+                        <div className="box-buttons">
+                            <button className="minus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff-1 : 0)}
+                            disabled={!cigar.boxesOff}>
+                            -</button>
+                                <p>{cigar.boxesOff? cigar.boxesOff:0}</p>
+                            <button className="plus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff+1 : 1)}
+                            disabled={boxesUsed === boxesOff || cigar?.boxesOff === cigar.quantity}>
+                            +</button>
+                        </div>
+                        //<input type="number" placeholder="Boxes off" onChange={(e) => updateBoxesOff(cigar._id, e.target.value ?? 0)} />
+
                         :
                         <input type="number" placeholder="% off" />}
 
@@ -125,13 +135,13 @@ const CigarOrderList3 = () => {
             })}
             <div className="subtotal">
                 <h5>Subtotal</h5>
-                <p>${subtotal && subtotal.toFixed(2)}</p>
+                <p>${subtotal?.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
                 <p>${Math.ceil(taxAmount/100).toFixed(2)/*taxAmount && taxAmount > 0 && taxAmount.toFixed(2)*/}</p>
-                <h5>{/*boxesOff < 0 ? "Per-cigar " : boxesOff > 0 ? boxesOff + "-box ":""*/} Discount</h5>
-                <p>${/*total&&(subtotal+taxAmount-total).toFixed(2)*/}</p>
+                <h5>Discount</h5>
+                <p>${discount?.toFixed(2)}</p>
                 <h4>Total</h4>
-                <p className='total'>${total/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
+                <p className='total'>${total?.toFixed(2)/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
             </div>
         </div>
     )

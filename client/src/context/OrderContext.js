@@ -10,8 +10,17 @@ function tax(item, taxCents) {
     console.log("taxCents:" + taxCents)
     return item.quantityBox * parseFloat(taxCents) * item.quantity
 }
-function priceWithDiscount(item){
-    return {price: item.priceBox * 100 * (item.discount ? 100 - parseFloat(item.discount) : 100)/100, qty: item.qty};
+function priceWithBoxDiscount(item){
+    //console.log(item)
+    let price
+    if (item.hasOwnProperty("boxesOff")) {
+        price = item.priceBox * 100 * (item.quantity - item.boxesOff)
+    } else {
+        price = item.priceBox * 100 * item.quantity
+    }
+    //console.log(price)
+    return price
+    //return {price: item.priceBox * 100 * (item.discount ? 100 - parseFloat(item.discount) : 100)/100, qty: item.qty};
 }
 function sum(prev, next){
     return prev + next;
@@ -21,10 +30,12 @@ export const OrderProvider = ({ children }) => {
     const [cigars, setCigars] = useState([]);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
+    const [discount, setDiscount] = useState(0);
     const [taxCents, setTaxCents] = useState()
     const [taxAmount, setTaxAmount] = useState()
     const [isBoxDiscount, setIsBoxDiscount] = useState(true)
     const [boxesOff, setBoxesOff] = useState()
+    const [boxesUsed, setBoxesUsed] = useState(0)
     const [client, setClient] = useState({
         _id: "",
         name: "",
@@ -54,8 +65,11 @@ export const OrderProvider = ({ children }) => {
     useEffect(() => {
         if (!cigars.length) {
             setSubtotal(0)
+            setDiscount(0)
             setTaxAmount(0)
             setBoxesOff(0)
+            setBoxesUsed(0)
+            setTotal(0)
         }
         else {
             // subtotal
@@ -63,18 +77,38 @@ export const OrderProvider = ({ children }) => {
             let sub = Math.ceil(prices.reduce(sum))/100;
             setSubtotal(sub)
             // ca taxes
+            let caTax = 0
             if (client && client.hasOwnProperty('state') && client.state.toUpperCase().startsWith("CA")) {
-                const t = cigars.map(c => tax(c, taxCents)).reduce(sum)
-                setTaxAmount(t)
-            } else setTaxAmount(0)
+                caTax = cigars.map(c => tax(c, taxCents)).reduce(sum)
+            }
+            setTaxAmount(caTax)
             // boxes off
             if (isBoxDiscount) {
-                let boxes = Math.floor(cigars.map((cigar) => {return cigar.quantity}).reduce(sum)/8)
+                let totalquantity = cigars.map((cigar) => cigar.quantity)
+                let boxes = Math.floor(totalquantity.reduce(sum)/8)
                 if (boxes > 3) boxes = 3
                 setBoxesOff(boxes)
+                // boxes used
+                let totalused = cigars.map((cigar) => cigar.boxesOff ?? 0)
+                let used = totalused.reduce(sum)
+                setBoxesUsed(used)
             } else setBoxesOff(0)
+            // total
+            let discountedPrices
+            if (isBoxDiscount) {
+                discountedPrices = cigars.map(priceWithBoxDiscount)
+            } else {
+                discountedPrices = cigars.map(price)
+            }
+            let tot = discountedPrices.reduce(sum)
+            tot += caTax
+            tot = Math.ceil(tot)/100
+            setTotal(tot)
+            // discount
+            let dis = sub + caTax/100 - tot
+            setDiscount(dis)
         }
-    } , [cigars, client])
+    } , [cigars, client, isBoxDiscount, taxCents])
 
     const removeCigar = (id) => {
         setCigars(cigars.filter(cigar => cigar._id !== id))
@@ -100,11 +134,30 @@ export const OrderProvider = ({ children }) => {
         );
         setCigars(updatedCigars);
     }
+    const updateBoxesOff = (id, newBoxesOff) => {
+        let newBoxes = newBoxesOff === "" ? 0 : parseInt(newBoxesOff)
+        console.log("New boxes off: "+newBoxes)
+        const updatedCigars = cigars.map(cigar => {
+            if (cigar._id === id) {
+                console.log(cigar)
+                let oldBoxesOff = cigar.hasOwnProperty('boxesOff') ? cigar.boxesOff : 0
+                console.log("oldBoxesOff: " + oldBoxesOff)
+                let change = newBoxes - oldBoxesOff
+                console.log("boxes off change: " + change)
+                setBoxesUsed(boxesUsed+(newBoxes-oldBoxesOff))
+                return { ...cigar, boxesOff: newBoxes }
+            }
+            else return cigar
+            }
+        );
+        console.log(updatedCigars)
+        setCigars(updatedCigars);
+    }
 
     return (
         <OrderContext.Provider value={{ client, setClient, 
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar,
-                                        isBoxDiscount, setIsBoxDiscount, boxesOff,
+                                        isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
                                         subtotal, total, taxAmount }}>
             {children}
         </OrderContext.Provider>
