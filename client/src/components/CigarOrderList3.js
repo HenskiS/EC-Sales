@@ -127,7 +127,8 @@ const CigarOrderList3 = () => {
                         //<input type="number" placeholder="Boxes off" onChange={(e) => updateBoxesOff(cigar._id, e.target.value ?? 0)} />
 
                         :
-                        <input type="number" placeholder="% off" />}
+                        <input className="percent-off" type="number" placeholder="% off" value={cigar.discount? cigar.discount:""}
+                        onChange={e => updateDiscount(cigar._id, e.target.value)}/>}
 
                         <p>{s}</p>
                     </div>

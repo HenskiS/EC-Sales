@@ -441,7 +441,7 @@ label.changePassword {
 }
 .summary input{
   margin-right: 5px;
-  width: 75px;
+  width: 45px;
 }
 .summary input::placeholder{
   color: #AAA;

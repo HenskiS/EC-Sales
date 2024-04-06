@@ -7,7 +7,6 @@ function price(item){
     return item.priceBox * 100 * item.quantity;
 }
 function tax(item, taxCents) {
-    console.log("taxCents:" + taxCents)
     return item.quantityBox * parseFloat(taxCents) * item.quantity
 }
 function priceWithBoxDiscount(item){
@@ -21,6 +20,16 @@ function priceWithBoxDiscount(item){
     //console.log(price)
     return price
     //return {price: item.priceBox * 100 * (item.discount ? 100 - parseFloat(item.discount) : 100)/100, qty: item.qty};
+}
+function priceWithDiscount(item){
+    let price
+    if (item.hasOwnProperty("discount") && item.discount) {
+        price = item.priceBox * item.quantity * (100-parseFloat(item.discount))
+    } else {
+        price = item.priceBox * 100 * item.quantity
+    }
+    //console.log(price)
+    return price
 }
 function sum(prev, next){
     return prev + next;
@@ -98,7 +107,7 @@ export const OrderProvider = ({ children }) => {
             if (isBoxDiscount) {
                 discountedPrices = cigars.map(priceWithBoxDiscount)
             } else {
-                discountedPrices = cigars.map(price)
+                discountedPrices = cigars.map(priceWithDiscount)
             }
             let tot = discountedPrices.reduce(sum)
             tot += caTax
