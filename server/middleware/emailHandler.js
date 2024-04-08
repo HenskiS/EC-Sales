@@ -70,8 +70,8 @@ const sendEmail = (data, time) => {
         "text": "Attached is a PDF of your order.",
         "attachments": [
         {
-            "filename": `Order ${time}.pdf`,
-            "path": `./orders/Order ${time}.pdf`
+            "filename": `Order ${time} ${data.salesman.name}.pdf`,
+            "path": `./orders/Order ${time} ${data.salesman.name}.pdf`
         }
         ]
     }
@@ -81,7 +81,7 @@ const sendEmail = (data, time) => {
           return console.log(err);
         }
         // write the result
-        fs.writeFile(`./orders/Order ${time}.pdf`, result, (err) => {
+        fs.writeFile(`./orders/Order ${time} ${data.salesman.name}.pdf`, result, (err) => {
             if (err) console.error(err)
             else {send(data2); console.log("-------SENT-------");}
         })

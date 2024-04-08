@@ -38,6 +38,11 @@ const OrderSchema = new mongoose.Schema({
         required: true
     },
 
+    cigarData: {
+        type: Array,
+        required: false
+    },
+
     date: {
         type: Date,
         default: Date.now

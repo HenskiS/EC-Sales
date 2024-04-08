@@ -343,7 +343,21 @@ hr{
   display: flex;
   justify-content: center;
 }
-table, th, td {
+.cigar-list table {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.cigar-list th {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.cigar-list td {
   /*border: 1px solid;*/
   border-bottom: 1px solid #ddd;
   border-collapse: collapse;
@@ -465,6 +479,8 @@ label.changePassword {
 .box-buttons button{
   border: 1px solid grey;
   border-radius: 50%;
+  width: 23px;
+  height: 23px;
 }
 .box-buttons button:disabled{
   background-color: white;
@@ -477,4 +493,24 @@ label.changePassword {
 }
 .react-toggle {
   margin: 0px 5px;
+}
+.corediscount-input {
+  margin-left: 5px;
+  width: 30px
+}
+.summary-list table, td, th {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  padding: 3px 20px;
+}
+.percent-off {
+  width: 40px;
+}
+.summary-list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px 0px;
 }

@@ -33,47 +33,13 @@ const cigarsToString = (cigars) => {
         return s;
     });
 }
-const updateClient = async (client) => {
-    try {
-        const response = await axios.post("/api/clients/updateclientbyid", {editClient: client}, config());
-        console.log("updated client info");
-        console.log(response);
-    } catch (err) { console.error(err); }
-}
-const submitOrder = async (cigars, orderSubtotal, orderTotal, client, salesman, emails) => {
-    if (client.name === "") {
-        alert("No client selected!");
-        return;}
-    if (cigars.length === 0) {
-        alert("No cigars added!");
-        return;}
-    
-    const response = await axios.post("/api/orders/add", 
-        {client, salesman,  cigars: {cigars: cigarsToString(cigars),
-                                    subtotal:orderSubtotal,
-                                    tax:orderTotal.tax,
-                                    total:orderTotal.total,
-                                    discount:orderTotal.tax + orderSubtotal - orderTotal.total},
-                            cigarData: cigars.filter(function (cigar) {
-                                return cigar.qty > 0;
-                            }),
-                            emails: emails}, config());
-    console.log("Order submission response:");
-    console.log(response);
-    updateClient(client)
-    if ("success" in response.data) {
-        alert("Order Submission Successful!") 
-        window.location.reload()
-    }
-}
-
 
 const Home = (props) => {
 
-    const { client, setClient } = useContext(OrderContext)
+    const { cigars, client, setClient, submitOrder } = useContext(OrderContext)
 
     const previousCigars= [];
-    const [cigars, setCigars] = useState([]);
+    //const [cigars, setCigars] = useState([]);
     const [orderSubtotal, setOrderSubtotal] = useState();
     const [orderTotal, setOrderTotal] = useState();
     
@@ -138,10 +104,6 @@ const Home = (props) => {
                         <p className="client-address">{client.address2}</p>
                         <p className="client-city">{client.city}</p>
                         <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
-                        {client._id !== "" && <span className="ca-tax-span">
-                            <label htmlFor="tax-input">Core Line Discount:</label>
-                            <input type="number" className="ca-tax-input" id="tax-input" value={client.corediscount ?? ""} onChange={(e) => setClient({...client, corediscount: e.target.value})} />
-                        </span>}
                         </>
                         }
                     </div>
@@ -176,9 +138,8 @@ const Home = (props) => {
 
             <div className="submit-order">
                 <button className='submit-button' onClick={() => {
-                    console.log(orderSubtotal+", "+orderTotal);
                     console.log(cigarsToString(cigars));
-                    submitOrder(cigars, orderSubtotal, orderTotal, client, {_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
+                    submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
                 }}>Submit Order</button>
             </div>
             <hr />

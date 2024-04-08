@@ -4,18 +4,18 @@ import axios, { config } from "../api/axios";
 const OrderContext = createContext({});
 
 function price(item){
-    return item.priceBox * 100 * item.quantity;
+    return item.priceBox * 100 * item.qty;
 }
 function tax(item, taxCents) {
-    return item.quantityBox * parseFloat(taxCents) * item.quantity
+    return item.quantityBox * parseFloat(taxCents) * item.qty
 }
 function priceWithBoxDiscount(item){
     //console.log(item)
     let price
     if (item.hasOwnProperty("boxesOff")) {
-        price = item.priceBox * 100 * (item.quantity - item.boxesOff)
+        price = item.priceBox * 100 * (item.qty - item.boxesOff)
     } else {
-        price = item.priceBox * 100 * item.quantity
+        price = item.priceBox * 100 * item.qty
     }
     //console.log(price)
     return price
@@ -24,9 +24,9 @@ function priceWithBoxDiscount(item){
 function priceWithDiscount(item){
     let price
     if (item.hasOwnProperty("discount") && item.discount) {
-        price = item.priceBox * item.quantity * (100-parseFloat(item.discount))
+        price = item.priceBox * item.qty * (100-parseFloat(item.discount))
     } else {
-        price = item.priceBox * 100 * item.quantity
+        price = item.priceBox * 100 * item.qty
     }
     //console.log(price)
     return price
@@ -34,12 +34,37 @@ function priceWithDiscount(item){
 function sum(prev, next){
     return prev + next;
 }
+const updateClient = async (client) => {
+    try {
+        const response = await axios.post("/api/clients/updateclientbyid", {editClient: client}, config());
+        console.log("updated client info");
+        console.log(response);
+    } catch (err) { console.error(err); }
+}
+function cigarsToString(cigars) {
+    return cigars.map((cigar) => {
+        let s = "";
+        s += cigar.brandAndName;
+        if (cigar.hasOwnProperty("blend")) {
+            if (cigar.blend) s += " " + cigar.blend
+        }
+        if (cigar.hasOwnProperty("sizeName")) {
+            if (cigar.sizeName) s += " " + cigar.sizeName
+        }
+        s += ", Qty: " + cigar.qty;
+        if (cigar.hasOwnProperty("discount")) {
+            if (cigar.discount) s += ", Discount: " + cigar.discount + "%"
+        }
+        return s;
+    });
+}
 
 export const OrderProvider = ({ children }) => {
     const [cigars, setCigars] = useState([]);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [discount, setDiscount] = useState(0);
+    const [coreDiscount, setCoreDiscount] = useState(0);
     const [taxCents, setTaxCents] = useState()
     const [taxAmount, setTaxAmount] = useState()
     const [isBoxDiscount, setIsBoxDiscount] = useState(true)
@@ -79,6 +104,7 @@ export const OrderProvider = ({ children }) => {
             setBoxesOff(0)
             setBoxesUsed(0)
             setTotal(0)
+            setCoreDiscount(client?.corediscount ?? 0)
         }
         else {
             // subtotal
@@ -93,7 +119,7 @@ export const OrderProvider = ({ children }) => {
             setTaxAmount(caTax)
             // boxes off
             if (isBoxDiscount) {
-                let totalquantity = cigars.map((cigar) => cigar.quantity)
+                let totalquantity = cigars.map((cigar) => cigar.qty)
                 let boxes = Math.floor(totalquantity.reduce(sum)/8)
                 if (boxes > 3) boxes = 3
                 setBoxesOff(boxes)
@@ -116,8 +142,18 @@ export const OrderProvider = ({ children }) => {
             // discount
             let dis = sub + caTax/100 - tot
             setDiscount(dis)
+            console.log(cigars)
         }
     } , [cigars, client, isBoxDiscount, taxCents])
+    useEffect(()=>{
+        client.corediscount = coreDiscount
+        const newCigars = cigars.map(cigar => {
+            if (cigar.brandAndName.startsWith("Esteban Carreras")) {
+                return {...cigar, discount: coreDiscount}
+            } else return cigar
+        })
+        setCigars(newCigars)
+    }, [coreDiscount, cigars.length])
 
     const removeCigar = (id) => {
         setCigars(cigars.filter(cigar => cigar._id !== id))
@@ -130,11 +166,11 @@ export const OrderProvider = ({ children }) => {
         else {
             if (cigars.find(oldCigar => oldCigar._id === cigar._id)) {
                 const updatedCigars = cigars.map(oldCigar =>
-                    oldCigar._id === cigar._id ? { ...cigar, quantity: parseInt(newQuantity) } : oldCigar
+                    oldCigar._id === cigar._id ? { ...cigar, qty: parseInt(newQuantity) } : oldCigar
                 );
                 setCigars(updatedCigars);
             }
-            else addCigar({ ...cigar, quantity: parseInt(newQuantity) })
+            else addCigar({ ...cigar, qty: parseInt(newQuantity) })
         }
     };
     const updateDiscount = (id, newDiscount) => {
@@ -162,12 +198,36 @@ export const OrderProvider = ({ children }) => {
         console.log(updatedCigars)
         setCigars(updatedCigars);
     }
+    const submitOrder = async (salesman, emails) => {
+        if (client.name === "") {
+            alert("No client selected!");
+            return;}
+        if (cigars.length === 0) {
+            alert("No cigars added!");
+            return;}
+        
+        const response = await axios.post("/api/orders/add", 
+            {client, salesman,  cigars: {cigars: cigarsToString(cigars),
+                                        subtotal,
+                                        tax: taxAmount,
+                                        total,
+                                        discount: discount},
+                                cigarData: cigars,
+                                emails: emails}, config());
+        console.log("Order submission response:");
+        console.log(response);
+        updateClient(client)
+        if ("success" in response.data) {
+            alert("Order Submission Successful!") 
+            window.location.reload()
+        }
+    }
 
     return (
-        <OrderContext.Provider value={{ client, setClient, 
+        <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-                                        subtotal, total, taxAmount }}>
+                                        subtotal, total, taxAmount, submitOrder }}>
             {children}
         </OrderContext.Provider>
     )

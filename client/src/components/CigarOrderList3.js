@@ -11,7 +11,7 @@ const CigarOrderList3 = () => {
 
     const { cigars: cart, 
         setCigars: setCart,
-        client,
+        client, coreDiscount, setCoreDiscount,
         addCigar,
         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
         updateQuantity,
@@ -50,8 +50,9 @@ const CigarOrderList3 = () => {
     }, [])
 
     return (
-        <div className="cigar-list">
-            <table>
+        <div>
+            <div className="cigar-list">
+            <table className="cigarlist-table">
                 <thead>
                     <tr>
                     <td>Name</td>
@@ -72,7 +73,7 @@ const CigarOrderList3 = () => {
                             <td>${cigar.priceBox.toFixed(2)}</td>
                             {/* Quantity */}
                             <td>
-                                <input className='cigar-qty cigar-col' type="number" defaultValue={cart.find(oldCigar => oldCigar._id === cigar._id)?.quantity ?? "" } min={1} placeholder='Qty' 
+                                <input className='cigar-qty cigar-col' type="number" defaultValue={cart.find(oldCigar => oldCigar._id === cigar._id)?.qty ?? "" } min={1} placeholder='Qty' 
                                     onChange={ (e) => { updateQuantity(cigar, e.target.value);  } } 
                                 />
                             </td>
@@ -80,6 +81,7 @@ const CigarOrderList3 = () => {
                     ))}
                 </tbody>
             </table>
+            </div>
             
             <div className="reset-order">
                 <button onClick={() => {setCart([]); 
@@ -102,38 +104,71 @@ const CigarOrderList3 = () => {
                 <p>Box Discount</p>
                 {isBoxDiscount? <p className="boxes-available"><b>{ boxesOff-boxesUsed } available</b></p> : <></>}
             </div>
-            {cart.map((cigar, index) => {
-                let s = ""
-                s += cigar.brandAndName
-                if (cigar.hasOwnProperty("blend")) {
-                    if (cigar.blend) s += " " + cigar.blend
-                }
-                if (cigar.hasOwnProperty("sizeName")) {
-                    if (cigar.sizeName) s += " " + cigar.sizeName
-                }
-                s += ", Qty: " + cigar.quantity;
-                return (
-                    <div className="summary" key={index}>
-                        { isBoxDiscount?
-                        <div className="box-buttons">
-                            <button className="minus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff-1 : 0)}
-                            disabled={!cigar.boxesOff}>
-                            -</button>
-                                <p>{cigar.boxesOff? cigar.boxesOff:0}</p>
-                            <button className="plus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff+1 : 1)}
-                            disabled={boxesUsed === boxesOff || cigar?.boxesOff === cigar.quantity}>
-                            +</button>
-                        </div>
-                        //<input type="number" placeholder="Boxes off" onChange={(e) => updateBoxesOff(cigar._id, e.target.value ?? 0)} />
-
-                        :
-                        <input className="percent-off" type="number" placeholder="% off" value={cigar.discount? cigar.discount:""}
-                        onChange={e => updateDiscount(cigar._id, e.target.value)}/>}
-
-                        <p>{s}</p>
-                    </div>
-                )
-            })}
+            
+            <div className="summary-list">
+                {!isBoxDiscount ? 
+                <span>
+                    <label htmlFor="corediscount">Core Line Discount</label>
+                    <input type="number" className="corediscount-input" id="corediscount" value={coreDiscount} 
+                                    onChange={e => setCoreDiscount(e.target.value)} />
+                </span>
+                : null}
+                <table className="summary-table">
+                <thead>
+                    <tr>
+                    <td>Discount</td>
+                    <td>Name</td>
+                    <td>Blend</td>
+                    <td>Size Name</td>
+                    <td>Box Price</td>
+                    <td>Qty</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {cart.map((cigar, index) => {
+                    let s = ""
+                    s += cigar.brandAndName
+                    if (cigar.hasOwnProperty("blend")) {
+                        if (cigar.blend) s += " " + cigar.blend
+                    }
+                    if (cigar.hasOwnProperty("sizeName")) {
+                        if (cigar.sizeName) s += " " + cigar.sizeName
+                    }
+                    s += ", Qty: " + cigar.qty;
+                    return (
+                        //<div className="summary" key={index}>
+                            <tr key={index}>
+                                <td>
+                                    { isBoxDiscount?
+                                    // box discount
+                                    <div className="box-buttons">
+                                        <button className="minus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff-1 : 0)}
+                                        disabled={!cigar.boxesOff}>
+                                        -</button>
+                                            <p>{cigar.boxesOff? cigar.boxesOff:0}</p>
+                                        <button className="plus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff+1 : 1)}
+                                        disabled={boxesUsed === boxesOff || cigar?.boxesOff === cigar.qty}>
+                                        +</button>
+                                    </div>
+                                    : // percent discount
+                                    <input className="percent-off" type="number" placeholder="% off" 
+                                    value={cigar.discount??""}
+                                    disabled={cigar.brandAndName.startsWith("Esteban Carreras")}
+                                    onChange={e => updateDiscount(cigar._id, e.target.value)}/>}
+                                </td>
+        
+                                <td>{cigar.brandAndName}</td>
+                                <td>{cigar.blend}</td>
+                                <td>{cigar.sizeName}</td>
+                                <td>${cigar.priceBox}</td>
+                                <td>{cigar.qty}</td>
+                            </tr>
+                        //</div>
+                    )
+                })}
+                </tbody>
+                </table>
+            </div>
             <div className="subtotal">
                 <h5>Subtotal</h5>
                 <p>${subtotal?.toFixed(2)}</p>
