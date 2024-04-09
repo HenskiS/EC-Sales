@@ -103,7 +103,7 @@ const Home = (props) => {
                         <p className="client-address">{client.address1}</p>
                         <p className="client-address">{client.address2}</p>
                         <p className="client-city">{client.city}</p>
-                        <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                        <p className="client-state-and-zip">{client.state + " " + (client.zip??"")}</p>
                         </>
                         }
                     </div>

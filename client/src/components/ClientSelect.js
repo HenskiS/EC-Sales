@@ -8,6 +8,7 @@ import OrderContext from '../context/OrderContext.js';
 const ClientSelect = ({ setClientID }) => {
     const [clientNames, setClientNames] = useState(["loading..."]);
     const [limitTenNames, setLimitTenNames] = useState(["loading..."]);
+    const [isDisabled, setIsDisabled] = useState(true);
     const [queryParameters] = useSearchParams();
     const [clientName, setClientName] = useState(queryParameters.get("name"));
 
@@ -36,6 +37,7 @@ const ClientSelect = ({ setClientID }) => {
                     };
                 })
                 setClientNames(reformattedData);
+                setIsDisabled(false)
                 //setFilteredClientNames(names);
             } catch (err) { console.error(err); }
         }
@@ -47,9 +49,10 @@ const ClientSelect = ({ setClientID }) => {
 
 
     return (
-        <Select options={clientNames} placeholder="Select a client..."
-        defaultInputValue={clientName ?? ""}
-        onChange={e=>{console.log(e); setClientID(e.value); setClientName(e.value)}} />
+        <Select  options={clientNames} placeholder="Select a client..."
+        defaultInputValue={clientName ?? client.company ? client.company : client.name? client.name : ""}
+        onChange={e=>{console.log(e); setClientID(e.value); setClientName(e.value)}}
+        isDisabled={isDisabled} />
     )
 }
 

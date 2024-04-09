@@ -63,10 +63,10 @@ const sendEmail = (data, time) => {
 
     const data2 = 
     {
-        "from": "Esteban Carreras <estebancarrerassales@gmail.com>",
+        "from": `${ data.salesman.name ?? "Esteban Carreras"} <estebancarrerassales@gmail.com>`,
         "to": cc[0], //"henryschreiner@mac.com",
         "cc": cc.slice(1),
-        "subject": "Order Summary",
+        "subject": `Order ${"for " + data.client.company}`,
         "text": "Attached is a PDF of your order.",
         "attachments": [
         {
