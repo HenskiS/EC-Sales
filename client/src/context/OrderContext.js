@@ -116,7 +116,7 @@ export const OrderProvider = ({ children }) => {
             if (client && client.hasOwnProperty('state') && client.state.toUpperCase().startsWith("CA")) {
                 caTax = cigars.map(c => tax(c, taxCents)).reduce(sum)
             }
-            setTaxAmount(caTax)
+            setTaxAmount(caTax) // in Cents!
             // boxes off
             if (isBoxDiscount) {
                 let totalquantity = cigars.map((cigar) => cigar.qty)

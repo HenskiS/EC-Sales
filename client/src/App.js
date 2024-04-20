@@ -9,6 +9,7 @@ import useToken from './hooks/useToken';
 import ShowNavBar from './pages/navbar/ShowNavBar';
 import PrivateRoutes from './components/PrivateRoutes'
 import AdminRoute from './components/AdminRoute';
+import Order from './pages/Order';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
             </Route>
           </Route>
           <Route path="/auth" element={<Auth setToken={setToken} />} />
+          <Route path="/printorder/:id" element={<Order />} />
         </Routes>
   );
 }

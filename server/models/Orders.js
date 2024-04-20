@@ -18,11 +18,7 @@ const OrderSchema = new mongoose.Schema({
     },
 
     cigars: {
-        type: {
-            cigars: [String],
-            subtotal: Number,
-            total: Number
-        },
+        type: {},
         required: true
     },
 

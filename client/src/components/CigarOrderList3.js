@@ -173,7 +173,7 @@ const CigarOrderList3 = () => {
                 <h5>Subtotal</h5>
                 <p>${subtotal?.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
-                <p>${Math.ceil(taxAmount/100).toFixed(2)/*taxAmount && taxAmount > 0 && taxAmount.toFixed(2)*/}</p>
+                <p>${(Math.ceil(taxAmount)/100).toFixed(2)/* taxAmount is in cents, so round up to nearest cent and divide by 100 for $ amount */}</p>
                 <h5>Discount</h5>
                 <p>${discount?.toFixed(2)}</p>
                 <h4>Total</h4>

@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer")
 require('dotenv').config()
 const fs = require('fs');
 const carbone = require('carbone');
+const puppeteer = require("puppeteer");
 
 const fileName = './config/tax.json';
 const file = require('../config/tax.json');
@@ -20,6 +21,17 @@ var options = {
     convertTo : 'pdf'
 };
 
+const generatePDF = async (filename, id) => {
+    const browser = await puppeteer.launch(); // launch a browser (chromium by default but you can chose another one)
+    const page = await browser.newPage(); // open a page in the browser
+    await page.goto(`http://localhost:3000/printorder/${id}`, {
+        waitUntil: "networkidle2",
+    }); // visit the printable version of your page
+    const pdf = await page.pdf({ format: "a4", path: `./orders/${filename}` }); // generate the PDF 🎉
+    await browser.close();
+    return pdf
+}
+
 const send = (data) => {
     const transporter = nodemailer.createTransport(config)
     transporter.sendMail(data, (err, info) => {
@@ -31,23 +43,12 @@ const send = (data) => {
     })
 }
 
-const sendEmail = (data, time) => {
+const sendEmail = async (data, time, id) => {
 
     console.log(data)
-    //let event = new Date()
 
     console.log("----SEND EMAIL----")
-    //let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
-    //console.log(time)
-
     
-    // ----data format-----
-    // data.client
-    // data.salesman
-    // data.cigars.cigars
-    // data.cigars.subtotal
-    // data.cigars.tax
-    // data.cigars.total
     let cc = file.emails?.length >= 1 ? file.emails.concat() : []
     if (data.client.email && data.client.email !== "") {
         cc.push(data.client.email)
@@ -61,6 +62,8 @@ const sendEmail = (data, time) => {
 
     if (!data.client.company || data.client.company === "") data.client.company = data.client.name
 
+    const filename = `Order ${time} ${data.salesman.name}.pdf`
+
     const data2 = 
     {
         "from": `${ data.salesman.name ?? "Esteban Carreras"} <estebancarrerassales@gmail.com>`,
@@ -70,22 +73,27 @@ const sendEmail = (data, time) => {
         "text": "Attached is a PDF of your order.",
         "attachments": [
         {
-            "filename": `Order ${time} ${data.salesman.name}.pdf`,
-            "path": `./orders/Order ${time} ${data.salesman.name}.pdf`
+            "filename": filename,
+            "path": `./orders/${filename}`
         }
         ]
     }
-    //console.log('Waiting...');
-    carbone.render('./template.odt', data, options, function(err, result){
+    const pdf = await generatePDF(filename, id)
+    if (pdf) {
+        send(data2);
+        console.log("-------SENT-------");
+    }
+
+    /*carbone.render('./template.odt', data, options, function(err, result){
         if (err) {
           return console.log(err);
         }
         // write the result
-        fs.writeFile(`./orders/Order ${time} ${data.salesman.name}.pdf`, result, (err) => {
+        fs.writeFile(`./orders/${filename}`, result, (err) => {
             if (err) console.error(err)
             else {send(data2); console.log("-------SENT-------");}
         })
-      });
+      });*/
     //sleep(20000).then(() => { send(data2); console.log('done waiting!'); });
     //send(data2)
 }

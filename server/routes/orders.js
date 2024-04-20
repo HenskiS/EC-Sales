@@ -7,7 +7,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 const path = require('path');
 
 const router = express.Router();
-router.use(verifyJWT)
+//router.use(verifyJWT)
 
 const fs = require('fs');
 const fileName = './config/tax.json';
@@ -53,6 +53,18 @@ router.get("/ordersminuscigars", async (req, res) => {
     }
 
     res.json(orders)
+})
+router.get("/orderbyid/:id", async (req, res) => {
+    // Get order by id from MongoDB
+    console.log("order by id")
+    const id = req.params.id
+    console.log(id)
+    const order = await OrderModel.findById(id).lean()
+
+    if (!order) {
+        return res.status(400).json({ message: 'Order not found' })
+    }
+    res.status(200).json(order)
 })
 
 router.post("/getordersbyclientid", async (req, res) => {
@@ -101,7 +113,7 @@ router.post("/add", async (req, res) => {
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     let filename = `Order ${time} ${req.body.salesman.name}.pdf`
     console.log("filename: " + filename)
-    sendEmail(req.body, time)
+    //sendEmail(req.body, time)
     
     const newOrder = new OrderModel(  
         {
@@ -112,9 +124,15 @@ router.post("/add", async (req, res) => {
             filename: filename,
             date: req.body.date
         })
-    await newOrder.save();
-
-    res.json({ success: "Order Added Successfully!"})
+    const order = await newOrder.save();
+    
+    if (order) {
+        res.json({ success: "Order Added Successfully!"})
+        sendEmail(req.body, time, order._id)
+    } else {
+        res.status(400).json({ error: 'Invalid order data received' })
+    }
+    
 });
 
 router.get('/pdfs/:filename', (req, res) => {

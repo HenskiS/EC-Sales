@@ -514,3 +514,40 @@ label.changePassword {
   align-items: center;
   margin: 15px 0px;
 }
+.order-cigar-list  {
+  text-align: center;
+}
+.order-cigar-list table {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.order-cigar-list th {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.order-cigar-list td {
+  /*border: 1px solid;*/
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  padding: 3px;
+}
+.order-pdf-header {
+  font-family: 'Times New Roman', Times, serif;
+  text-align: center;
+}
+.order-cigars {
+  text-align: center;
+}
+.order-pdf-header-titles {
+  display: flex;
+  justify-content: space-between;
+}
+.order-pdf-info {
+  margin-top: 0px;
+}
