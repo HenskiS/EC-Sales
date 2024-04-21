@@ -60,7 +60,7 @@ const Order = (props) => {
             <div className="client-and-salesrep order-pdf-info">
                 <div className="client">
                     <div className="client-info-home">
-                        <p className="client-phone">{client.company ?? client.name}</p>
+                        <p className="client-phone">{client.company ? client.company : client.name}</p>
                         <p className="client-phone">{client.email}</p>
                         <p className="client-phone">{client.phone}</p>
                         <p className="client-address">{client.address1}</p>
