@@ -22,7 +22,9 @@ var options = {
 };
 
 const generatePDF = async (filename, id) => {
-    const browser = await puppeteer.launch(); // launch a browser (chromium by default but you can chose another one)
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox'],
+      }); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
     await page.goto(`http://localhost:3000/printorder/${id}`, {
         waitUntil: "networkidle2",
