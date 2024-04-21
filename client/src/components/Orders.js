@@ -82,7 +82,7 @@ const Orders = () => {
                     <Fragment key={index}>
                         <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
                             onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
-                            {new Date(order.date).toLocaleDateString()} - ${order.cigars.total}, {order.salesman.name} to {order.client.company ?? order.client.name ?? order.client.contact ?? order.client.city}
+                            {new Date(order.date).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })} - ${order.cigars.total}, {order.salesman.name} to {order.client.company ?? order.client.name ?? order.client.contact ?? order.client.city}
                         </button>
                         
                     </Fragment>

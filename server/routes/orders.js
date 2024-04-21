@@ -7,11 +7,35 @@ const verifyJWT = require('../middleware/verifyJWT');
 const path = require('path');
 
 const router = express.Router();
-//router.use(verifyJWT)
+
 
 const fs = require('fs');
 const fileName = './config/tax.json';
 const file = require('../config/tax.json');
+
+router.get("/orderbyid/:id", async (req, res) => {
+    // Get order by id from MongoDB
+    console.log("order by id")
+    const id = req.params.id
+    console.log(id)
+    const order = await OrderModel.findById(id).lean()
+
+    if (!order) {
+        return res.status(400).json({ message: 'Order not found' })
+    }
+    // Because this route is unprotected, only return an order 
+    // submitted in the last 10 minutes, for security purposes
+    const now = Date.now()
+    const diff = now - order.date
+    const minutes = Math.floor((diff/1000)/60);
+    if (minutes < 10) {
+        res.status(200).json(order)
+    } else {
+        res.status(400).json({ message: 'Order submitted more than 5 minutes ago' })
+    }
+})
+
+router.use(verifyJWT)
 
 router.get("/catax", async (req, res) => {
     res.json(file.tax)
@@ -53,18 +77,6 @@ router.get("/ordersminuscigars", async (req, res) => {
     }
 
     res.json(orders)
-})
-router.get("/orderbyid/:id", async (req, res) => {
-    // Get order by id from MongoDB
-    console.log("order by id")
-    const id = req.params.id
-    console.log(id)
-    const order = await OrderModel.findById(id).lean()
-
-    if (!order) {
-        return res.status(400).json({ message: 'Order not found' })
-    }
-    res.status(200).json(order)
 })
 
 router.post("/getordersbyclientid", async (req, res) => {
@@ -125,7 +137,7 @@ router.post("/add", async (req, res) => {
             date: req.body.date
         })
     const order = await newOrder.save();
-    
+
     if (order) {
         res.json({ success: "Order Added Successfully!"})
         sendEmail(req.body, time, order._id)
