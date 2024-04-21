@@ -26,7 +26,7 @@ const generatePDF = async (filename, id) => {
         args: ['--no-sandbox'],
       }); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
-    await page.goto(`http://localhost:3000/printorder/${id}`, {
+    await page.goto(`https://www.ecsales.work/printorder/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
     const pdf = await page.pdf({ format: "a4", path: `./orders/${filename}` }); // generate the PDF 🎉
