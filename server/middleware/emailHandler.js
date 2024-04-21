@@ -29,7 +29,7 @@ const generatePDF = async (filename, id) => {
     await page.goto(`https://ecsales.work/printorder/${id}`, {
         waitUntil: "load",
     }); // visit the printable version of your page
-    await page.waitForSelector("h1.order-pdf-header")
+    await page.waitForSelector("h1.order-pdf-header") // wait until page gets order data
     const pdf = await page.pdf({ format: "a4", path: `./orders/${filename}` }); // generate the PDF 🎉
     await browser.close();
     return pdf
