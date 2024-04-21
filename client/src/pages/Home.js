@@ -36,7 +36,7 @@ const cigarsToString = (cigars) => {
 
 const Home = (props) => {
 
-    const { cigars, client, setClient, submitOrder } = useContext(OrderContext)
+    const { cigars, client, setClient, submitOrder, notes, setNotes } = useContext(OrderContext)
 
     const previousCigars= [];
     //const [cigars, setCigars] = useState([]);
@@ -121,7 +121,9 @@ const Home = (props) => {
             {/*clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />*/}
             {clientID && cigars && <CigarOrderList3 />}
             <hr />
-            
+            <label>Notes (optional):</label>
+            <br />
+            <textarea className="order-notes-input" value={notes} onChange={e => setNotes(e.target.value)}/>
             <div className="cc-emails">
                 <label>CC Order Summary (optional):</label>
                 <ReactMultiEmail 

@@ -31,7 +31,7 @@ router.get("/orderbyid/:id", async (req, res) => {
     if (minutes < 10) {
         res.status(200).json(order)
     } else {
-        res.status(400).json({ message: 'Order submitted more than 5 minutes ago' })
+        res.status(400).json({ message: 'Order submitted more than 10 minutes ago' })
     }
 })
 
@@ -134,7 +134,8 @@ router.post("/add", async (req, res) => {
             cigars: req.body.cigars,
             cigarData: req.body.cigarData,
             filename: filename,
-            date: req.body.date
+            date: req.body.date,
+            notes: req.body.notes
         })
     const order = await newOrder.save();
 

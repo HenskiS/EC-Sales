@@ -551,3 +551,16 @@ label.changePassword {
 .order-pdf-info {
   margin-top: 0px;
 }
+.order-notes-input {
+  width: 100%;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px;
+}
+.print-order-notes textarea {
+  width: 100%;
+  border: 0px solid lightgray;
+  border-radius: 5px;
+  height: auto;
+  resize: none;
+}

@@ -34,6 +34,10 @@ const OrderSchema = new mongoose.Schema({
 
     filename: {
         type: String
+    },
+
+    notes: {
+        type: String
     }
 
 });

@@ -19,6 +19,7 @@ const Order = (props) => {
     const [tax, setTax] = useState();
     const [filename, setFilename] = useState();
     const [date, setDate] = useState()
+    const [notes, setNotes] = useState()
     
 
     useEffect(() => {
@@ -37,6 +38,7 @@ const Order = (props) => {
                 setDiscount(response.data.cigars.discount)
                 setFilename(response.data.filename)
                 setDate(new Date(response.data.date))
+                setNotes(response.data.notes)
             } catch (err) { console.error(err); }
         }
         getClient()
@@ -116,6 +118,11 @@ const Order = (props) => {
                 <p>${ discount > 0 ? discount?.toFixed(2) : "0.00" }</p>
                 <h4>Total</h4>
                 <p className='total'>${ total?.toFixed(2) }</p>
+            </div>
+            <div className="print-order-notes">
+                <h3>Notes</h3>
+                <hr />
+                <textarea readOnly>{notes}</textarea>
             </div>
             
         </div>

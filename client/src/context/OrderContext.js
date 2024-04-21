@@ -70,6 +70,7 @@ export const OrderProvider = ({ children }) => {
     const [isBoxDiscount, setIsBoxDiscount] = useState(true)
     const [boxesOff, setBoxesOff] = useState()
     const [boxesUsed, setBoxesUsed] = useState(0)
+    const [notes, setNotes] = useState("")
     const [client, setClient] = useState({
         _id: "",
         name: "",
@@ -213,7 +214,8 @@ export const OrderProvider = ({ children }) => {
                                         total,
                                         discount: discount},
                                 cigarData: cigars,
-                                emails: emails}, config());
+                                emails: emails,
+                                notes: notes}, config());
         console.log("Order submission response:");
         console.log(response);
         updateClient(client)
@@ -227,7 +229,7 @@ export const OrderProvider = ({ children }) => {
         <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-                                        subtotal, total, taxAmount, submitOrder }}>
+                                        subtotal, total, taxAmount, notes, setNotes, submitOrder }}>
             {children}
         </OrderContext.Provider>
     )
