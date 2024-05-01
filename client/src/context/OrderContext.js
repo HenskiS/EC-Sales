@@ -120,6 +120,7 @@ export const OrderProvider = ({ children }) => {
             setTaxAmount(caTax) // in Cents!
             // boxes off
             if (isBoxDiscount) {
+                // boxesOff no longer in use, keeping just in case. boxesUsed is the important info.
                 let totalquantity = cigars.map((cigar) => cigar.qty)
                 let boxes = Math.floor(totalquantity.reduce(sum)/8)
                 if (boxes > 3) boxes = 3
@@ -212,7 +213,8 @@ export const OrderProvider = ({ children }) => {
                                         subtotal,
                                         tax: taxAmount,
                                         total,
-                                        discount: discount},
+                                        discount: discount,
+                                        boxesOff: boxesUsed},
                                 cigarData: cigars,
                                 emails: emails,
                                 notes: notes}, config());

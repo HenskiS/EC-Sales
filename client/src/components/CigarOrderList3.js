@@ -102,7 +102,8 @@ const CigarOrderList3 = () => {
                     onChange={(e) => setIsBoxDiscount(e.target.checked) }
                 />
                 <p>Box Discount</p>
-                {isBoxDiscount? <p className="boxes-available"><b>{ boxesOff-boxesUsed } available</b></p> : <></>}
+                {/*isBoxDiscount? <p className="boxes-available"><b>{ boxesOff-boxesUsed } available</b></p> : <></>*/}
+                {isBoxDiscount? <p className="boxes-available"><b>{ boxesUsed } used</b></p> : <></>}
             </div>
             
             <div className="summary-list">
@@ -147,7 +148,7 @@ const CigarOrderList3 = () => {
                                         -</button>
                                             <p>{cigar.boxesOff? cigar.boxesOff:0}</p>
                                         <button className="plus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff+1 : 1)}
-                                        disabled={boxesUsed === boxesOff || cigar?.boxesOff === cigar.qty}>
+                                        disabled={cigar?.boxesOff === cigar.qty}>
                                         +</button>
                                     </div>
                                     : // percent discount
@@ -174,7 +175,7 @@ const CigarOrderList3 = () => {
                 <p>${subtotal?.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
                 <p>${(Math.ceil(taxAmount)/100).toFixed(2)/* taxAmount is in cents, so round up to nearest cent and divide by 100 for $ amount */}</p>
-                <h5>Discount</h5>
+                <h5>{boxesUsed? boxesUsed+"-Box ":""}Discount</h5>
                 <p>${discount?.toFixed(2)}</p>
                 <h4>Total</h4>
                 <p className='total'>${total?.toFixed(2)/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
