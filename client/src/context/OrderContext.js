@@ -150,7 +150,7 @@ export const OrderProvider = ({ children }) => {
     useEffect(()=>{
         client.corediscount = coreDiscount
         const newCigars = cigars.map(cigar => {
-            if (cigar.brandAndName.startsWith("Esteban Carreras")) {
+            if (cigar.coreline) {
                 return {...cigar, discount: coreDiscount}
             } else return cigar
         })
@@ -162,6 +162,18 @@ export const OrderProvider = ({ children }) => {
     }
     const addCigar = (newCigar) => {
         setCigars([...cigars, newCigar]);
+    }
+    const updateMiscCigar = (cigar) => {
+        if (cigar.qty === "" || cigar.qty === 0 || !cigar.qty || !parseInt(cigar.qty)) removeCigar(cigar._id)
+        else {
+            if (cigars.find(oldCigar => oldCigar._id === cigar._id)) {
+                const updatedCigars = cigars.map(oldCigar =>
+                    oldCigar._id === cigar._id ? cigar : oldCigar
+                );
+                setCigars(updatedCigars);
+            }
+            else addCigar(cigar)
+        }
     }
     const updateQuantity = (cigar, newQuantity) => {
         if (newQuantity === "" || newQuantity === 0 || !newQuantity || !parseInt(newQuantity)) removeCigar(cigar._id)
@@ -229,7 +241,7 @@ export const OrderProvider = ({ children }) => {
 
     return (
         <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
-                                        cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar,
+                                        cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, updateMiscCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
                                         subtotal, total, taxAmount, notes, setNotes, submitOrder }}>
             {children}

@@ -4,6 +4,7 @@ import OrderContext from "../context/OrderContext"
 import { useNavigate } from "react-router"
 import Toggle from 'react-toggle'
 import "react-toggle/style.css"
+import MiscCigars from "./MiscCigars"
 
 const CigarOrderList3 = () => {
     
@@ -79,6 +80,7 @@ const CigarOrderList3 = () => {
                             </td>
                         </tr>
                     ))}
+                    <MiscCigars />
                 </tbody>
             </table>
             </div>
@@ -154,7 +156,7 @@ const CigarOrderList3 = () => {
                                     : // percent discount
                                     <input className="percent-off" type="number" placeholder="% off" 
                                     value={cigar.discount??""}
-                                    disabled={cigar.brandAndName.startsWith("Esteban Carreras")}
+                                    disabled={cigar.coreline}
                                     onChange={e => updateDiscount(cigar._id, e.target.value)}/>}
                                 </td>
         
