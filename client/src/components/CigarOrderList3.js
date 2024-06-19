@@ -20,10 +20,10 @@ const CigarOrderList3 = () => {
         removeCigar,
         subtotal,
         total,
-        taxAmount
+        taxAmount,
+        setTaxCents
     } = useContext(OrderContext)
     const [cigars, setCigars] = useState()
-    const [taxCents, setTaxCents] = useState()
 
     useEffect(() => {
         // get CA tax amount

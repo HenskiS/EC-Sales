@@ -243,7 +243,7 @@ export const OrderProvider = ({ children }) => {
         <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, updateMiscCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-                                        subtotal, total, taxAmount, notes, setNotes, submitOrder }}>
+                                        subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder }}>
             {children}
         </OrderContext.Provider>
     )
