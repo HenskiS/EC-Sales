@@ -213,7 +213,7 @@ export const OrderProvider = ({ children }) => {
         setCigars(updatedCigars);
     }
     const submitOrder = async (salesman, emails) => {
-        if (client.name === "") {
+        if (client.company === "") {
             alert("No client selected!");
             return;}
         if (cigars.length === 0) {
