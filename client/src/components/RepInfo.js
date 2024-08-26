@@ -23,13 +23,15 @@ const RepInfo = ({ rep, close, addNameToList }) => {
 
     const [isEmployee, setIsEmployee] = useState(rep? rep.roles.includes("Employee"):true)
     const [isAdmin, setIsAdmin] = useState(rep? rep.roles.includes("Admin"):false)
+    const [isIntl, setIsIntl] = useState(rep? rep.roles.includes("International"):false)
     const [isActive, setIsActive] = useState(rep?rep.active:true)
     useEffect(() => {
         let r = []
         if (isEmployee) r.push("Employee")
         if (isAdmin) r.push("Admin")
+        if (isIntl) r.push("International")
         setEditUser({...editUser, roles: r, active: isActive})
-    }, [isEmployee, isAdmin, isActive])
+    }, [isEmployee, isAdmin, isActive, isIntl])
 
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -170,6 +172,8 @@ const RepInfo = ({ rep, close, addNameToList }) => {
                         <label htmlFor="employee"> Employee</label>
                         <input type="checkbox" className="client-address checkbox" id="admin" checked={isAdmin} onChange={() => setIsAdmin(!isAdmin)}/>
                         <label htmlFor="admin">Admin</label>
+                        <input type="checkbox" className="client-address checkbox" id="intl" checked={isIntl} onChange={() => setIsIntl(!isIntl)}/>
+                        <label htmlFor="intl">International</label>
                     </span>
                     <span>
                         <input type="checkbox" id="active" className="checkbox" checked={isActive} onChange={()=>{setIsActive(!isActive);}}/>
