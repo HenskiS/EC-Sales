@@ -10,6 +10,13 @@ const CigarOrderList3 = () => {
     
     const navigate = useNavigate()
 
+    const tokenString = sessionStorage.getItem('UserInfo');
+    let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
+    let isIntl = false
+    if (user) {
+        isIntl = (user.roles.includes("International"))
+    }
+
     const { cigars: cart, 
         setCigars: setCart,
         client, coreDiscount, setCoreDiscount,
@@ -39,8 +46,10 @@ const CigarOrderList3 = () => {
     }, [])
     useEffect(() => {
         const getCigars = async () => {
+            let endpoint = "/api/cigars/"
+            if (isIntl) endpoint += "intl"
             try {
-                const response = await axios.get("/api/cigars/", config());
+                const response = await axios.get(endpoint, config());
                 console.log("got cigars");
                 console.log(response);
                 setCigars(response.data)

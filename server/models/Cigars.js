@@ -23,6 +23,9 @@ const CigarSchema = new mongoose.Schema({
     },
     priceBox: {
         type: Number,
+    },
+    internationalOnly: {
+        type: Boolean,
     }
 
 });

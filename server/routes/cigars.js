@@ -14,8 +14,19 @@ const router = express.Router();
 
 router.use(verifyJWT)
 // GET cigars/
-// get all cigars
+// get all domestic cigars
 router.get("/", async (req, res) => {
+    CigarModel.where({internationalOnly: false})
+    //.distinct("brandAndName")
+    .find()
+    .sort('brandAndName')
+    .sort('blend')
+    .exec()
+    .then(cigars => res.json(cigars))
+    .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
+});
+// get ALL cigars
+router.get("/intl", async (req, res) => {
     CigarModel//.where({brand: "Esteban Carreras"})
     //.distinct("brandAndName")
     .find()
