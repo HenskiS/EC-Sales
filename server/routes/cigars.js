@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
 });
 // get ALL cigars
 router.get("/intl", async (req, res) => {
-    CigarModel//.where({brand: "Esteban Carreras"})
+    CigarModel.where({internationalOnly: true})
     //.distinct("brandAndName")
     .find()
     .sort('brandAndName')

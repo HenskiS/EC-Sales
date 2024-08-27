@@ -12,9 +12,9 @@ const CigarOrderList3 = () => {
 
     const tokenString = sessionStorage.getItem('UserInfo');
     let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
-    let isIntl = false
+    let isIntlUser = false
     if (user) {
-        isIntl = (user.roles.includes("International"))
+        isIntlUser = (user.roles.includes("International"))
     }
 
     const { cigars: cart, 
@@ -31,6 +31,7 @@ const CigarOrderList3 = () => {
         setTaxCents
     } = useContext(OrderContext)
     const [cigars, setCigars] = useState()
+    const [isIntl, setIsIntl] = useState(false)
 
     useEffect(() => {
         // get CA tax amount
@@ -57,10 +58,18 @@ const CigarOrderList3 = () => {
         }
         getCigars()
         .catch(console.error);
-    }, [])
+    }, [isIntl])
 
     return (
         <div>
+            {isIntlUser ? <div className="intl">
+                <span>
+                    <input type="radio" name="Domestic" id="dom" checked={!isIntl} onChange={()=>setIsIntl(!isIntl)}/>
+                    <label htmlFor="dom">Domestic</label>
+                    <input type="radio" name="International" id="intl" checked={isIntl} onChange={()=>setIsIntl(!isIntl)} />
+                    <label htmlFor="intl">International</label>
+                </span>
+            </div> : null}
             <div className="cigar-list">
             <table className="cigarlist-table">
                 <thead>

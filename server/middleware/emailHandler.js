@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer")
 require('dotenv').config()
 const fs = require('fs');
-const carbone = require('carbone');
 const puppeteer = require("puppeteer");
 
 const fileName = './config/tax.json';
@@ -26,6 +25,7 @@ const generatePDF = async (filename, id) => {
         args: ['--no-sandbox'],
       }); 
     const page = await browser.newPage(); // open a page in the browser
+    //await page.goto(`http://localhost:3000/printorder/${id}`, {
     await page.goto(`https://ecsales.work/printorder/${id}`, {
         waitUntil: "load",
     }); // visit the printable version of your page
@@ -73,7 +73,7 @@ const sendEmail = async (data, time, id) => {
         "to": cc[0], //"henryschreiner@mac.com",
         "cc": cc.slice(1),
         "subject": `Order ${"for " + data.client.company}`,
-        "text": "Attached is a PDF of your order.",
+        "text": "Attached is a PDF of your order.\n\nThis message is automated, please do not reply.",
         "attachments": [
         {
             "filename": filename,
@@ -86,19 +86,6 @@ const sendEmail = async (data, time, id) => {
         send(data2);
         console.log("-------SENT-------");
     }
-
-    /*carbone.render('./template.odt', data, options, function(err, result){
-        if (err) {
-          return console.log(err);
-        }
-        // write the result
-        fs.writeFile(`./orders/${filename}`, result, (err) => {
-            if (err) console.error(err)
-            else {send(data2); console.log("-------SENT-------");}
-        })
-      });*/
-    //sleep(20000).then(() => { send(data2); console.log('done waiting!'); });
-    //send(data2)
 }
 
 module.exports = sendEmail

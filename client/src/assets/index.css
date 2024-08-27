@@ -564,3 +564,10 @@ label.changePassword {
   height: auto;
   resize: none;
 }
+.intl {
+  display: flex;
+  margin: 5px;
+}
+.intl label{
+  padding: 0px 10px 0px 3px;
+}
