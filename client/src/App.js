@@ -10,6 +10,7 @@ import ShowNavBar from './pages/navbar/ShowNavBar';
 import PrivateRoutes from './components/PrivateRoutes'
 import AdminRoute from './components/AdminRoute';
 import Order from './pages/Order';
+import Offline from './offline/Offline';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
           </Route>
           <Route path="/auth" element={<Auth setToken={setToken} />} />
           <Route path="/printorder/:id" element={<Order />} />
+          <Route path="/offline" element={<Offline />} />
         </Routes>
   );
 }

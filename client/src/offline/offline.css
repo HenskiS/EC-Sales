@@ -1,0 +1,12 @@
+.offline {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    margin-bottom: 50px;
+}
+.order-notes-input {
+    width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 5px;
+  }

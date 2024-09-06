@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios, { config } from "../api/axios";
 
-const OrderContext = createContext({});
+const OfflineContext = createContext({});
 
 function price(item){
     return item.priceBox * 100 * item.qty;
@@ -34,13 +34,6 @@ function priceWithDiscount(item){
 function sum(prev, next){
     return prev + next;
 }
-const updateClient = async (client) => {
-    try {
-        const response = await axios.post("/api/clients/updateclientbyid", {editClient: client}, config());
-        console.log("updated client info");
-        console.log(response);
-    } catch (err) { console.error(err); }
-}
 function cigarsToString(cigars) {
     return cigars.map((cigar) => {
         let s = "";
@@ -59,13 +52,13 @@ function cigarsToString(cigars) {
     });
 }
 
-export const OrderProvider = ({ children }) => {
+export const OfflineProvider = ({ children }) => {
     const [cigars, setCigars] = useState([]);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [coreDiscount, setCoreDiscount] = useState(0);
-    const [taxCents, setTaxCents] = useState()
+    const [taxCents, setTaxCents] = useState(0)
     const [taxAmount, setTaxAmount] = useState()
     const [isBoxDiscount, setIsBoxDiscount] = useState(true)
     const [boxesOff, setBoxesOff] = useState()
@@ -87,11 +80,10 @@ export const OrderProvider = ({ children }) => {
     useEffect(() => {
         // get CA tax amount
         const getTax = async () => {
-            try {
-                const response = await axios.get("/api/orders/catax/", config()); 
-                console.log("got CA tax info");
-                console.log(response);
-                setTaxCents(response.data);
+            try { 
+                console.log("cache: got CA tax info");
+                setTaxCents(JSON.parse(localStorage.getItem("catax")));
+                console.log(localStorage.getItem("catax"))
             } catch (err) { console.error(err); }
         }
         getTax();
@@ -145,6 +137,7 @@ export const OrderProvider = ({ children }) => {
             let dis = sub + caTax/100 - tot
             setDiscount(dis)
             console.log(cigars)
+            console.log(taxCents)
         }
     } , [cigars, client, isBoxDiscount, taxCents])
     useEffect(()=>{
@@ -212,7 +205,7 @@ export const OrderProvider = ({ children }) => {
         console.log(updatedCigars)
         setCigars(updatedCigars);
     }
-    const submitOrder = async (salesman, emails) => {
+    const submitOrder = async () => {
         if (client.company === "") {
             alert("No client selected!");
             return;}
@@ -220,47 +213,29 @@ export const OrderProvider = ({ children }) => {
             alert("No cigars added!");
             return;}
         
-        const response = await axios.post("/api/orders/add", 
-            {client, salesman,  cigars: {cigars: cigarsToString(cigars),
+        let orders  = [];
+        if (localStorage.getItem("orders")) orders = JSON.parse(localStorage.getItem("orders"))
+        orders.push(
+            {client,  cigars: {cigars: cigarsToString(cigars),
                                         subtotal,
                                         tax: taxAmount,
                                         total,
                                         discount: discount,
                                         boxesOff: boxesUsed},
                                 cigarData: cigars,
-                                emails: emails,
-                                notes: notes}, config());
-        console.log("Order submission response:");
-        console.log(response);
-        updateClient(client)
-        if ("success" in response.data) {
-            alert("Order Submission Successful!") 
-            window.location.reload()
-        }
-    }
-    const submitStoredOrder = async (client, cigars, cigarData, notes, salesman) => {
-        if (client.company === "") {
-            alert("No client selected!");
-            return;}
-        if (cigars.length === 0) {
-            alert("No cigars added!");
-            return;}
-        
-        const response = await axios.post("/api/orders/add", 
-            {client, salesman, cigars, cigarData,
-                emails: [], notes}, config());
-        console.log("Order submission response:");
-        console.log(response);
+                                notes: notes}
+        );
+        localStorage.setItem("orders", JSON.stringify(orders))
     }
 
     return (
-        <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
+        <OfflineContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, updateMiscCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-                                        subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder, submitStoredOrder }}>
+                                        subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder }}>
             {children}
-        </OrderContext.Provider>
+        </OfflineContext.Provider>
     )
 }
 
-export default OrderContext;
+export default OfflineContext;

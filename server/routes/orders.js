@@ -123,7 +123,7 @@ router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
     let event = new Date()
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
-    let filename = `Order ${time} ${req.body.salesman.name}.pdf`
+    let filename = `Order ${time} ${req.body.salesman.name} ${req.body.client.company?.length ? req.body.client.company : req.body.client.name}.pdf`
     console.log("filename: " + filename)
     //sendEmail(req.body, time)
     

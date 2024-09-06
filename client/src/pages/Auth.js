@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import axios from '../api/axios'
 import {config} from "../api/axios.js";
 import { useCookies } from 'react-cookie';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Navigate} from "react-router-dom";
 import PropTypes from 'prop-types';
 import AuthContext from "../context/AuthProvider";
 import jwtDecode from 'jwt-decode'
@@ -22,6 +22,18 @@ const Auth = ({ setToken }) => {
     useEffect(() => {
         setErrMsg("")
     }, [username, password]);
+
+    useEffect(() => {
+        const getOnLineStatus = () =>
+            typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
+                ? navigator.onLine
+                : true;
+        const online = getOnLineStatus()
+        if (!online) {
+            console.log("offline")
+            return <Navigate to='offline'/>
+        }
+      }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -64,6 +76,8 @@ const Auth = ({ setToken }) => {
                 setErrMsg("No server response");
             } else if (err.response?.status === 400) {
                 setErrMsg("Missing Username or Password");
+            } else if (err.response?.status === 500) {
+                navigate('/offline')
             } else if (err.response?.status === 401) {
                 setErrMsg("Unauthorized");
             } else if (err.response?.status === 429) {
