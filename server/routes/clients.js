@@ -17,15 +17,6 @@ router.use(verifyJWT)
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
 });*/
 
-router.get("/", async (req, res) => {
-    //const { brand }  = req.body;
-    ClientModel//.where({ brand })
-    //.distinct("name")
-    .find()
-    .exec()
-    .then(clients => res.json(clients))
-    .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
-});
 router.get("/clientnames", async (req, res) => {
     //const { brand }  = req.body;
     ClientModel//.where({ brand })

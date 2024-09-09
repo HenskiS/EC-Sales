@@ -238,26 +238,12 @@ export const OrderProvider = ({ children }) => {
             window.location.reload()
         }
     }
-    const submitStoredOrder = async (client, cigars, cigarData, notes, salesman) => {
-        if (client.company === "") {
-            alert("No client selected!");
-            return;}
-        if (cigars.length === 0) {
-            alert("No cigars added!");
-            return;}
-        
-        const response = await axios.post("/api/orders/add", 
-            {client, salesman, cigars, cigarData,
-                emails: [], notes}, config());
-        console.log("Order submission response:");
-        console.log(response);
-    }
 
     return (
         <OrderContext.Provider value={{ client, setClient, coreDiscount, setCoreDiscount,
                                         cigars, setCigars, addCigar, updateQuantity, updateDiscount, removeCigar, updateMiscCigar,
                                         isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-                                        subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder, submitStoredOrder }}>
+                                        subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder }}>
             {children}
         </OrderContext.Provider>
     )

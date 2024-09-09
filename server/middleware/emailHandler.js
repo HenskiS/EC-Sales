@@ -65,7 +65,7 @@ const sendEmail = async (data, time, id) => {
 
     if (!data.client.company || data.client.company === "") data.client.company = data.client.name
 
-    const filename = `Order ${time} ${data.salesman.name} ${data.client.company}.pdf`
+    const filename = `Order ${time} ${data.salesman.name}.pdf`
 
     const data2 = 
     {

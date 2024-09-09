@@ -5,7 +5,7 @@ import { SidebarData } from './SidebarData';
 import './Navbar.css';
 import { IconContext } from 'react-icons';*/
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { Link, Outlet } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { Link, Outlet } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 
 import * as IoIcons from "react-icons/io";
-import OrderContext from '../../context/OrderContext';
 
 function Navbar() {
     const [sidebar, setSidebar] = useState(false);
@@ -33,31 +32,6 @@ function Navbar() {
         handleLogout();
       }
     }, [sidebar])
-
-    const uinfo = sessionStorage.getItem('UserInfo')
-    const UserInfo = uinfo ? JSON.parse(uinfo) : {name: "", userID: ""}
-    const { submitStoredOrder } = useContext(OrderContext)
-
-    const ordersString = localStorage.getItem("orders")
-    if (ordersString) {
-        const orders = JSON.parse(ordersString)
-        const names = orders.map(o => o.client.company)
-        orders.forEach((order, index) => {
-            if (!order.client.company.length)
-              order.client.company = index
-            if (names.find(n=>n===order.client.company)) {
-              order.client.company = order.client.company + index
-            }
-            submitStoredOrder(
-                order.client, 
-                order.cigars,
-                order.cigarData, 
-                order.notes, 
-                {_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}
-            )
-        })
-        localStorage.removeItem("orders")
-    }
   
     return (
       <>
