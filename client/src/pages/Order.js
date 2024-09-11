@@ -69,6 +69,7 @@ const Order = (props) => {
                         <p className="client-address">{client.address2}</p>
                         <p className="client-city">{client.city}</p>
                         <p className="client-state-and-zip">{client.state + " " + (client.zip??"")}</p>
+                        <p className="client-state-and-zip">{client.country}</p>
                     </div>
                 </div>
                 <div className="salesrep">
