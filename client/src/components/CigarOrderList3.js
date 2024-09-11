@@ -31,7 +31,7 @@ const CigarOrderList3 = () => {
         setTaxCents
     } = useContext(OrderContext)
     const [cigars, setCigars] = useState()
-    const [isIntl, setIsIntl] = useState(false)
+    const [isIntl, setIsIntl] = useState(isIntlUser)
 
     useEffect(() => {
         // get CA tax amount

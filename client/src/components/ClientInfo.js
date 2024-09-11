@@ -5,6 +5,14 @@ import axios from '../api/axios';
 import {config} from "../api/axios.js";
 
 const ClientInfo = ({ id, close, addNameToList }) => {
+
+    const tokenString = sessionStorage.getItem('UserInfo');
+    let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
+    let isIntlUser = false
+    if (user) {
+        isIntlUser = user.roles.includes("International")
+    }
+
     const [client, setClient] = useState({
         _id: "",
         name: "",
@@ -21,8 +29,9 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         company: "",
         contact: "",
         website: "",
-        title: ""
-
+        title: "",
+        country: "",
+        isInternational: false,
     });
     const [editClient, setEditClient] = useState({
         _id: "",
@@ -40,13 +49,19 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         company: "",
         contact: "",
         website: "",
-        title: ""
+        title: "",
+        country: isIntlUser?"":"United States",
+        isInternational: isIntlUser?true:false,
     });
 
     const [isEditing, setIsEditing] = useState(false);
 
     const updateClient = async () => {
         console.log("update client");
+        if (editClient.company === "") {
+            alert("Client must have a company");
+            return;
+        }
         if (client !== editClient) {
             console.log("there's been a change here...");
             try {
@@ -60,8 +75,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
     }
 
     const addClient = async () => {
-        if (editClient.name === "" && editClient.name === "") {
-            alert("Client must have a name or company");
+        if (editClient.company === "") {
+            alert("Client must have a company");
             return;
         }
         if (editClient.address1 === "") {
@@ -139,7 +154,8 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 { client.address2? <p className="client-address">Address 2: {client.address2}</p> : <></> }
                 { client.mobile? <p className="client-address">Mobile: {client.mobile}</p> : <></> }
                 <p className="client-city">City: {client.city}</p>
-                <p className="client-state-and-zip">{client.state + " " + client.zip}</p>
+                <p className="client-state-and-zip">State: {client.state + " " + client.zip}</p>
+                <p className="client-city">Country: {client.country}</p>
                 { client.website? <p className="client-state-and-zip">Website: {client.website}</p> : <></> }
                 { client.corediscount? <p className="client-state-and-zip">{client.corediscount + "% off core line cigars"}</p> : <></> }
             </div>
@@ -164,6 +180,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
             </div>
             <div className="client-info">
                 {/*<h4 className="client-name">{client.name}</h4>*/}
+                {isIntlUser?<span>
+                    <input type="checkbox" className="client-name" id="isInternational" checked={editClient.isInternational} onChange={e => setEditClient({...editClient, isInternational: e.target.checked})}/>
+                    <label htmlFor="isInternational">International</label>
+                </span> :null}
                 <span>
                     <label htmlFor="company">Company</label>
                     <input type="text" className="client-name" id="company" defaultValue={editClient.company} onChange={e => setEditClient({...editClient, company: e.target.value})}/>
@@ -213,6 +233,10 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <span>
                     <label htmlFor="zip">Zip</label>
                     <input type="text" className="client-state-and-zip" id="zip" defaultValue={editClient.zip} onChange={e => setEditClient({...editClient, zip: e.target.value})}/>
+                </span>
+                <span>
+                    <label htmlFor="country">Country</label>
+                    <input type="text" className="client-state-and-zip" id="country" defaultValue={editClient.country} onChange={e => setEditClient({...editClient, country: e.target.value})}/>
                 </span>
                 <span>
                     <label htmlFor="website">Website</label>

@@ -9,13 +9,27 @@ import ClientInfo from "../components/ClientInfo";
 
 const ClientList = () => {
 
+    const tokenString = sessionStorage.getItem('UserInfo');
+    let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
+    let isIntlUser = false
+    if (user) {
+        isIntlUser = user.roles.includes("International")
+    }
+
     const [clientNames, setClientNames] = useState(["loading..."]);
     const [filteredClientNames, setFilteredClientNames] = useState(["loading..."]);
     const [listCounter, setListCounter] = useState(0);
+    const [isIntl, setIsIntl] = useState(isIntlUser);
+
+
     useEffect(() => {
         const getClients = async () => {
+            let endpoint = "/api/clients/clientnames"
+            if (isIntl) {
+                endpoint += "/intl"
+            }
             try {
-                const response = await axios.get("/api/clients/clientnames", config());
+                const response = await axios.get(endpoint, config());
                 //const response = await axios.get("/apihttps://jsonplaceholder.typicode.com/users");
                 console.log("got clients");
                 console.log(response);
@@ -24,13 +38,13 @@ const ClientList = () => {
                     if ( (a.company?.toLowerCase() + a.name?.toLowerCase()) > (b.company?.toLowerCase() + b.name?.toLowerCase()) ) return 1;
                     return 0;
                 }).filter(n => (" " + n.company?.toLowerCase() + n.name?.toLowerCase()).length > 1 && (n.hasOwnProperty("company") || (n.hasOwnProperty("name") && n.name !== " ")))
-                setClientNames(names);
+                setClientNames(names); 
                 setFilteredClientNames(names);
             } catch (err) { console.error(err); }
         }
         getClients()
         .catch(console.error);
-    }, [listCounter]);
+    }, [listCounter, isIntl]);
 
     const addName = (name) => {
         console.log("add name to list");
@@ -38,7 +52,11 @@ const ClientList = () => {
     }
 
     const filter = (e) => {
-        setFilteredClientNames(clientNames.filter(n => ("" + (n.company ? n.company : n.name) + (n.city ? ", " + n.city : "") + (n.state? " " + n.state : "")).toLowerCase().includes(e.target.value.toLowerCase())))
+        if (isIntl) {
+            setFilteredClientNames(clientNames.filter(n => ("" + (n.company ? n.company : n.name) + (n.city ? ", " + n.city : "") + (n.country? " " + n.country : "")).toLowerCase().includes(e.target.value.toLowerCase())))
+        } else {
+            setFilteredClientNames(clientNames.filter(n => ("" + (n.company ? n.company : n.name) + (n.city ? ", " + n.city : "") + (n.state? " " + n.state : "")).toLowerCase().includes(e.target.value.toLowerCase())))
+        }
     }
 
     const [info, setInfo] = useState(false);
@@ -52,6 +70,15 @@ const ClientList = () => {
     return ( 
         <div className="clientlist content">
             <h2>Client List</h2>
+
+            {isIntlUser ? <div className="intl">
+                <span>
+                    <input type="radio" name="Domestic" id="dom" checked={!isIntl} onChange={()=>setIsIntl(!isIntl)}/>
+                    <label htmlFor="dom">Domestic</label>
+                    <input type="radio" name="International" id="intl" checked={isIntl} onChange={()=>setIsIntl(!isIntl)} />
+                    <label htmlFor="intl">International</label>
+                </span>
+            </div> : null}
 
             {info? <ClientInfo id={infoSrc} close={() => setInfo(false)} addNameToList={addName}/> : <></>}
 
@@ -69,7 +96,7 @@ const ClientList = () => {
                     <button className="clientnames" onClick={() => {
                         //alert(clientNames[index]);
                         getInfo(client._id);}} >
-                        { (client.company ? client.company : client.name) + (client.city ? ", " + client.city : "") + (client.state? " " + client.state : "") }
+                        { (client.company ? client.company : client.name) + (client.city ? ", " + client.city : "") + (client.state? " " + client.state : "") + (client.country? " " + client.country : "") }
                     </button>
                     <hr />
                     </Fragment>

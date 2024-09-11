@@ -28,10 +28,20 @@ router.get("/", async (req, res) => {
 });
 router.get("/clientnames", async (req, res) => {
     //const { brand }  = req.body;
-    ClientModel//.where({ brand })
+    ClientModel.where({ isInternational: false })
     //.distinct("name")
     .find()
     .select("company city state name _id")
+    .exec()
+    .then(clients => res.json(clients))
+    .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
+});
+router.get("/clientnames/intl", async (req, res) => {
+    //const { brand }  = req.body;
+    ClientModel.where({ isInternational: true })
+    //.distinct("name")
+    .find()
+    .select("company city state name _id country")
     .exec()
     .then(clients => res.json(clients))
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));
@@ -106,7 +116,7 @@ router.post("/add", async (req, res) => {
 
     const newClient = new ClientModel( 
         {
-            company: client.company? client.company :  client.name,
+            company: client.company,
             name: client.name,
             contact: client.contact,
             email: client.email,
@@ -119,7 +129,9 @@ router.post("/add", async (req, res) => {
             city: client.city,
             state: client.state,
             zip: client.zip,
-            corediscount: client.corediscount
+            country: client.country,
+            corediscount: client.corediscount,
+            isInternational: client.isInternational
         })
     await newClient.save();
 

@@ -48,6 +48,14 @@ const ClientSchema = new mongoose.Schema({
     corediscount: {
         type: Number,
         default: 0
+    },
+    isInternational: {
+        type: Boolean,
+        default: false
+    },
+    country: {
+        type: String,
+        default: "United States"
     }
     //orders: [String]
     

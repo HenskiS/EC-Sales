@@ -571,3 +571,7 @@ label.changePassword {
 .intl label{
   padding: 0px 10px 0px 3px;
 }
+.intl-client-toggle {
+  display: flex;
+  margin: 5px 0px;
+}
