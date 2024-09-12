@@ -109,7 +109,7 @@ router.post("/add", async (req, res) => {
     const client = req.body.editClient;
     const id = client._id;
 
-    const c = await ClientModel.findOne({ name: client.name });
+    const c = await ClientModel.findOne({ company: client.company });
     if (c) {
         return res.json({ exists: "Client already exists!" });
     }

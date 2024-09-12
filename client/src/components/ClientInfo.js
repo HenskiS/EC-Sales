@@ -86,7 +86,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
         console.log("add client");
         try {
             const response = await axios.post("/api/clients/add", {editClient}, config());
-            if ("exists" in response.data) {alert("A client with this name already exists.");}
+            if ("exists" in response.data) {alert("A client with this company name already exists.");}
             else {
                 console.log("added client:");
                 console.log(response);
