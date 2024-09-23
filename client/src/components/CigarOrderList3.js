@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from "react"
+import { useEffect, useState, useContext, useRef, createRef } from "react"
 import axios, { config } from "../api/axios"
 import OrderContext from "../context/OrderContext"
 import { useNavigate } from "react-router"
@@ -12,6 +12,7 @@ const CigarOrderList3 = () => {
     const navigate = useNavigate()
 
     const summaryRef = useRef(null);
+    const rowRefs = useRef({});
     const [searchTerm, setSearchTerm] = useState('');
 
     const tokenString = sessionStorage.getItem('UserInfo');
@@ -64,25 +65,35 @@ const CigarOrderList3 = () => {
         .catch(console.error);
     }, [isIntl])
 
-    const handleSearch = (e) => {
+    useEffect(() => {
+        // Initialize refs for each row
+        cigars?.forEach((_, index) => {
+          rowRefs.current[index] = createRef();
+        });
+      }, [cigars]);
+
+      const handleSearch = (e) => {
         e.preventDefault();
+        const searchLower = searchTerm.toLowerCase();
         const cigarIndex = cigars.findIndex(cigar => 
-          cigar.brandAndName.toLowerCase().startsWith(searchTerm.toLowerCase())
+          cigar.brandAndName.toLowerCase().startsWith(searchLower)
         );
     
-        if (cigarIndex !== -1) {
-          const rowHeight = isIntl? 40 : 32; // Adjust this based on your actual row height
-          const tableHeader = isIntl? 300: 350; // Adjust if you have a table header
-          const scrollPosition = cigarIndex * rowHeight + tableHeader;
-          console.log(`cigarIndex: ${cigarIndex}`)
-          console.log(`scrollPosition: ${scrollPosition}`)
-    
-          window.scrollTo({
-            top: scrollPosition,
-            behavior: 'smooth'
-          });
+        if (cigarIndex !== -1 && rowRefs.current[cigarIndex]) {
+          const row = rowRefs.current[cigarIndex].current;
+          if (row) {
+            const rect = row.getBoundingClientRect();
+            const scrollPosition = window.pageYOffset + rect.top - 30; // 30px offset for better visibility
+            
+            window.scrollTo({
+              top: scrollPosition,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          //alert("No cigar found starting with that name.");
         }
-      };
+    };
     const handleTotalClick = () => {
         summaryRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -117,7 +128,7 @@ const CigarOrderList3 = () => {
                 </thead>
                 <tbody>
                     {cigars && cigars.map((cigar, index) => (
-                        <tr key={index} className={ cart.find(oldCigar => oldCigar._id === cigar._id) ? "row-selected" : ""}>
+                        <tr key={index} ref={rowRefs.current[index]} className={ cart.find(oldCigar => oldCigar._id === cigar._id) ? "row-selected" : ""}>
                             <td>{cigar.brandAndName}</td>
                             <td>{cigar.blend}</td>
                             <td>{cigar.sizeName}</td>
@@ -144,7 +155,7 @@ const CigarOrderList3 = () => {
                 </button>
             </div>
             <br />
-            <h3>Summary</h3>
+            <h3 ref={summaryRef}>Summary</h3>
             <hr />
             <div className="discount-toggle">
                 <p>% Discount</p>
@@ -159,7 +170,7 @@ const CigarOrderList3 = () => {
                 {isBoxDiscount? <p className="boxes-available"><b>{ boxesUsed } used</b></p> : <></>}
             </div>
             
-            <div className="summary-list" ref={summaryRef}>
+            <div className="summary-list">
                 {!isBoxDiscount ? 
                 <span>
                     <label htmlFor="corediscount">Core Line Discount</label>
