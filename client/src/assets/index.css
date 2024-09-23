@@ -105,13 +105,14 @@ ul {
   justify-content: flex-end;
 }
 .submit-button{
-  width: 150px;
-  height: 50px;
+  width: 250px;
+  height: 75px;
   background-color: rgb(55, 155, 255);
   color: white;
   border: 0px;
   border-radius: 15px;
   margin: 5px;
+  font-size: 1.5em;
 }
 .submit-button:hover{
   background-color: rgb(46, 128, 210);

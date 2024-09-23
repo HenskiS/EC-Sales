@@ -140,7 +140,7 @@ const Home = (props) => {
             </div>
 
             <div className="submit-order">
-                <button className='submit-button' onClick={() => {
+                <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
                     console.log(cigarsToString(cigars));
                     submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
                 }}>Submit Order</button>

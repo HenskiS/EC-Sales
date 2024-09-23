@@ -1,14 +1,18 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState, useContext, useRef } from "react"
 import axios, { config } from "../api/axios"
 import OrderContext from "../context/OrderContext"
 import { useNavigate } from "react-router"
 import Toggle from 'react-toggle'
 import "react-toggle/style.css"
 import MiscCigars from "./MiscCigars"
+import CigarSearch from "./CigarSearch"
 
 const CigarOrderList3 = () => {
     
     const navigate = useNavigate()
+
+    const summaryRef = useRef(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const tokenString = sessionStorage.getItem('UserInfo');
     let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
@@ -60,6 +64,29 @@ const CigarOrderList3 = () => {
         .catch(console.error);
     }, [isIntl])
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const cigarIndex = cigars.findIndex(cigar => 
+          cigar.brandAndName.toLowerCase().startsWith(searchTerm.toLowerCase())
+        );
+    
+        if (cigarIndex !== -1) {
+          const rowHeight = isIntl? 40 : 32; // Adjust this based on your actual row height
+          const tableHeader = isIntl? 300: 350; // Adjust if you have a table header
+          const scrollPosition = cigarIndex * rowHeight + tableHeader;
+          console.log(`cigarIndex: ${cigarIndex}`)
+          console.log(`scrollPosition: ${scrollPosition}`)
+    
+          window.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth'
+          });
+        }
+      };
+    const handleTotalClick = () => {
+        summaryRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     return (
         <div>
             {isIntlUser ? <div className="intl">
@@ -70,6 +97,12 @@ const CigarOrderList3 = () => {
                     <label htmlFor="intl">International</label>
                 </span>
             </div> : null}
+
+            <CigarSearch    handleSearch={handleSearch} 
+                            searchTerm={searchTerm} 
+                            setSearchTerm={setSearchTerm}
+                            handleTotalClick={handleTotalClick} />
+
             <div className="cigar-list">
             <table className="cigarlist-table">
                 <thead>
@@ -126,7 +159,7 @@ const CigarOrderList3 = () => {
                 {isBoxDiscount? <p className="boxes-available"><b>{ boxesUsed } used</b></p> : <></>}
             </div>
             
-            <div className="summary-list">
+            <div className="summary-list" ref={summaryRef}>
                 {!isBoxDiscount ? 
                 <span>
                     <label htmlFor="corediscount">Core Line Discount</label>
