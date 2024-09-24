@@ -125,7 +125,9 @@ const Order = (props) => {
             <div className="print-order-notes">
                 <h3>Notes</h3>
                 <hr />
-                <textarea readOnly>{notes}</textarea>
+                {notes.split('\n').map(line => (
+                    <p>{line}</p>
+                ))}
             </div>
             
         </div>

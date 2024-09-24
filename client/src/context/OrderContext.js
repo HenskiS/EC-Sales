@@ -229,7 +229,7 @@ export const OrderProvider = ({ children }) => {
                                         boxesOff: boxesUsed},
                                 cigarData: cigars,
                                 emails: emails,
-                                notes: notes}, config());
+                                notes}, config());
         console.log("Order submission response:");
         console.log(response);
         updateClient(client)
