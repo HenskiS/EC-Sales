@@ -1,9 +1,25 @@
-import React from 'react';
+import { useRef, useCallback } from 'react';
 
 const CigarSearch = ({ handleSearch, searchTerm, setSearchTerm, handleTotalClick }) => {
-  const handleClearSearch = () => {
-    setSearchTerm('');
-  };
+  
+    const inputRef = useRef(null);
+
+    const handleClearSearch = () => {
+        setSearchTerm('');
+    };
+    
+    const handleSubmit = useCallback((e) => {
+        e.preventDefault();
+        if (inputRef.current) {
+          inputRef.current.blur(); // This will unfocus the input and dismiss the keyboard
+          
+          // Delay the search to allow time for the keyboard to dismiss and the layout to adjust
+          setTimeout(() => {
+            handleSearch(e);
+            setSearchTerm('');
+          }, 200); // Adjust this delay as needed
+        }
+    }, [handleSearch]);
 
   return (
     <div style={{
@@ -17,10 +33,11 @@ const CigarSearch = ({ handleSearch, searchTerm, setSearchTerm, handleTotalClick
       borderRadius: '8px',
       zIndex: 1000
     }}>
-      <form onSubmit={handleSearch} style={{ display: 'flex' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex' }}>
         <div style={{ position: 'relative', marginRight: '8px' }}>
           <input
             type="text"
+            ref={inputRef}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search cigars..."
