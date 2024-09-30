@@ -94,6 +94,7 @@ const Order = (props) => {
                     <td>Size Name</td>
                     <td>Size</td>
                     <td>Box Price</td>
+                    <td>{discount && boxesOff ? "Free" : "Discount"}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,6 +106,7 @@ const Order = (props) => {
                             <td>{cigar.sizeName}</td>
                             <td>{cigar.size}</td>
                             <td>${cigar.priceBox.toFixed(2)}</td>
+                            <td>{discount && boxesOff ? cigar.boxesOff ?? "" : cigar.discount? cigar.discount+"%" : "" }{}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -125,8 +127,8 @@ const Order = (props) => {
             <div className="print-order-notes">
                 <h3>Notes</h3>
                 <hr />
-                {notes.split('\n').map(line => (
-                    <p>{line}</p>
+                {notes.split('\n').map((line, index) => (
+                    <p key={index}>{line}</p>
                 ))}
             </div>
             
