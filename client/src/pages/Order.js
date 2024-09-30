@@ -94,7 +94,7 @@ const Order = (props) => {
                     <td>Size Name</td>
                     <td>Size</td>
                     <td>Box Price</td>
-                    <td>{discount && boxesOff ? "Free" : "Discount"}</td>
+                    {discount > 0 ? <td>{boxesOff ? "Free" : "Discount"}</td> : null}
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@ const Order = (props) => {
                             <td>{cigar.sizeName}</td>
                             <td>{cigar.size}</td>
                             <td>${cigar.priceBox.toFixed(2)}</td>
-                            <td>{discount && boxesOff ? cigar.boxesOff ?? "" : cigar.discount? cigar.discount+"%" : "" }{}</td>
+                            {discount > 0? <td>{boxesOff ? cigar.boxesOff ?? "" : cigar.discount? cigar.discount+"%" : "" }</td> :null}
                         </tr>
                     ))}
                 </tbody>
