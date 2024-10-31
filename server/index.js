@@ -23,8 +23,8 @@ app.use(cookieParser())
 
 //app.use("/", express.static(path.join(__dirname, "public")))
 //app.use(express.static('public')) // same thing as previous line, just shorter
-app.use(express.static(path.join(__dirname, 'build')))
-app.use("/", require('./routes/root'))
+//app.use(express.static(path.join(__dirname, 'build')))
+//app.use("/", require('./routes/root'))
 app.use("/api/auth", require('./routes/auth'))
 app.use("/api/users", require('./routes/users'))
 app.use("/api/cigars", require("./routes/cigars"))
