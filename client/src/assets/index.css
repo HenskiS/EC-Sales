@@ -503,10 +503,10 @@ label.changePassword {
   /*border: 1px solid;*/
   border-bottom: 1px solid #ddd;
   border-collapse: collapse;
-  padding: 3px 20px;
+  padding: 3px 15px;
 }
 .percent-off {
-  width: 40px;
+  max-width: 70px;
 }
 .summary-list {
   display: flex;

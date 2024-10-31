@@ -47,6 +47,54 @@ const Order = (props) => {
             .catch(console.error);
     }, []);
 
+    const DiscountTypes = {
+        BOX: 'box',
+        PERCENT: 'percent',
+        CUSTOM: 'custom'
+    };
+
+    const discountString = (cigar) => {
+        let s = "";
+    
+        switch (cigar.discountType) {
+            case DiscountTypes.BOX:
+                if (cigar.boxesOff) {
+                    s = cigar.boxesOff + " Free"
+                }
+                break;
+            case DiscountTypes.PERCENT:
+                if (cigar.percentOff) {
+                    s = cigar.percentOff + "%"
+                }
+                break;
+            case DiscountTypes.CUSTOM:
+                if (cigar.customPrice) {
+                    s = '$'+(cigar.priceBox - cigar.customPrice).toFixed(2)+'/Box'
+                }
+                break;
+            default:
+                break;
+        }
+        
+        return s;
+    }
+    const adjBoxPrice = (cigar) => {
+        let s = cigar.priceBox.toFixed(2)
+        switch (cigar.discountType) {
+            case DiscountTypes.BOX:
+                break;
+            case DiscountTypes.PERCENT:
+                if (cigar.percentOff) s = (cigar.priceBox - (cigar.priceBox * cigar.percentOff / 100)).toFixed(2)
+                break;
+            case DiscountTypes.CUSTOM:
+                if (cigar.customPrice) s = cigar.customPrice.toFixed(2)
+                break;
+            default:
+                break;
+        }
+        return s
+    }
+
     if (!order) return <h3>Order Not Found</h3>
     else return ( 
         <div className='home content'>
@@ -93,8 +141,8 @@ const Order = (props) => {
                     <td>Blend</td>
                     <td>Size Name</td>
                     <td>Size</td>
-                    <td>Box Price</td>
                     {discount > 0 ? <td>{boxesOff ? "Free" : "Discount"}</td> : null}
+                    <td>Adj. Box Price</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,8 +153,8 @@ const Order = (props) => {
                             <td>{cigar.blend}</td>
                             <td>{cigar.sizeName}</td>
                             <td>{cigar.size}</td>
-                            <td>${cigar.priceBox.toFixed(2)}</td>
-                            {discount > 0? <td>{boxesOff ? cigar.boxesOff ?? "" : cigar.discount? cigar.discount+"%" : "" }</td> :null}
+                            {discount > 0? <td>{discountString(cigar)}</td> :null}
+                            <td>${adjBoxPrice(cigar)}</td>
                         </tr>
                     ))}
                 </tbody>

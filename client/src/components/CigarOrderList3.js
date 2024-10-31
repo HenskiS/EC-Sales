@@ -7,6 +7,12 @@ import "react-toggle/style.css"
 import MiscCigars from "./MiscCigars"
 import CigarSearch from "./CigarSearch"
 
+const DiscountTypes = {
+    BOX: 'box',
+    PERCENT: 'percent',
+    CUSTOM: 'custom'
+};
+
 const CigarOrderList3 = () => {
     
     const navigate = useNavigate()
@@ -26,8 +32,9 @@ const CigarOrderList3 = () => {
         setCigars: setCart,
         client, coreDiscount, setCoreDiscount,
         addCigar,
-        isBoxDiscount, setIsBoxDiscount, discount, boxesOff, boxesUsed, updateBoxesOff,
-        updateQuantity,
+        updateDiscountValue, updateDiscountType,
+        discount,
+        updateQuantity, updatePrice,
         updateDiscount,
         removeCigar,
         subtotal,
@@ -97,6 +104,10 @@ const CigarOrderList3 = () => {
     const handleTotalClick = () => {
         summaryRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+    const handleSelect = (e, cigarId) => {
+        const discountType = e.target.value;
+        updateDiscountType(cigarId, discountType);
+    };
 
     return (
         <div>
@@ -157,30 +168,17 @@ const CigarOrderList3 = () => {
             <br />
             <h3 ref={summaryRef}>Summary</h3>
             <hr />
-            <div className="discount-toggle">
-                <p>% Discount</p>
-                <Toggle checked={isBoxDiscount} icons={{
-                    checked: null,
-                    unchecked: null,
-                    }} 
-                    onChange={(e) => setIsBoxDiscount(e.target.checked) }
-                />
-                <p>Box Discount</p>
-                {/*isBoxDiscount? <p className="boxes-available"><b>{ boxesOff-boxesUsed } available</b></p> : <></>*/}
-                {isBoxDiscount? <p className="boxes-available"><b>{ boxesUsed } used</b></p> : <></>}
-            </div>
             
             <div className="summary-list">
-                {!isBoxDiscount ? 
                 <span>
                     <label htmlFor="corediscount">Core Line Discount</label>
                     <input type="number" className="corediscount-input" id="corediscount" value={coreDiscount} 
                                     onChange={e => setCoreDiscount(e.target.value)} />
                 </span>
-                : null}
                 <table className="summary-table">
                 <thead>
                     <tr>
+                    <td>Discount Type</td>
                     <td>Discount</td>
                     <td>Name</td>
                     <td>Blend</td>
@@ -191,41 +189,71 @@ const CigarOrderList3 = () => {
                 </thead>
                 <tbody>
                 {cart.map((cigar, index) => {
-                    let s = ""
-                    s += cigar.brandAndName
-                    if (cigar.hasOwnProperty("blend")) {
-                        if (cigar.blend) s += " " + cigar.blend
-                    }
-                    if (cigar.hasOwnProperty("sizeName")) {
-                        if (cigar.sizeName) s += " " + cigar.sizeName
-                    }
-                    s += ", Qty: " + cigar.qty;
                     return (
                         //<div className="summary" key={index}>
                             <tr key={index}>
                                 <td>
-                                    { isBoxDiscount?
-                                    // box discount
+                                    <select value={cigar.discountType || '---'} 
+                                            onChange={(e) => handleSelect(e, cigar._id)}>
+                                        <option value="---">---</option>
+                                        <option value="box">Box</option>
+                                        <option value="percent">Percent</option>
+                                        <option value="custom">Custom Price</option>
+                                    </select>
+                                </td>
+                                <td>
+                                {cigar.discountType === DiscountTypes.BOX && (
                                     <div className="box-buttons">
-                                        <button className="minus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff-1 : 0)}
-                                        disabled={!cigar.boxesOff}>
-                                        -</button>
-                                            <p>{cigar.boxesOff? cigar.boxesOff:0}</p>
-                                        <button className="plus" onClick={(e) => updateBoxesOff(cigar._id, cigar.boxesOff ? cigar.boxesOff+1 : 1)}
-                                        disabled={cigar?.boxesOff === cigar.qty}>
-                                        +</button>
+                                    <button 
+                                        className="minus" 
+                                        onClick={() => updateDiscountValue(cigar._id, (cigar.boxesOff || 0) - 1)}
+                                        disabled={!cigar.boxesOff}
+                                    >
+                                        -
+                                    </button>
+                                    <p>{cigar.boxesOff || 0}</p>
+                                    <button 
+                                        className="plus" 
+                                        onClick={() => updateDiscountValue(cigar._id, (cigar.boxesOff || 0) + 1)}
+                                        disabled={cigar.boxesOff === cigar.qty}
+                                    >
+                                        +
+                                    </button>
                                     </div>
-                                    : // percent discount
-                                    <input className="percent-off" type="number" placeholder="% off" 
-                                    value={cigar.discount??""}
-                                    disabled={cigar.coreline}
-                                    onChange={e => updateDiscount(cigar._id, e.target.value)}/>}
+                                )}
+                                {cigar.discountType === DiscountTypes.PERCENT && (
+                                    <input 
+                                    className="percent-off" 
+                                    type="number" 
+                                    placeholder="% off"
+                                    value={cigar.percentOff || ''}
+                                    //disabled={cigar.coreline}
+                                    onChange={(e) => updateDiscountValue(cigar._id, e.target.value)}
+                                    />
+                                )}
+                                {cigar.discountType === DiscountTypes.CUSTOM && (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                        $<input
+                                        type="number"
+                                        step="0.01"
+                                        className="price-input"
+                                        value={+cigar.customPrice || ''}
+                                        onChange={(e) => updateDiscountValue(cigar._id, e.target.value)}
+                                        style={{
+                                            maxWidth: '70px',
+                                            border: 'none',
+                                            borderBottom: '1px solid #ccc',
+                                            padding: '2px 4px'
+                                        }}
+                                        />
+                                    </span>
+                                )}
                                 </td>
         
                                 <td>{cigar.brandAndName}</td>
                                 <td>{cigar.blend}</td>
                                 <td>{cigar.sizeName}</td>
-                                <td>${cigar.priceBox}</td>
+                                <td>${cigar.priceBox.toFixed(2)}</td>
                                 <td>{cigar.qty}</td>
                             </tr>
                         //</div>
@@ -239,7 +267,7 @@ const CigarOrderList3 = () => {
                 <p>${subtotal?.toFixed(2)}</p>
                 <h5>CA Taxes</h5>
                 <p>${(Math.ceil(taxAmount)/100).toFixed(2)/* taxAmount is in cents, so round up to nearest cent and divide by 100 for $ amount */}</p>
-                <h5>{boxesUsed? boxesUsed+"-Box ":""}Discount</h5>
+                <h5>{/*boxesUsed? boxesUsed+"-Box ":""*/}Discount</h5>
                 <p>${discount?.toFixed(2)}</p>
                 <h4>Total</h4>
                 <p className='total'>${total?.toFixed(2)/*cigars.length > 0 && total && total.toFixed(2)*/}</p>
