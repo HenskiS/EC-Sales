@@ -22,14 +22,17 @@ app.use(express.json());
 app.use(cookieParser())
 
 //app.use("/", express.static(path.join(__dirname, "public")))
-app.use(express.static('public')) // same thing as previous line, just shorter
+//app.use(express.static('public')) // same thing as previous line, just shorter
+app.use(express.static(path.join(__dirname, 'build')))
 app.use("/", require('./routes/root'))
 app.use("/api/auth", require('./routes/auth'))
 app.use("/api/users", require('./routes/users'))
 app.use("/api/cigars", require("./routes/cigars"))
 app.use("/api/clients", require("./routes/clients"))
 app.use("/api/orders", require("./routes/orders"))
-
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
