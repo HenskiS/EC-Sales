@@ -1,6 +1,6 @@
 import Navbar from './pages/navbar/Navbar';
 import Home from './pages/Home';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import Photos from './pages/Photos';
 import RepPersonal from './pages/RepPersonal';
 import ClientList from './pages/ClientList';
@@ -10,15 +10,31 @@ import ShowNavBar from './pages/navbar/ShowNavBar';
 import PrivateRoutes from './components/PrivateRoutes'
 import AdminRoute from './components/AdminRoute';
 import Order from './pages/Order';
+import { useState, useEffect } from 'react';
+import OfflineOrderPage from './offline/OfflineOrderPage';
+import useConnectivity from './hooks/useConnectivity'
+
 
 function App() {
 
   const { token, setToken } = useToken();
+  const { isConnected } = useConnectivity('/api/ping');
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!isConnected) {
+      navigate('/offline', { replace: true }); // replace: true prevents adding to history
+    }
+  }, [isConnected, navigate]);
 
   return (
     
-        <Routes>
+    <Routes>
+      <Route path="/offline" element={<OfflineOrderPage />} />
+      {!isConnected ? (
+        <Route path="*" element={<OfflineOrderPage />} />
+      ) : (
+        <>
           <Route path="/" element={<PrivateRoutes />}>
             <Route path="/" element={<Navbar />}>
               <Route index element={<AdminRoute />} />
@@ -26,13 +42,14 @@ function App() {
               <Route path="photos" element={<Photos />} />
               <Route path="reppersonal" element={<RepPersonal />} />
               <Route path="clientlist" element={<ClientList />} />
-              {/*<Route path="auth" element={<Auth setToken={setToken} />} />*/}
               <Route path="*" element={<Home />} />
             </Route>
           </Route>
           <Route path="/auth" element={<Auth setToken={setToken} />} />
           <Route path="/printorder/:id" element={<Order />} />
-        </Routes>
+        </>
+      )}
+    </Routes>
   );
 }
 
