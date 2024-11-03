@@ -13,7 +13,7 @@ const DiscountTypes = {
     CUSTOM: 'custom'
 };
 
-const CigarOrderList3 = () => {
+const CigarOrderList3 = (offline=false) => {
     
     const navigate = useNavigate()
 
@@ -159,8 +159,10 @@ const CigarOrderList3 = () => {
             </div>
             
             <div className="reset-order">
-                <button onClick={() => {setCart([]); 
-                    navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
+                <button onClick={() => {setCart([]);
+                    if (!offline) { 
+                        navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
+                    }
                     window.location.reload() }}>
                         Reset Order
                 </button>

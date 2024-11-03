@@ -44,11 +44,36 @@ const CACHE_NAME = 'cigar-app-v1';
 const ASSETS_TO_CACHE = ${JSON.stringify(relativePaths, null, 2)};
 const OFFLINE_URL = '/offline';
 
-// List of endpoints that should never be cached
-const NO_CACHE_ENDPOINTS = [
-  '/api/ping',
-  // Add other endpoints that shouldn't be cached here
+// List of API endpoints that should be cached
+const CACHE_API_ENDPOINTS = [
+  '/api/cigars',
+  '/api/cigars/intl',
+  '/api/clients/clientnames',
+  '/api/clients/clientnames/intl',
+  '/api/orders/catax',
+  // Add other API endpoints that should be cached here
 ];
+
+// Helper function to check if a URL matches any of our cacheable API endpoints
+function shouldCacheEndpoint(url) {
+  return CACHE_API_ENDPOINTS.some(endpoint => url.includes(endpoint));
+}
+
+// Helper function to determine if a request is for static assets
+function isStaticAsset(url) {
+  // Exclude any API routes first
+  if (url.includes('/api/')) {
+    return false;
+  }
+  
+  // For the root path, only match it exactly
+  if (url === '/') {
+    return true;
+  }
+  
+  // For other assets, do an exact match from our asset list
+  return ASSETS_TO_CACHE.includes(url);
+}
 
 addEventListener('install', (event) => {
   console.log('Service Worker: Installing');
@@ -61,7 +86,7 @@ addEventListener('install', (event) => {
       })
       .then(() => {
         console.log('Service Worker: All Files Cached');
-        return self.skipWaiting(); // Activate worker immediately
+        return self.skipWaiting();
       })
       .catch((error) => {
         console.error('Service Worker: Caching Failed:', error);
@@ -70,17 +95,63 @@ addEventListener('install', (event) => {
 });
 
 addEventListener('fetch', (event) => {
-  // Don't cache:
-  // 1. Non-GET requests
-  // 2. Endpoints in NO_CACHE_ENDPOINTS
-  if (
-    event.request.method !== 'GET' ||
-    NO_CACHE_ENDPOINTS.some(endpoint => event.request.url.includes(endpoint))
-  ) {
-    return event.respondWith(
+  // Only handle GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  const url = new URL(event.request.url);
+
+  // Handle different types of requests
+  if (isStaticAsset(url.pathname)) {
+    // Handle static assets
+    event.respondWith(
+      caches.match(event.request)
+        .then((cachedResponse) => cachedResponse || fetch(event.request))
+    );
+  } else if (shouldCacheEndpoint(url.pathname)) {
+    // Handle cacheable API endpoints
+    event.respondWith(
+      caches.match(event.request)
+        .then((cachedResponse) => {
+          // Return cached response if exists
+          if (cachedResponse) {
+            // Fetch new version in background
+            fetch(event.request)
+              .then((response) => {
+                if (response.ok) {
+                  caches.open(CACHE_NAME)
+                    .then((cache) => cache.put(event.request, response));
+                }
+              })
+              .catch(() => console.log('Background fetch failed, using cached version'));
+            
+            return cachedResponse;
+          }
+
+          // If no cached version, fetch from network
+          return fetch(event.request)
+            .then((response) => {
+              if (response.ok) {
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME)
+                  .then((cache) => cache.put(event.request, responseClone));
+              }
+              return response;
+            })
+            .catch(() => {
+              if (event.request.mode === 'navigate') {
+                return caches.match(OFFLINE_URL);
+              }
+              return Promise.reject('Offline');
+            });
+        })
+    );
+  } else {
+    // For all other requests, try network first, fallback to offline page for navigation
+    event.respondWith(
       fetch(event.request)
         .catch(() => {
-          // If it's a page navigation, serve offline page
           if (event.request.mode === 'navigate') {
             return caches.match(OFFLINE_URL);
           }
@@ -88,41 +159,11 @@ addEventListener('fetch', (event) => {
         })
     );
   }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          console.log('Service Worker: Serving from Cache:', event.request.url);
-          return cachedResponse;
-        }
-        
-        console.log('Service Worker: Fetching from Network:', event.request.url);
-        return fetch(event.request)
-          .then((response) => {
-            if (response.ok) {
-              const responseClone = response.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, responseClone);
-              });
-            }
-            return response;
-          })
-          .catch(() => {
-            // If it's a page navigation, serve offline page
-            if (event.request.mode === 'navigate') {
-              return caches.match(OFFLINE_URL);
-            }
-            return Promise.reject('Offline');
-          });
-      })
-  );
 });
 
 addEventListener('activate', (event) => {
   console.log('Service Worker: Activated');
   
-  // Take control of all pages immediately
   event.waitUntil(Promise.all([
     self.clients.claim(),
     caches.keys().then((cacheNames) => {

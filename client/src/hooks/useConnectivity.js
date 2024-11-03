@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useConnectivity = (pingEndpoint = '/api/ping') => {
+const useConnectivity = (pingEndpoint = '/api/ping') => {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [isServerAvailable, setIsServerAvailable] = useState(true);
 
@@ -58,3 +58,5 @@ export const useConnectivity = (pingEndpoint = '/api/ping') => {
       isConnected: isOnline && isServerAvailable
     };
 };
+
+export default useConnectivity

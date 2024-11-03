@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios, { config } from "../api/axios";
+import { useOfflineOrders } from '../hooks/useOfflineOrders';
+
 
 const OrderContext = createContext({});
 
@@ -87,6 +89,7 @@ export const OrderProvider = ({ children }) => {
         zip: "",
         corediscount: ""
     })
+    const { saveOfflineOrder } = useOfflineOrders();
 
     useEffect(() => {
         // get CA tax amount
@@ -211,6 +214,20 @@ export const OrderProvider = ({ children }) => {
         });
         setCigars(updatedCigars);
     };
+    const saveOrder = async () => {
+        const orderData = {client, salesman: {},  cigars: {cigars: cigarsToString(cigars),
+                                subtotal,
+                                tax: taxAmount,
+                                total,
+                                discount: discount},
+                        cigarData: cigars,
+                        emails: [],
+                        notes}
+        const order = await saveOfflineOrder(orderData)
+        if (order) {
+            window.location.reload()
+        }
+    }
     const submitOrder = async (salesman, emails) => {
         if (client.company === "") {
             alert("No client selected!");
@@ -242,7 +259,7 @@ export const OrderProvider = ({ children }) => {
                                         cigars, setCigars, addCigar, updateQuantity, updatePrice, 
                                         updateDiscountValue, updateDiscountType,
                                         removeCigar, updateMiscCigar,
-                                        discount, subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder }}>
+                                        discount, subtotal, total, taxAmount, setTaxCents, notes, setNotes, submitOrder, saveOrder }}>
             {children}
         </OrderContext.Provider>
     )

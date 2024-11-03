@@ -1,9 +1,5 @@
 import { useState, useEffect, Fragment, useRef, useContext } from 'react';
 import { useSearchParams } from "react-router-dom"
-import CigarList from '../components/CigarList';
-import CigarOrderList2 from '../components/CigarOrderList2';
-import useFetch from '../hooks/useFetch';
-import useToken from '../hooks/useToken';
 import axios from '../api/axios';
 import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
@@ -34,9 +30,9 @@ const cigarsToString = (cigars) => {
     });
 }
 
-const Home = (props) => {
+const Home = (offline = false) => {
 
-    const { cigars, client, setClient, submitOrder, notes, setNotes } = useContext(OrderContext)
+    const { cigars, client, setClient, submitOrder, notes, setNotes, saveOrder } = useContext(OrderContext)
 
     const previousCigars= [];
     //const [cigars, setCigars] = useState([]);
@@ -63,23 +59,18 @@ const Home = (props) => {
                 setOrders(response2.data);
             } catch (err) { console.error(err); }
         }
-        if (clientID || clientID !== client._id) {
-            getClient()
-            .catch(console.error);
+        if (!offline) {
+            if (clientID || clientID !== client._id) {
+                getClient()
+                .catch(console.error);
+            }
+        } else {
+            setClient({id: clientID})
         }
         //console.log("client");
         //console.log(client);
         //else setIsEditing(true);
     }, [clientID]);
-
-    /*useEffect(() => {
-        setClient(client)
-    }, [client])*/
-
-    const setOrderPrice = (subtotal, total) => {
-        setOrderSubtotal(subtotal);
-        setOrderTotal(total);
-    }
 
     const uinfo = sessionStorage.getItem('UserInfo')
     const UserInfo = uinfo ? JSON.parse(uinfo) : {name: "", userID: ""}
@@ -120,12 +111,12 @@ const Home = (props) => {
             </div>
             <h3>Cigars</h3>
             {/*clientID && cigars && <CigarOrderList2 client={client} setClient={setClient} cigars={cigars} setOrderPrice={setOrderPrice} taxes={client.state.toUpperCase().startsWith("CA")} corediscount={client.hasOwnProperty("corediscount")? client.corediscount : ""} />*/}
-            {clientID && cigars && <CigarOrderList3 />}
+            { (offline || clientID) && cigars && <CigarOrderList3 offline={offline} />}
             <hr />
             <label>Notes (optional):</label>
             <br />
             <textarea className="order-notes-input" value={notes} onChange={e => setNotes(e.target.value)}/>
-            <div className="cc-emails">
+            {!offline ? <div className="cc-emails">
                 <label>CC Order Summary (optional):</label>
                 <ReactMultiEmail 
                     placeholder='Input email address(es)'
@@ -137,13 +128,21 @@ const Home = (props) => {
                         <span data-tag-handle onClick={() => removeEmail(index)}>×</span>
                         </div>
                     )}/>
-            </div>
+            </div> : null}
 
             <div className="submit-order">
-                <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
-                    console.log(cigarsToString(cigars));
-                    submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
-                }}>Submit Order</button>
+                {!offline ? 
+                    <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
+                        console.log(cigarsToString(cigars));
+                        submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
+                    }}>
+                        Submit Order
+                    </button> 
+                :
+                    <button className='submit-button' style={{marginBottom:'50px'}} onClick={saveOrder}>
+                        Save Order
+                    </button>
+                }
             </div>
             <hr />
             

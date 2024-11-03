@@ -35,10 +35,7 @@ const Auth = ({ setToken }) => {
                     withCredentials: true
                 }
             );
-            //console.log(response);
-            //setCookies("access_token", response.data.token)
             setToken(response.data.accessToken);
-            // set cookie
 
             const UserInfo = jwtDecode(response.data.accessToken).UserInfo
             sessionStorage.setItem('accessToken', JSON.stringify(jwtDecode(response.data.accessToken)));
@@ -46,9 +43,8 @@ const Auth = ({ setToken }) => {
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
             setAuth({ username, password, roles, accessToken})
-            //localStorage.setItem('userName', JSON.stringify(response.data.name));
-            //localStorage.setItem('userID', JSON.stringify(response.data.userID));
             sessionStorage.setItem('UserInfo', JSON.stringify(UserInfo));
+            await updateCigarCatalog()
             
             if (remember) {
                 localStorage.setItem('credentials', JSON.stringify({username, password}))
@@ -103,6 +99,23 @@ const Auth = ({ setToken }) => {
 
 Auth.propTypes = {
     setToken: PropTypes.func.isRequired
+}
+
+async function updateCigarCatalog() {
+    try {
+      const response = await axios.get('/api/cigars', config());
+      const cigars = response.data;
+      const response2 = await axios.get('/api/cigars/intl', config());
+      const intl = response2.data;
+      const catalogData = {
+        timestamp: Date.now(),
+        cigars: cigars,
+        intlCigars: intl
+      };
+      localStorage.setItem('cigarCatalog', JSON.stringify(catalogData));
+    } catch (error) {
+      console.error('Failed to update catalog:', error);
+    }
 }
 
 export default Auth;
