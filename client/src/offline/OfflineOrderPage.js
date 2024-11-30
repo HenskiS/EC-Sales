@@ -72,7 +72,7 @@ const OfflineOrderPage = () => {
 
   return (
     <div className="order-page">
-        <Home offline />
+        <Home />
     </div>
   );
 };

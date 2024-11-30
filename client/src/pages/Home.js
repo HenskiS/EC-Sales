@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment, useRef, useContext } from 'react';
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams, useLocation } from "react-router-dom"
 import axios from '../api/axios';
 import {config} from "../api/axios.js";
 import ClientSelect from '../components/ClientSelect';
@@ -30,7 +30,9 @@ const cigarsToString = (cigars) => {
     });
 }
 
-const Home = (offline = false) => {
+const Home = () => {
+    const location = useLocation();
+    const offline = location.pathname === '/offline';
 
     const { cigars, client, setClient, submitOrder, notes, setNotes, saveOrder } = useContext(OrderContext)
 
@@ -131,17 +133,17 @@ const Home = (offline = false) => {
             </div> : null}
 
             <div className="submit-order">
-                {!offline ? 
+                {offline ? 
+                    <button className='submit-button' style={{marginBottom:'50px'}} onClick={saveOrder}>
+                        Save Order
+                    </button>
+                    :
                     <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
                         console.log(cigarsToString(cigars));
                         submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
                     }}>
                         Submit Order
                     </button> 
-                :
-                    <button className='submit-button' style={{marginBottom:'50px'}} onClick={saveOrder}>
-                        Save Order
-                    </button>
                 }
             </div>
             <hr />

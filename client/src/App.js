@@ -18,7 +18,8 @@ import useConnectivity from './hooks/useConnectivity'
 function App() {
 
   const { token, setToken } = useToken();
-  const { isConnected } = useConnectivity('/api/ping');
+  //const { isConnected } = useConnectivity('/api/ping');
+  const isConnected = true;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,8 @@ function App() {
         <Route path="*" element={<OfflineOrderPage />} />
       ) : (
         <>
+          <Route path="/auth" element={<Auth setToken={setToken} />} />
+          <Route path="/printorder/:id" element={<Order />} />
           <Route path="/" element={<PrivateRoutes />}>
             <Route path="/" element={<Navbar />}>
               <Route index element={<AdminRoute />} />
@@ -45,8 +48,6 @@ function App() {
               <Route path="*" element={<Home />} />
             </Route>
           </Route>
-          <Route path="/auth" element={<Auth setToken={setToken} />} />
-          <Route path="/printorder/:id" element={<Order />} />
         </>
       )}
     </Routes>

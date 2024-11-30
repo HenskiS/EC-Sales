@@ -163,6 +163,8 @@ const Order = (props) => {
 
             <br />
             <div className="subtotal">
+                <h5>Total # of Units</h5>
+                <p>{cigars.reduce((total, cigar) => total + cigar.qty, 0)}</p>        
                 <h5>Subtotal</h5>
                 <p>${ subtotal?.toFixed(2) }</p>
                 <h5>CA Taxes</h5>
