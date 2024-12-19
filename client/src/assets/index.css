@@ -576,3 +576,6 @@ label.changePassword {
   display: flex;
   margin: 5px 0px;
 }
+.cig-per-box {
+  width: 60px;
+}

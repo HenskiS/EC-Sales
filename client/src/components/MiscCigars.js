@@ -98,7 +98,7 @@ const MiscCigars = () => {
                 <td><b>Miscellaneous</b></td>
                 <td>Blend</td>
                 <td>Size Name</td>
-                <td>Box Qty</td>
+                <td>Cigars/Box</td>
                 <td>Price</td>
                 <td>Qty</td>
             </tr>
@@ -119,7 +119,7 @@ const MiscCigars = () => {
                     />
                 </td>
                 <td>
-                    <input className='cigar-qty cigar-col' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c1._id)?.size ?? "" } placeholder='BoxQty' 
+                    <input className='cigar-qty cigar-col cig-per-box' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c1._id)?.size ?? "" } placeholder='Cig/Box' 
                         onChange={ (e) => { setC1({...c1, quantityBox: (e.target.value)}) } } 
                     />
                 </td>
@@ -151,7 +151,7 @@ const MiscCigars = () => {
                     />
                 </td>
                 <td>
-                    <input className='cigar-qty cigar-col' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c2._id)?.size ?? "" } placeholder='BoxQty' 
+                    <input className='cigar-qty cigar-col cig-per-box' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c2._id)?.size ?? "" } placeholder='Cig/Box' 
                         onChange={ (e) => { setC2({...c2, quantityBox: (e.target.value)}) } } 
                     />
                 </td>
@@ -184,7 +184,7 @@ const MiscCigars = () => {
                     />
                 </td>
                 <td>
-                    <input className='cigar-qty cigar-col' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c3._id)?.size ?? "" } placeholder='BoxQty' 
+                    <input className='cigar-qty cigar-col cig-per-box' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c3._id)?.size ?? "" } placeholder='Cig/Box' 
                         onChange={ (e) => { setC3({...c3, quantityBox: (e.target.value)}) } } 
                     />
                 </td>
@@ -217,7 +217,7 @@ const MiscCigars = () => {
                     />
                 </td>
                 <td>
-                    <input className='cigar-qty cigar-col' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c4._id)?.size ?? "" } placeholder='BoxQty' 
+                    <input className='cigar-qty cigar-col cig-per-box' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c4._id)?.size ?? "" } placeholder='Cig/Box' 
                         onChange={ (e) => { setC4({...c4, quantityBox: (e.target.value)}) } } 
                     />
                 </td>
@@ -250,7 +250,7 @@ const MiscCigars = () => {
                     />
                 </td>
                 <td>
-                    <input className='cigar-qty cigar-col' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c5._id)?.size ?? "" } placeholder='BoxQty' 
+                    <input className='cigar-qty cigar-col cig-per-box' type="text" defaultValue={cart.find(oldCigar => oldCigar._id === c5._id)?.size ?? "" } placeholder='Cig/Box' 
                         onChange={ (e) => { setC5({...c5, quantityBox: (e.target.value)}) } } 
                     />
                 </td>
