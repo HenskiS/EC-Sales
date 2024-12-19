@@ -21,8 +21,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser())
 
-
-//app.use("/", require('./routes/root'))
+app.use(express.static("public"))
+app.use("/", require('./routes/root')) // comment for dev
 app.use("/api/auth", require('./routes/auth'))
 app.use("/api/users", require('./routes/users'))
 app.use("/api/cigars", require("./routes/cigars"))
@@ -31,13 +31,13 @@ app.use("/api/orders", require("./routes/orders"))
 app.get('/api/ping', (req, res) => res.status(200).end());
 
 // Development
+/*
 app.use(express.static('../client/build'))
 app.all('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 })
+*/
 // Production
-/*
-app.use("/", express.static("public"))
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
@@ -47,7 +47,7 @@ app.all('*', (req, res) => {
     } else {
         res.type('txt').send('404 Not Found')
     }
-})*/
+})
 
 app.use(errorHandler)
 

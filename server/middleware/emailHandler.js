@@ -46,7 +46,7 @@ const send = (data) => {
     })
 }
 
-const sendEmail = async (data, time, id) => {
+const sendEmail = async (data, time, id, filename) => {
 
     console.log(data)
 
@@ -64,8 +64,6 @@ const sendEmail = async (data, time, id) => {
     }
 
     if (!data.client.company || data.client.company === "") data.client.company = data.client.name
-
-    const filename = `Order ${time} ${data.salesman.name} ${data.client.company}.pdf`
 
     const data2 = 
     {

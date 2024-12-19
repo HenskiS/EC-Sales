@@ -13,6 +13,25 @@ const fs = require('fs');
 const fileName = './config/tax.json';
 const file = require('../config/tax.json');
 
+const sanitizeFilename = (filename) => {
+    // Define characters that are problematic for filenames
+    const invalidChars = /[<>:"/\\|?*\x00-\x1F]/g;
+    
+    // Replace problematic characters with a safe alternative
+    // You can customize the replacement character as needed
+    const sanitized = filename
+      .replace(invalidChars, '-')
+      // Replace multiple consecutive dashes with a single dash
+      .replace(/-+/g, '-')
+      // Remove leading/trailing dashes
+      .replace(/^-+|-+$/g, '')
+      // Trim whitespace
+      .trim();
+      
+    // Ensure the filename isn't empty after sanitization
+    return sanitized || 'unnamed';
+};
+
 router.get("/orderbyid/:id", async (req, res) => {
     // Get order by id from MongoDB
     console.log("order by id")
@@ -123,7 +142,8 @@ router.post("/add", async (req, res) => {
     // if the order is submitted after 4pm, the date may be the next day
     let event = new Date()
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
-    let filename = `Order ${time} ${req.body.salesman.name} ${req.body.client.company?.length ? req.body.client.company : req.body.client.name}.pdf`
+    const sanitizedClient = sanitizeFilename(req.body.client.company?.length ? req.body.client.company : req.body.client.name)
+    let filename = `Order ${time} ${req.body.salesman.name} ${sanitizedClient}.pdf`
     console.log("filename: " + filename)
     //sendEmail(req.body, time)
     
@@ -141,7 +161,7 @@ router.post("/add", async (req, res) => {
 
     if (order) {
         res.json({ success: "Order Added Successfully!"})
-        sendEmail(req.body, time, order._id)
+        sendEmail(req.body, time, order._id, filename)
     } else {
         res.status(400).json({ error: 'Invalid order data received' })
     }
