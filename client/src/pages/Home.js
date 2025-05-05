@@ -34,7 +34,7 @@ const Home = () => {
     const location = useLocation();
     const offline = location.pathname === '/offline';
 
-    const { cigars, client, setClient, submitOrder, notes, setNotes, saveOrder } = useContext(OrderContext)
+    const { cigars, client, setClient, submitOrder, notes, setNotes, isEstimate, setIsEstimate, saveOrder } = useContext(OrderContext)
 
     const previousCigars= [];
     //const [cigars, setCigars] = useState([]);
@@ -138,12 +138,23 @@ const Home = () => {
                         Save Order
                     </button>
                     :
-                    <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
-                        console.log(cigarsToString(cigars));
-                        submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
-                    }}>
-                        Submit Order
-                    </button> 
+                    <>
+                        <span style={{ margin: "20px 0px 10px 0px" }}>
+                            <input type='checkbox' 
+                                style={{ margin: "0px 4px 0px 5px" }}
+                                checked={isEstimate}
+                                onChange={(e)=> setIsEstimate(e.target.checked)}
+                                id='estimate'
+                            />
+                            <label htmlFor='estimate'>{"Estimate? (Order will not be sent to Shipping, only customer and you)"}</label>
+                        </span>
+                        <button className='submit-button' style={{marginBottom:'50px'}} onClick={() => {
+                            console.log(cigarsToString(cigars));
+                            submitOrder({_id: UserInfo.userID, name: UserInfo.name, email: UserInfo.email}, emails);
+                        }}>
+                            Submit Order
+                        </button>
+                    </>
                 }
             </div>
             <hr />

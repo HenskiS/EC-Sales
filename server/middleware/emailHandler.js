@@ -53,6 +53,9 @@ const sendEmail = async (data, time, id, filename) => {
     console.log("----SEND EMAIL----")
     
     let cc = file.emails?.length >= 1 ? file.emails.concat() : []
+    if (data.isEstimate) {
+        cc = [];
+    }
     if (data.client.email && data.client.email !== "") {
         cc.push(data.client.email)
     }
@@ -70,8 +73,8 @@ const sendEmail = async (data, time, id, filename) => {
         "from": `${ data.salesman.name ?? "Esteban Carreras"} <estebancarrerassales@gmail.com>`,
         "to": cc[0], //"henryschreiner@mac.com",
         "cc": cc.slice(1),
-        "subject": `Order ${"for " + data.client.company}`,
-        "text": "Attached is a PDF of your order.\n\nThis message is automated, please do not reply.",
+        "subject": `${data.isEstimate? "Estimate" : "Order"} ${"for " + data.client.company}`,
+        "text": `Attached is a PDF of your ${data.isEstimate? "estimate" : "order"}.\nNote: Shipping costs not included.\n\nThis message is automated, please do not reply.`,
         "attachments": [
         {
             "filename": filename,
