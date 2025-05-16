@@ -14,8 +14,10 @@ const DiscountTypes = {
 function price(item){
     return item.priceBox * 100 * item.qty;
 }
-function tax(item, taxCents) {
-    return item.quantityBox * parseFloat(taxCents) * item.qty
+function tax(item) {
+    if (item.caTaxCents && item.caTaxCents > 0) {
+        return item.quantityBox * item.caTaxCents * item.qty;
+    } else return 0;
 }
 function priceWithDiscount(item) {
     let price = item.priceBox * 100 * item.qty;
@@ -121,7 +123,7 @@ export const OrderProvider = ({ children }) => {
             // ca taxes
             let caTax = 0
             if (client && client.hasOwnProperty('state') && client.state.toUpperCase().startsWith("CA")) {
-                caTax = cigars.map(c => tax(c, taxCents)).reduce(sum)
+                caTax = cigars.map(c => tax(c)).reduce(sum)
             }
             setTaxAmount(caTax) // in Cents!
             // total
