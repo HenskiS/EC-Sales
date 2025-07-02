@@ -31,7 +31,7 @@ router.get("/clientnames", async (req, res) => {
     ClientModel.where({ isInternational: false })
     //.distinct("name")
     .find()
-    .select("company city state name _id")
+    .select("company city state name email _id")
     .exec()
     .then(clients => res.json(clients))
     .catch(err => res.status(404).json({noclientsfound: "No Clients Found!"}));

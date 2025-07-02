@@ -261,9 +261,9 @@ export const PhotosData = [
         </>
     },
     {
-        title: "Devils Hand",
+        title: "Dictators Hand",
         src: [img1, img2, img3],
-        captions: ["Taken From the Devil’s Hand Boolit (4 3/4 x 46) (Box of 32)", "Taken From the Devil’s Hand Toro (6 x 50) (Box of 20)", "Taken From the Devil’s Hand Sixty (6 x 60) (Box of 20)"],
+        captions: ["Taken From the Dictator’s Hand Boolit (4 3/4 x 46) (Box of 32)", "Taken From the Dictator’s Hand Toro (6 x 50) (Box of 20)", "Taken From the Dictator’s Hand Sixty (6 x 60) (Box of 20)"],
         description: <>
             <ul>
                 <li><b>Country of Origin:</b> Nicaragua</li>
@@ -274,18 +274,18 @@ export const PhotosData = [
             </ul>
             <br />
             <ul>
-                <li>Taken From the Devil’s Hand Boolit (4 3/4 x 46) (Box of 32)</li>
-                <li>Taken From the Devil’s Hand Toro (6 x 50) (Box of 20)</li>
-                <li>Taken From the Devil’s Hand Sixty (6 x 60) (Box of 20)</li>
+                <li>Taken From the Dictator’s Hand Boolit (4 3/4 x 46) (Box of 32)</li>
+                <li>Taken From the Dictator’s Hand Toro (6 x 50) (Box of 20)</li>
+                <li>Taken From the Dictator’s Hand Sixty (6 x 60) (Box of 20)</li>
             </ul>
             <br />
-            <p>This delicious Nicaraguan puro features an oily, mouthwatering Corojo maduro wrapper and it is packed with tobaccos from this Central American country’s prime tobacco growing regions. When lit, the Devil’s Hand offers a flavorful, medium to full-bodied smoking experience. The Devil’s Hand is the first time Esteban Carreras has used Corojo tobacco in one of its cigars. The cigar got its curious name from the premium Corojo seeds that were smuggled out of Cuba. The “devil” being Fidel Castro and his government.</p>
+            <p>This delicious Nicaraguan puro features an oily, mouthwatering Corojo maduro wrapper and it is packed with tobaccos from this Central American country’s prime tobacco growing regions. When lit, the Dictator’s Hand offers a flavorful, medium to full-bodied smoking experience. The Dictator’s Hand is the first time Esteban Carreras has used Corojo tobacco in one of its cigars. The cigar got its curious name from the premium Corojo seeds that were smuggled out of Cuba. The “Dictator” being Fidel Castro and his government.</p>
         </>
     },
     {
-        title: "Devils Hand Maduro",
+        title: "Dictators Hand Maduro",
         src: [img4, img5, img6],
-        captions: ["Taken From the Devil’s Hand Corojo Maduro Boolit (4 3/4 x 46) (Box of 32)", "Taken From the Devil’s Hand Corojo Maduro Toro (6 x 50) (Box of 20)", "Taken From the Devil’s Hand Corojo Maduro Sixty (6 x 60)(Box of 20)"],
+        captions: ["Taken From the Dictator’s Hand Corojo Maduro Boolit (4 3/4 x 46) (Box of 32)", "Taken From the Dictator’s Hand Corojo Maduro Toro (6 x 50) (Box of 20)", "Taken From the Dictator’s Hand Corojo Maduro Sixty (6 x 60)(Box of 20)"],
         description: <>
             <ul>
                 <li><b>Wrapper:</b> Ecuador (Corojo Maduro)</li>
@@ -294,12 +294,12 @@ export const PhotosData = [
             </ul>
             <br />
             <ul>
-                <li>Taken From the Devil’s Hand Corojo Maduro Boolit (4 3/4 x 46) (Box of 32)</li>
-                <li>Taken From the Devil’s Hand Corojo Maduro Toro (6 x 50) (Box of 20)</li>
-                <li>Taken From the Devil’s Hand Corojo Maduro Sixty (6 x 60)(Box of 20)</li>
+                <li>Taken From the Dictator’s Hand Corojo Maduro Boolit (4 3/4 x 46) (Box of 32)</li>
+                <li>Taken From the Dictator’s Hand Corojo Maduro Toro (6 x 50) (Box of 20)</li>
+                <li>Taken From the Dictator’s Hand Corojo Maduro Sixty (6 x 60)(Box of 20)</li>
             </ul>
             <br />
-            <p>The cigars feature a savory Ecuadorian Corojo maduro wrapper that expertly covers a binder and filler made of premium Nicaraguan tobacco. To enhance its flavor profile, the cigar’s delicious wrapper was aged for two years prior to rolling. The Devil’s Hand Maduro delivers a spicier, more complex blend than its predecessor.</p>
+            <p>The cigars feature a savory Ecuadorian Corojo maduro wrapper that expertly covers a binder and filler made of premium Nicaraguan tobacco. To enhance its flavor profile, the cigar’s delicious wrapper was aged for two years prior to rolling. The Dictator’s Hand Maduro delivers a spicier, more complex blend than its predecessor.</p>
         </>
     },
     {

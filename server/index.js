@@ -27,6 +27,7 @@ app.use("/api/auth", require('./routes/auth'))
 app.use("/api/users", require('./routes/users'))
 app.use("/api/cigars", require("./routes/cigars"))
 app.use("/api/clients", require("./routes/clients"))
+app.use("/api/photos", require('./routes/photos'))
 app.use("/api/orders", require("./routes/orders"))
 app.get('/api/ping', (req, res) => res.status(200).end());
 

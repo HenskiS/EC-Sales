@@ -1,9 +1,6 @@
 const nodemailer = require("nodemailer")
 require('dotenv').config()
-const fs = require('fs');
 const puppeteer = require("puppeteer");
-
-const fileName = './config/tax.json';
 const file = require('../config/tax.json');
 
 const config = {

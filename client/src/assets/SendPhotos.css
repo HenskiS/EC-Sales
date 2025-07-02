@@ -1,0 +1,341 @@
+.send-photos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.send-photos-container h2 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.send-photos-container h3 {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+/* Client Selection */
+.client-selection {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.email-toggle {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.email-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.email-toggle input[type="radio"] {
+    margin: 0;
+}
+
+.custom-email-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.no-email-warning {
+    color: #e74c3c;
+    background: #fdf2f2;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #e74c3c;
+}
+
+.client-email-info {
+    color: #27ae60;
+    background: #f8fff8;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #27ae60;
+}
+
+.intl {
+    margin-bottom: 15px;
+}
+
+.intl-client-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.intl-client-toggle p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Message Section */
+.message-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.message-note {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.message-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+}
+
+/* Photo Selection */
+.photo-selection {
+    margin-bottom: 25px;
+}
+
+.photo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.size-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 14px;
+}
+
+.size-warning {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.selected-count {
+    color: #666;
+    font-size: 12px;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.photo-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: white;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.photo-item:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.photo-checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+
+.photo-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.photo-thumbnail {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.photo-info {
+    text-align: center;
+}
+
+.photo-name {
+    font-weight: 500;
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #333;
+    word-break: break-word;
+}
+
+.photo-size {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Send Section */
+.send-section {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.send-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-width: 200px;
+}
+
+.send-button:hover:not(:disabled) {
+    background: #2980b9;
+}
+
+.send-button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .send-photos-container {
+        padding: 15px;
+    }
+    
+    .photos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .photo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .size-info {
+        align-items: flex-start;
+    }
+    
+    .email-toggle {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+/* Photo Modal Styles */
+.photo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.photo-modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    cursor: default;
+}
+
+.photo-modal-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.photo-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.photo-modal-close:hover {
+    background: white;
+}
+
+/* Make photo cards clickable */
+.photo-item {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.photo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Make photo thumbnail have a hover effect */
+.photo-thumbnail {
+    cursor: zoom-in;
+    transition: opacity 0.2s;
+}
+
+.photo-thumbnail:hover {
+    opacity: 0.8;
+}
+
+/* Ensure checkbox remains clickable */
+.photo-checkbox {
+    position: relative;
+    z-index: 1;
+}
+
+.photo-checkbox input[type="checkbox"] {
+    cursor: pointer;
+}

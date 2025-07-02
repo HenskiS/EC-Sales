@@ -1,15 +1,7 @@
-/*import { Link } from 'react-router-dom';
-import * as AiIcons from "react-icons/ai";
-import { useState } from 'react';
-import { SidebarData } from './SidebarData';
-import './Navbar.css';
-import { IconContext } from 'react-icons';*/
-
 import { useEffect, useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { Link, Outlet } from 'react-router-dom';
-//import { SidebarData } from './SidebarData';
 import { IconContext } from 'react-icons';
 
 import * as IoIcons from "react-icons/io";
@@ -71,6 +63,12 @@ function Navbar() {
                 </Link>
               </li>
               <li key={3} className='nav-text'>
+                <Link to='/send-photos'>
+                  <IoIcons.IoMdMail />
+                  <span>Send Photos</span>
+                </Link>
+              </li>
+              <li key={4} className='nav-text'>
                 <Link to='/clientlist'>
                   <IoIcons.IoMdPeople />
                   <span>Client List</span>

@@ -10,6 +10,7 @@ import ShowNavBar from './pages/navbar/ShowNavBar';
 import PrivateRoutes from './components/PrivateRoutes'
 import AdminRoute from './components/AdminRoute';
 import Order from './pages/Order';
+import SendPhotos from './pages/SendPhotos';
 import { useState, useEffect } from 'react';
 import OfflineOrderPage from './offline/OfflineOrderPage';
 import useConnectivity from './hooks/useConnectivity'
@@ -43,6 +44,7 @@ function App() {
               <Route index element={<AdminRoute />} />
               <Route path="order" element={<Home />} />
               <Route path="photos" element={<Photos />} />
+              <Route path="send-photos" element={<SendPhotos />} />
               <Route path="reppersonal" element={<RepPersonal />} />
               <Route path="clientlist" element={<ClientList />} />
               <Route path="*" element={<Home />} />
