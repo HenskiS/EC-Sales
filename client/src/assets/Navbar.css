@@ -38,7 +38,7 @@
   .nav-menu.active {
     left: 0;
     transition: 150ms;
-    z-index: 1;
+    z-index: 5000;
   }
   ul {
     padding-inline-start: 0px;
