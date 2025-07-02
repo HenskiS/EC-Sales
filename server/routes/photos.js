@@ -117,7 +117,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/photos/send - Send photos via email
-router.post('/send', async (req, res) => {
+router.post('/send', verifyJWT, async (req, res) => {
     try {
         const { photoIds, recipientEmail, customMessage, clientName } = req.body;
         

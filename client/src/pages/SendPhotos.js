@@ -7,6 +7,7 @@ import "react-toggle/style.css";
 import '../assets/SendPhotos.css';
 
 const SendPhotos = () => {
+    // State management
     const [photos, setPhotos] = useState([]);
     const [selectedPhotos, setSelectedPhotos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,94 +17,23 @@ const SendPhotos = () => {
     const [customEmail, setCustomEmail] = useState('');
     const [useCustomEmail, setUseCustomEmail] = useState(true);
     const [message, setMessage] = useState('');
-    const [totalSize, setTotalSize] = useState(0);
     const [isIntlClient, setIsIntlClient] = useState(false);
     const [clientsLoading, setClientsLoading] = useState(true);
+    const [expandedPhoto, setExpandedPhoto] = useState(null);
 
-    const tokenString = sessionStorage.getItem('UserInfo');
-    let user = (tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
-    let isIntlUser = false;
-    if (user) {
-        isIntlUser = (user.roles.includes("International"));
-    }
-
+    // Constants
     const MAX_SIZE_MB = 10;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-    // Fetch photos from server
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            try {
-                const response = await axios.get('/api/photos', config());
-                setPhotos(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching photos:', error);
-                setLoading(false);
-            }
-        };
-        fetchPhotos();
-    }, []);
+    // User info
+    const user = getUserInfo();
+    const isIntlUser = user?.roles?.includes("International") || false;
 
-    // Fetch clients
-    useEffect(() => {
-        const getClients = async () => {
-            try {
-                let endpoint = "/api/clients/clientnames";
-                if (isIntlClient) endpoint += "/intl";
-                const response = await axios.get(endpoint, config());
-                
-                let sortedClients = response.data.sort((a, b) => {
-                    if ((a.company?.toLowerCase() + a.name?.toLowerCase()) < (b.company?.toLowerCase() + b.name?.toLowerCase())) return -1;
-                    if ((a.company?.toLowerCase() + a.name?.toLowerCase()) > (b.company?.toLowerCase() + b.name?.toLowerCase())) return 1;
-                    return 0;
-                }).filter(n => (" " + n.company?.toLowerCase() + n.name?.toLowerCase()).length > 1 && (n.hasOwnProperty("company") || (n.hasOwnProperty("name") && n.name !== " ")));
-                
-                const reformattedClients = sortedClients.map((data) => {
-                    return {
-                        label: data.company ? data.company : data.name,
-                        value: data._id,
-                        email: data.email || null
-                    };
-                });
-                
-                setClients(reformattedClients);
-                setClientsLoading(false);
-            } catch (err) {
-                console.error(err);
-                setClientsLoading(false);
-            }
-        };
-        getClients();
-    }, [isIntlClient]);
-
-    // Calculate total size when photos are selected/deselected
-    useEffect(() => {
-        const size = selectedPhotos.reduce((total, photoId) => {
-            const photo = photos.find(p => p._id === photoId);
-            return total + (photo ? photo.size : 0);
-        }, 0);
-        setTotalSize(size);
-    }, [selectedPhotos, photos]);
-
-    const handlePhotoToggle = (photoId) => {
-        const photo = photos.find(p => p._id === photoId);
-        const newSelectedPhotos = selectedPhotos.includes(photoId)
-            ? selectedPhotos.filter(id => id !== photoId)
-            : [...selectedPhotos, photoId];
-        
-        // Check if adding this photo would exceed size limit
-        const newTotalSize = newSelectedPhotos.reduce((total, id) => {
-            const p = photos.find(p => p._id === id);
-            return total + (p ? p.size : 0);
-        }, 0);
-        
-        if (newTotalSize <= MAX_SIZE_BYTES) {
-            setSelectedPhotos(newSelectedPhotos);
-        } else {
-            alert(`Adding this photo would exceed the ${MAX_SIZE_MB}MB limit. Please remove some photos first.`);
-        }
-    };
+    // Helper functions
+    function getUserInfo() {
+        const tokenString = sessionStorage.getItem('UserInfo');
+        return (tokenString && tokenString !== 'undefined') ? JSON.parse(tokenString) : null;
+    }
 
     const formatFileSize = (bytes) => {
         if (bytes === 0) return '0 Bytes';
@@ -113,13 +43,51 @@ const SendPhotos = () => {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
+    const calculateTotalSize = (photoIds) => {
+        return photoIds.reduce((total, photoId) => {
+            const photo = photos.find(p => p._id === photoId);
+            return total + (photo?.size || 0);
+        }, 0);
+    };
+
+    // Event handlers
+    const handlePhotoToggle = (photoId) => {
+        const newSelectedPhotos = selectedPhotos.includes(photoId)
+            ? selectedPhotos.filter(id => id !== photoId)
+            : [...selectedPhotos, photoId];
+        
+        const newTotalSize = calculateTotalSize(newSelectedPhotos);
+        
+        if (newTotalSize <= MAX_SIZE_BYTES) {
+            setSelectedPhotos(newSelectedPhotos);
+        } else {
+            alert(`Adding this photo would exceed the ${MAX_SIZE_MB}MB limit. Please remove some photos first.`);
+        }
+    };
+
+    const handlePhotoClick = (photoId, e) => {
+        e.stopPropagation();
+        setExpandedPhoto(photoId);
+    };
+
+    const handleCardClick = (photoId) => {
+        handlePhotoToggle(photoId);
+    };
+
+    const closeExpandedPhoto = () => {
+        setExpandedPhoto(null);
+    };
+
     const handleSendPhotos = async () => {
+        // Validation
         if (selectedPhotos.length === 0) {
             alert('Please select at least one photo to send.');
             return;
         }
 
         let recipientEmail = '';
+        let clientName = 'Valued Customer';
+
         if (useCustomEmail) {
             if (!customEmail || !customEmail.includes('@')) {
                 alert('Please enter a valid email address.');
@@ -131,25 +99,26 @@ const SendPhotos = () => {
                 alert('Please select a client or enter a custom email.');
                 return;
             }
-            // Find the client's email
             const client = clients.find(c => c.value === selectedClient.value);
-            if (!client || !client.email) {
+            if (!client?.email) {
                 alert('Selected client does not have an email address. Please use custom email option.');
                 return;
             }
             recipientEmail = client.email;
+            clientName = selectedClient.label;
         }
 
         setSending(true);
         try {
-            const response = await axios.post('/api/send-photos', {
+            await axios.post('/api/photos/send', {
                 photoIds: selectedPhotos,
                 recipientEmail,
                 customMessage: message,
-                clientName: useCustomEmail ? 'Valued Customer' : selectedClient.label
+                clientName
             }, config());
 
             alert('Photos sent successfully!');
+            // Reset form
             setSelectedPhotos([]);
             setMessage('');
             setSelectedClient(null);
@@ -162,15 +131,66 @@ const SendPhotos = () => {
         }
     };
 
+    // Data fetching
+    useEffect(() => {
+        const fetchPhotos = async () => {
+            try {
+                const response = await axios.get('/api/photos', config());
+                setPhotos(response.data);
+            } catch (error) {
+                console.error('Error fetching photos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPhotos();
+    }, []);
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const endpoint = isIntlClient ? "/api/clients/clientnames/intl" : "/api/clients/clientnames";
+                const response = await axios.get(endpoint, config());
+                
+                const sortedClients = response.data
+                    .filter(client => {
+                        const displayName = (client.company || client.name || '').trim();
+                        return displayName.length > 0;
+                    })
+                    .sort((a, b) => {
+                        const nameA = (a.company || a.name || '').toLowerCase();
+                        const nameB = (b.company || b.name || '').toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    })
+                    .map(client => ({
+                        label: client.company || client.name,
+                        value: client._id,
+                        email: client.email || null
+                    }));
+                
+                setClients(sortedClients);
+            } catch (error) {
+                console.error('Error fetching clients:', error);
+            } finally {
+                setClientsLoading(false);
+            }
+        };
+        fetchClients();
+    }, [isIntlClient]);
+
+    // Render loading state
     if (loading) {
         return <div className="send-photos-container">Loading photos...</div>;
     }
+
+    const totalSize = calculateTotalSize(selectedPhotos);
+    const selectedClientEmail = selectedClient && clients.find(c => c.value === selectedClient.value)?.email;
 
     return (
         <div className="send-photos-container">
             <h2>Send Photos to Client</h2>
             
-            {/* Client Selection */}
+            {/* Recipient Selection */}
             <div className="client-selection">
                 <h3>Select Recipient</h3>
                 <div className="email-toggle">
@@ -200,10 +220,7 @@ const SendPhotos = () => {
                                     <p>Domestic</p>
                                     <Toggle 
                                         checked={isIntlClient} 
-                                        icons={{
-                                            checked: null,
-                                            unchecked: null,
-                                        }} 
+                                        icons={{ checked: null, unchecked: null }} 
                                         onChange={(e) => setIsIntlClient(e.target.checked)}
                                     />
                                     <p>International</p>
@@ -217,15 +234,13 @@ const SendPhotos = () => {
                             onChange={setSelectedClient}
                             isDisabled={clientsLoading}
                         />
-                        {selectedClient && !clients.find(c => c.value === selectedClient.value)?.email && (
+                        {selectedClient && !selectedClientEmail && (
                             <p className="no-email-warning">
                                 This client does not have an email address on file. Please use the custom email option.
                             </p>
                         )}
-                        {selectedClient && clients.find(c => c.value === selectedClient.value)?.email && (
-                            <p className="client-email-info">
-                                Email: {clients.find(c => c.value === selectedClient.value)?.email}
-                            </p>
+                        {selectedClient && selectedClientEmail && (
+                            <p className="client-email-info">Email: {selectedClientEmail}</p>
                         )}
                     </>
                 ) : (
@@ -256,7 +271,7 @@ const SendPhotos = () => {
 
             {/* Photo Selection */}
             <div className="photo-selection">
-                <div className="photo-header">
+                <div className="photo-header sticky">
                     <h3>Select Photos</h3>
                     <div className="size-info">
                         <span className={totalSize > MAX_SIZE_BYTES * 0.8 ? 'size-warning' : ''}>
@@ -270,7 +285,11 @@ const SendPhotos = () => {
 
                 <div className="photos-grid">
                     {photos.map((photo) => (
-                        <div key={photo._id} className="photo-item">
+                        <div 
+                            key={photo._id} 
+                            className="photo-item"
+                            onClick={() => handleCardClick(photo._id)}
+                        >
                             <div className="photo-checkbox">
                                 <input
                                     type="checkbox"
@@ -282,6 +301,7 @@ const SendPhotos = () => {
                                 src={`/api/photos/${photo._id}/thumbnail`}
                                 alt={photo.name}
                                 className="photo-thumbnail"
+                                onClick={(e) => handlePhotoClick(photo._id, e)}
                             />
                             <div className="photo-info">
                                 <p className="photo-name">{photo.name}</p>
@@ -302,6 +322,20 @@ const SendPhotos = () => {
                     {sending ? 'Sending...' : `Send ${selectedPhotos.length} Photo${selectedPhotos.length === 1 ? '' : 's'}`}
                 </button>
             </div>
+
+            {/* Expanded Photo Modal */}
+            {expandedPhoto && (
+                <div className="photo-modal" onClick={closeExpandedPhoto}>
+                    <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="photo-modal-close" onClick={closeExpandedPhoto}>×</button>
+                        <img
+                            src={`/api/photos/${expandedPhoto}`}
+                            alt="Expanded photo"
+                            className="photo-modal-image"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
