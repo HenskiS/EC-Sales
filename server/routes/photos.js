@@ -88,7 +88,7 @@ router.get('/:id/thumbnail', async (req, res) => {
             // Thumbnail doesn't exist, create it
             await sharp(originalPath)
                 .resize(200, 200, { 
-                    fit: 'cover',  // Changed from 'inside' to 'cover'
+                    fit: 'inside',  // Changed from 'cover' to 'inside'
                     position: 'center'  // Center the crop
                 })
                 .jpeg({ quality: 80 })
