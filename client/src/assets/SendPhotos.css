@@ -176,12 +176,22 @@
     cursor: pointer;
 }
 
-.photo-thumbnail {
+/* .photo-thumbnail {
     width: 100%;
     height: 150px;
     object-fit: cover;
     border-radius: 4px;
     margin-bottom: 10px;
+} */
+.photo-thumbnail {
+    width: 100%;
+    height: 120px; /* Fixed height for consistent layout */
+    object-fit: contain; /* Changed from 'cover' to 'contain' */
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: zoom-in;
+    transition: opacity 0.2s;
+    background-color: #f8f9fa; /* Light background to show image boundaries */
 }
 
 .photo-info {
@@ -256,40 +266,44 @@
         gap: 10px;
     }
 }
-/* Photo Modal Styles */
+/* Photo Modal Styles - Fixed for all screen sizes with proper click handling */
 .photo-modal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     cursor: pointer;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
 .photo-modal-content {
     position: relative;
-    max-width: 90%;
-    max-height: 90%;
     cursor: default;
+    /* Remove width/height constraints to let the image define the size */
 }
 
 .photo-modal-image {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: calc(100vw - 80px); /* Account for padding */
+    max-height: calc(100vh - 80px); /* Account for padding */
+    width: auto;
+    height: auto;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    cursor: default;
 }
 
 .photo-modal-close {
     position: absolute;
-    top: -40px;
-    right: 0;
+    top: -15px;
+    right: -15px;
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
@@ -303,6 +317,7 @@
     justify-content: center;
     color: #333;
     transition: background-color 0.2s;
+    z-index: 1001;
 }
 
 .photo-modal-close:hover {
