@@ -57,18 +57,24 @@ function Navbar() {
                 </Link>
               </li>
               <li key={2} className='nav-text'>
+                <Link to='/stats'>
+                  <IoIcons.IoMdStats />
+                  <span>Stats</span>
+                </Link>
+              </li>
+              <li key={3} className='nav-text'>
                 <Link to='/photos'>
                   <AiIcons.AiOutlinePicture />
                   <span>Photos</span>
                 </Link>
               </li>
-              <li key={3} className='nav-text'>
+              <li key={4} className='nav-text'>
                 <Link to='/send-photos'>
                   <IoIcons.IoMdMail />
                   <span>Send Photos</span>
                 </Link>
               </li>
-              <li key={4} className='nav-text'>
+              <li key={5} className='nav-text'>
                 <Link to='/clientlist'>
                   <IoIcons.IoMdPeople />
                   <span>Client List</span>
