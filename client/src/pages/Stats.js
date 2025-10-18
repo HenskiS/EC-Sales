@@ -210,12 +210,12 @@ const Stats = () => {
             valueFormatter: params => `$${params.value.toFixed(2)}`
         },
         {
-            field: 'pricePerBox',
-            headerName: 'Price/Box',
+            field: 'avgPricePerBox',
+            headerName: 'Avg Price/Box',
             sortable: true,
             filter: true,
-            width: 120,
-            valueFormatter: params => `$${params.value.toFixed(2)}`
+            width: 130,
+            valueFormatter: params => params.value ? `$${params.value.toFixed(2)}` : 'N/A'
         }
     ];
 

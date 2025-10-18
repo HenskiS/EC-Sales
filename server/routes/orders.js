@@ -158,15 +158,23 @@ router.post("/stats", async (req, res) => {
         if (!orders?.length) {
             return res.json({
                 orderFrequency: [],
-                topAccountsByTerritory: [],
+                topAccountsByTerritory: {},
                 salesByCategory: {
                     coreline: 0,
                     nonCoreline: 0,
                     flavored: 0,
                     maduro: 0,
-                    natural: 0
+                    natural: 0,
+                    other: 0
                 },
-                monthlySales: []
+                monthlySales: [],
+                cigarStats: [],
+                clientActivity: {
+                    overdue: [],
+                    needsFollowUp: [],
+                    inactive: [],
+                    active: []
+                }
             });
         }
 
@@ -295,13 +303,22 @@ router.post("/stats", async (req, res) => {
                             size: cigar.size || '',
                             boxesSold: 0,
                             totalRevenue: 0,
-                            pricePerBox: cigar.priceBox || 0,
-                            isCoreline: cigar.coreline || false
+                            avgPricePerBox: 0,
+                            isCoreline: cigar.coreline || false,
+                            priceSum: 0,
+                            priceCount: 0
                         };
                     }
 
                     cigarStats[cigarKey].boxesSold += cigar.qty || 0;
                     cigarStats[cigarKey].totalRevenue += price;
+
+                    // Track average price (in case prices change over time)
+                    if (cigar.priceBox) {
+                        cigarStats[cigarKey].priceSum += cigar.priceBox;
+                        cigarStats[cigarKey].priceCount++;
+                        cigarStats[cigarKey].avgPricePerBox = cigarStats[cigarKey].priceSum / cigarStats[cigarKey].priceCount;
+                    }
                 });
             }
         });
@@ -339,8 +356,12 @@ router.post("/stats", async (req, res) => {
             return a.month.localeCompare(b.month);
         });
 
-        // Sort cigar stats by boxes sold
-        const sortedCigarStats = Object.values(cigarStats).sort((a, b) => b.boxesSold - a.boxesSold);
+        // Sort cigar stats by boxes sold and clean up temp fields
+        const sortedCigarStats = Object.values(cigarStats).map(cigar => {
+            // Remove temporary calculation fields
+            const { priceSum, priceCount, ...cleanCigar } = cigar;
+            return cleanCigar;
+        }).sort((a, b) => b.boxesSold - a.boxesSold);
 
         // 5. Client Activity Insights
         const clientActivity = {
