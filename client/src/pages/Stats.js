@@ -41,7 +41,7 @@ const Stats = () => {
 
     useEffect(() => {
         fetchStats();
-    }, [selectedSalesman, startDate, endDate]);
+    }, [selectedSalesman]);
 
     const fetchStats = async () => {
         setLoading(true);
@@ -369,119 +369,61 @@ const Stats = () => {
             {/* Top Cigars Sold */}
             <div className="stats-section">
                 <h2>Top 15 Cigars by Boxes Sold</h2>
-                <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={(statsData.cigarStats || []).slice(0, 15)}>
+                <ResponsiveContainer width="100%" height={500}>
+                    <BarChart
+                        data={(statsData.cigarStats || []).slice(0, 15).map(cigar => ({
+                            ...cigar,
+                            fullName: `${cigar.brandAndName}${cigar.blend ? ' ' + cigar.blend : ''}${cigar.sizeName ? ' ' + cigar.sizeName : ''}`
+                        }))}
+                    >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
-                            dataKey="brandAndName"
+                            dataKey="fullName"
                             angle={-45}
                             textAnchor="end"
-                            height={150}
+                            height={200}
                             interval={0}
+                            style={{ fontSize: '12px' }}
                         />
                         <YAxis />
-                        <Tooltip />
+                        <Tooltip
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    const data = payload[0].payload;
+                                    return (
+                                        <div style={{ backgroundColor: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+                                            <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>{data.brandAndName}</p>
+                                            {data.blend && <p style={{ margin: '0 0 5px 0' }}>Blend: {data.blend}</p>}
+                                            {data.sizeName && <p style={{ margin: '0 0 5px 0' }}>Size: {data.sizeName} ({data.size})</p>}
+                                            <p style={{ margin: '0 0 5px 0' }}>Boxes Sold: {data.boxesSold}</p>
+                                            <p style={{ margin: '0' }}>Revenue: ${data.totalRevenue.toFixed(2)}</p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            }}
+                        />
                         <Legend />
                         <Bar dataKey="boxesSold" fill="#8884d8" name="Boxes Sold" />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
 
-            {/* Client Activity Tracking */}
-            {statsData.clientActivity && (
-                <>
-                    <div className="stats-section activity-alerts">
-                        <h2>Client Activity Summary</h2>
-                        <div className="activity-summary">
-                            <div className="activity-card overdue">
-                                <h3>{statsData.clientActivity.overdue.length}</h3>
-                                <p>Overdue Clients</p>
-                                <span>Past expected reorder time</span>
-                            </div>
-                            <div className="activity-card needs-followup">
-                                <h3>{statsData.clientActivity.needsFollowUp.length}</h3>
-                                <p>Needs Follow-Up</p>
-                                <span>Due for reorder soon</span>
-                            </div>
-                            <div className="activity-card inactive">
-                                <h3>{statsData.clientActivity.inactive.length}</h3>
-                                <p>Inactive Clients</p>
-                                <span>No order in 90+ days</span>
-                            </div>
-                            <div className="activity-card active">
-                                <h3>{statsData.clientActivity.active.length}</h3>
-                                <p>Active Clients</p>
-                                <span>Ordered recently</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Overdue Clients */}
-                    {statsData.clientActivity.overdue.length > 0 && (
-                        <div className="stats-section alert-section">
-                            <h2 style={{ color: '#cc0000' }}>Overdue Clients - Immediate Action Required</h2>
-                            <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
-                                <AgGridReact
-                                    rowData={statsData.clientActivity.overdue}
-                                    columnDefs={clientActivityColumns}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                        resizable: true
-                                    }}
-                                    pagination={true}
-                                    paginationPageSize={10}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Needs Follow-Up */}
-                    {statsData.clientActivity.needsFollowUp.length > 0 && (
-                        <div className="stats-section alert-section">
-                            <h2 style={{ color: '#cc8800' }}>Clients Needing Follow-Up</h2>
-                            <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
-                                <AgGridReact
-                                    rowData={statsData.clientActivity.needsFollowUp}
-                                    columnDefs={clientActivityColumns}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                        resizable: true
-                                    }}
-                                    pagination={true}
-                                    paginationPageSize={10}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Inactive Clients */}
-                    {statsData.clientActivity.inactive.length > 0 && (
-                        <div className="stats-section">
-                            <h2>Inactive Clients - Re-engagement Opportunity</h2>
-                            <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
-                                <AgGridReact
-                                    rowData={statsData.clientActivity.inactive}
-                                    columnDefs={clientActivityColumns}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                        resizable: true
-                                    }}
-                                    pagination={true}
-                                    paginationPageSize={10}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </>
-            )}
-
             {/* Order Frequency Per Account */}
             <div className="stats-section">
                 <h2>Order Frequency Per Account</h2>
-                <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
+                <div className="color-legend" style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '4px' }}>
+                    <strong>Color Guide:</strong>
+                    <span style={{ marginLeft: '15px' }}>
+                        <span style={{ display: 'inline-block', width: '15px', height: '15px', backgroundColor: '#ffcccc', marginLeft: '10px', marginRight: '5px', verticalAlign: 'middle', border: '1px solid #ccc' }}></span>
+                        <span style={{ color: '#cc0000' }}>Red cell</span> = Overdue (past their typical reorder time + 20% buffer)
+                    </span>
+                    <span style={{ marginLeft: '15px' }}>
+                        <span style={{ display: 'inline-block', width: '15px', height: '15px', backgroundColor: '#fff4cc', marginLeft: '10px', marginRight: '5px', verticalAlign: 'middle', border: '1px solid #ccc' }}></span>
+                        <span style={{ color: '#cc8800' }}>Yellow cell</span> = Due soon (within their typical reorder window)
+                    </span>
+                </div>
+                <div className="ag-theme-alpine" style={{ height: 500, width: '100%' }}>
                     <AgGridReact
                         rowData={filteredAccounts}
                         columnDefs={orderFrequencyColumns}
@@ -491,7 +433,7 @@ const Stats = () => {
                             resizable: true
                         }}
                         pagination={true}
-                        paginationPageSize={10}
+                        paginationPageSize={20}
                     />
                 </div>
             </div>

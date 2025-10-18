@@ -260,3 +260,12 @@
     --ag-header-background-color: #f5f5f5;
     --ag-header-foreground-color: #333;
 }
+
+/* AG Grid row highlighting */
+.ag-theme-alpine .overdue-row {
+    background-color: #ffebee !important;
+}
+
+.ag-theme-alpine .warning-row {
+    background-color: #fff9e6 !important;
+}
