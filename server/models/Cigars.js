@@ -26,6 +26,10 @@ const CigarSchema = new mongoose.Schema({
     },
     internationalOnly: {
         type: Boolean,
+    },
+    isCalifornia: {
+        type: Boolean,
+        default: true
     }
 
 });

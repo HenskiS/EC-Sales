@@ -21,6 +21,7 @@ const CigarsController = () => {
         { headerName: "Blend", field: "blend", flex:1, filter: true, floatingFilter: true, editable: true },
         { headerName: "Price: Each", field: "priceEach",flex:1, filter: true, floatingFilter: true, valueFormatter: currencyFormatter, editable: true, },
         { headerName: "Price: Box", field: "priceBox",flex:1, filter: true, floatingFilter: true, valueFormatter: currencyFormatter, editable: true, },
+        { headerName: "California", field: "isCalifornia", flex:0.75, filter: true, floatingFilter: true, editable: true, cellDataType: 'boolean' },
     ]
     useEffect(() => {
         const getCigars = async () => {
@@ -61,7 +62,8 @@ const CigarsController = () => {
         if (e.column.colId === "blend") handleBlendChanged(e)
         if (e.column.colId === "priceBox") handlePriceBoxChanged(e)
         if (e.column.colId === "priceEach") handlePriceEachChanged(e)
-        
+        if (e.column.colId === "isCalifornia") handleIsCaliforniaChanged(e)
+
     }
     
     const handleNameChanged = (e) => {
@@ -163,7 +165,7 @@ const CigarsController = () => {
         // update db
         const patchCigar = async () => {
             try {
-                const response = await axios.patch("/api/cigars/", 
+                const response = await axios.patch("/api/cigars/",
                 { _id: e.data._id, priceEach: e.data.priceEach} ,config());
                 console.log("posted priceEach");
                 console.log(response);
@@ -172,7 +174,25 @@ const CigarsController = () => {
         patchCigar()
         .catch(console.error);
     }
-    
+    const handleIsCaliforniaChanged = (e) => {
+        console.log(e)
+        const updatedCigars = cigars.map(cigar =>
+            cigar._id === e.data._id ? {...cigar, isCalifornia: e.newValue } : cigar
+        )
+        setCigars(updatedCigars)
+        // update db
+        const patchCigar = async () => {
+            try {
+                const response = await axios.patch("/api/cigars/",
+                { _id: e.data._id, isCalifornia: e.data.isCalifornia} ,config());
+                console.log("posted isCalifornia");
+                console.log(response);
+            } catch (err) { console.error(err); }
+        }
+        patchCigar()
+        .catch(console.error);
+    }
+
 
     return (
         <div>

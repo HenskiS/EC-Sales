@@ -37,18 +37,19 @@ router.get("/intl", async (req, res) => {
     .catch(err => res.status(404).json({nocigarsfound: "No Cigars Found!"}));
 });
 router.patch("/", async (req, res) => {
-    const { _id, brandAndName, blend, size, sizeName, priceEach, priceBox, quantityBox } = req.body
+    const { _id, brandAndName, blend, size, sizeName, priceEach, priceBox, quantityBox, isCalifornia } = req.body
     const cigar = await CigarModel.findById(_id).exec()
     if (!cigar) {
         return res.status(400).json({ message: 'Cigar not found' })
     }
     if (req.body.hasOwnProperty('brandAndName')) cigar.brandAndName = brandAndName
-    if (req.body.hasOwnProperty('blend')) cigar.blend = blend 
-    if (req.body.hasOwnProperty('size')) cigar.size = size 
+    if (req.body.hasOwnProperty('blend')) cigar.blend = blend
+    if (req.body.hasOwnProperty('size')) cigar.size = size
     if (req.body.hasOwnProperty('sizeName')) cigar.sizeName = sizeName
     if (req.body.hasOwnProperty('priceEach')) cigar.priceEach = priceEach
     if (req.body.hasOwnProperty('priceBox')) cigar.priceBox = priceBox
     if (req.body.hasOwnProperty('quantityBox')) cigar.quantityBox = quantityBox
+    if (req.body.hasOwnProperty('isCalifornia')) cigar.isCalifornia = isCalifornia
     const updatedCigar = await cigar.save()
     res.json({message: `${updatedCigar.brandAndName} updated`})
 });

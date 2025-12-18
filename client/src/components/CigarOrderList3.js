@@ -65,12 +65,23 @@ const CigarOrderList3 = (offline=false) => {
                 const response = await axios.get(endpoint, config());
                 console.log("got cigars");
                 console.log(response);
-                setCigars(response.data)
+
+                // Filter cigars based on California status
+                let filteredCigars = response.data;
+                const isCaliforniaClient = client && client.hasOwnProperty('state') && client.state.toUpperCase().startsWith("CA");
+
+                if (isCaliforniaClient) {
+                    // If client is in CA, only show cigars with isCalifornia = true
+                    filteredCigars = response.data.filter(cigar => cigar.isCalifornia === true);
+                    console.log("California client - filtered to CA cigars only");
+                }
+
+                setCigars(filteredCigars)
             } catch (err) { console.error(err); }
         }
         getCigars()
         .catch(console.error);
-    }, [isIntl])
+    }, [isIntl, client])
 
     useEffect(() => {
         // Initialize refs for each row
