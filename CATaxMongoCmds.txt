@@ -12,6 +12,9 @@ db.cigars.updateMany({ caTaxCents: 109, quantityBox: 50 }, { $set: { caTaxCents:
 db.cigars.updateMany({ caTaxCents: 109, quantityBox: 55 }, { $set: { caTaxCents: 7193 } })
 db.cigars.updateMany({ caTaxCents: 109, quantityBox: 60 }, { $set: { caTaxCents: 7847 } })
 
+// Seventy:
+db.cigars.updateMany({ sizeName: "Seventy" }, { $set: { caTaxCents: 3399 } })
+
 
 // Cuban Sandwich/Vigilante:
 db.cigars.updateMany({ brandAndName: "Cuban Sandwich" }, { $set: { caTaxCents: 1017 } })
