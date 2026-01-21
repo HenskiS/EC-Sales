@@ -16,7 +16,7 @@ function price(item){
 }
 function tax(item) {
     if (item.caTaxCents && item.caTaxCents > 0) {
-        return item.quantityBox * item.caTaxCents * item.qty;
+        return item.caTaxCents * item.qty;
     } else return 0;
 }
 function priceWithDiscount(item) {

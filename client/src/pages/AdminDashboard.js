@@ -31,7 +31,7 @@ const AdminDashboard = () => {
             <h1>Admin Dashboard</h1>
 
             <UserList />
-            <Tax />
+            {/* <Tax /> */}
             <Emails />
             <Orders />
             <CigarsController />

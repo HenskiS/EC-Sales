@@ -1,0 +1,29 @@
+// Coreline:
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 1 }, { $set: { caTaxCents: 131 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 4 }, { $set: { caTaxCents: 523 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 5 }, { $set: { caTaxCents: 653 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 10 }, { $set: { caTaxCents: 1307 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 20 }, { $set: { caTaxCents: 2615 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 24 }, { $set: { caTaxCents: 3138 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 25 }, { $set: { caTaxCents: 3269 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 32 }, { $set: { caTaxCents: 4185 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 40 }, { $set: { caTaxCents: 5231 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 50 }, { $set: { caTaxCents: 6539 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 55 }, { $set: { caTaxCents: 7193 } })
+db.cigars.updateMany({ caTaxCents: 109, quantityBox: 60 }, { $set: { caTaxCents: 7847 } })
+
+
+// Cuban Sandwich/Vigilante:
+db.cigars.updateMany({ brandAndName: "Cuban Sandwich" }, { $set: { caTaxCents: 1017 } })
+db.cigars.updateMany({ brandAndName: "Vigilante" }, { $set: { caTaxCents: 1017 } })
+
+// Flavored:
+db.cigars.updateMany({ brandAndName: /Flavored/ }, { $set: { caTaxCents: 1288 } })
+
+// Boolit/Coronita/Chupita:
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 1 }, { $set: { caTaxCents: 51 } })
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 10 }, { $set: { caTaxCents: 515 } })
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 24 }, { $set: { caTaxCents: 1237 } })
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 32 }, { $set: { caTaxCents: 1649 } })
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 40 }, { $set: { caTaxCents: 2062 } })
+db.cigars.updateMany({ caTaxCents: 48, quantityBox: 50 }, { $set: { caTaxCents: 2577 } })
