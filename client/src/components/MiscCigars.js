@@ -26,7 +26,7 @@ const MiscCigars = () => {
         priceBox: 0,
         qty: 0,
         coreline: false,
-        caTaxCents: 109
+        caTaxCents: 0
     })
     const [c2, setC2] = useState({
         _id: "c2",
@@ -39,7 +39,7 @@ const MiscCigars = () => {
         priceBox: 0,
         qty: 0,
         coreline: false,
-        caTaxCents: 109
+        caTaxCents: 0
     })
     const [c3, setC3] = useState({
         _id: "c3",
@@ -52,7 +52,7 @@ const MiscCigars = () => {
         priceBox: 0,
         qty: 0,
         coreline: false,
-        caTaxCents: 109
+        caTaxCents: 0
     })
     const [c4, setC4] = useState({
         _id: "c4",
@@ -65,7 +65,7 @@ const MiscCigars = () => {
         priceBox: 0,
         qty: 0,
         coreline: false,
-        caTaxCents: 109
+        caTaxCents: 0
     })
     const [c5, setC5] = useState({
         _id: "c5",
@@ -78,7 +78,7 @@ const MiscCigars = () => {
         priceBox: 0,
         qty: 0,
         coreline: false,
-        caTaxCents: 109
+        caTaxCents: 0
     })
 
     useEffect(()=>{
