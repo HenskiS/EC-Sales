@@ -21,7 +21,8 @@ const Order = (props) => {
     const [filename, setFilename] = useState();
     const [date, setDate] = useState()
     const [notes, setNotes] = useState()
-    
+    const [isMisc, setIsMisc] = useState(false)
+
 
     useEffect(() => {
         const getClient = async () => {
@@ -41,6 +42,7 @@ const Order = (props) => {
                 setFilename(response.data.filename)
                 setDate(new Date(response.data.date))
                 setNotes(response.data.notes)
+                setIsMisc(response.data.cigarData.some(c => ["c1", "c2", "c3", "c4", "c5"].includes(c._id)))
             } catch (err) { console.error(err); }
         }
         getClient()
@@ -167,7 +169,7 @@ const Order = (props) => {
                 <p>{cigars.reduce((total, cigar) => total + cigar.qty, 0)}</p>        
                 <h5>Subtotal</h5>
                 <p>${ subtotal?.toFixed(2) }</p>
-                <h5>CA Taxes</h5>
+                <h5>CA Taxes{isMisc ? " excl. MISC" : null}</h5>
                 <p>${ tax > 0 ? (Math.ceil(tax)/100).toFixed(2) : "0.00" }</p>
                 <h5>{boxesOff? boxesOff + "-Box " : ""}Discount</h5>
                 <p>${ discount > 0 ? discount?.toFixed(2) : "0.00" }</p>
