@@ -172,7 +172,7 @@ const CigarOrderList3 = (offline=false) => {
             <div className="reset-order">
                 <button onClick={() => {setCart([]);
                     if (!offline) { 
-                        navigate("/order/?name="+(client.company? client.company : client.name)+"&id="+client._id); 
+                        navigate("/order/?name="+encodeURIComponent(client.company? client.company : client.name)+"&id="+client._id);
                     }
                     window.location.reload() }}>
                         Reset Order

@@ -232,7 +232,7 @@ export const OrderProvider = ({ children }) => {
         }
     }
     const submitOrder = async (salesman, emails) => {
-        if (client.company === "") {
+        if (!client._id) {
             alert("No client selected!");
             return;}
         if (cigars.length === 0) {

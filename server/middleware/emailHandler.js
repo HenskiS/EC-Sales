@@ -57,7 +57,7 @@ const sendEmail = async (data, time, id, filename) => {
         cc.push(data.client.email)
     }
     if (data.salesman.email && data.salesman.email !== "") {
-        cc.push(data.salesman.email)
+        cc.push(...data.salesman.email.split(';').map(e => e.trim()).filter(e => e))
     }
     if (data.emails && data.emails.length > 0) {
         cc.push.apply(cc, data.emails)

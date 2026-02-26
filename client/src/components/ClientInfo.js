@@ -164,7 +164,7 @@ const ClientInfo = ({ id, close, addNameToList }) => {
                 <IoMdTrash onClick={() => deleteClient(id)} className="trashicon" />
                 <div className="spacer"></div>
                 <button className="client-button">
-                    <Link to={"/order/?name="+(client.company? client.company : client.name)+"&id="+client._id}>
+                    <Link to={"/order/?name="+encodeURIComponent(client.company? client.company : client.name)+"&id="+client._id}>
                         <IoMdPaper className="client-order-icon" />
                         Start Order
                     </Link>
