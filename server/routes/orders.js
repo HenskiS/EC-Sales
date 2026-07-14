@@ -42,16 +42,10 @@ router.get("/orderbyid/:id", async (req, res) => {
     if (!order) {
         return res.status(400).json({ message: 'Order not found' })
     }
-    // Because this route is unprotected, only return an order 
-    // submitted in the last 10 minutes, for security purposes
-    const now = Date.now()
-    const diff = now - order.date
-    const minutes = Math.floor((diff/1000)/60);
-    if (minutes < 10) {
-        res.status(200).json(order)
-    } else {
-        res.status(400).json({ message: 'Order submitted more than 10 minutes ago' })
-    }
+    // NOTE: This route is unprotected (it sits above router.use(verifyJWT) so
+    // puppeteer can render the PDF without auth). The former 10-minute view
+    // window was removed intentionally — any order is now viewable by id.
+    res.status(200).json(order)
 })
 
 router.use(verifyJWT)
