@@ -430,7 +430,8 @@ router.post("/add", async (req, res) => {
             cigarData: req.body.cigarData,
             filename: filename,
             date: req.body.date,
-            notes: req.body.notes
+            notes: req.body.notes,
+            isEstimate: req.body.isEstimate
         })
     const order = await newOrder.save();
 

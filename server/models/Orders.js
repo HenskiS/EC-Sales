@@ -38,6 +38,11 @@ const OrderSchema = new mongoose.Schema({
 
     notes: {
         type: String
+    },
+
+    isEstimate: {
+        type: Boolean,
+        default: false
     }
 
 });

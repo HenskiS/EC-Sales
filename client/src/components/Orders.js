@@ -24,25 +24,23 @@ const Orders = () => {
         } catch (err) { console.error(err); }
         return total
     }
-    useEffect(() => {
-        const getUsers = async () => {
-            try {
-                const response = await axios.get("/api/users/", config());
-                //console.log("got users info");
-                //console.log(response);
-                setUsers(response.data);
-                let temp = []
-                for (let i=0; i<response.data.length; i++) {
-                    let t = await getSalesmanTotal(response.data[i]._id)
-                    temp.push(t)
-                }
-                setTotals(temp)
-                //console.log("temp:")
-                //console.log(temp)
-            } catch (err) { console.error(err); }
-        }
-        getUsers();
-    }, [])
+    // Sales Totals disabled — the per-salesman N+1 fetch below was slowing the dashboard.
+    // To re-enable, uncomment this effect and the "Sales Totals" render block below.
+    // useEffect(() => {
+    //     const getUsers = async () => {
+    //         try {
+    //             const response = await axios.get("/api/users/", config());
+    //             setUsers(response.data);
+    //             let temp = []
+    //             for (let i=0; i<response.data.length; i++) {
+    //                 let t = await getSalesmanTotal(response.data[i]._id)
+    //                 temp.push(t)
+    //             }
+    //             setTotals(temp)
+    //         } catch (err) { console.error(err); }
+    //     }
+    //     getUsers();
+    // }, [])
     useEffect(() => {
         const getOrders = async () => {
             try {
@@ -73,12 +71,13 @@ const Orders = () => {
     return (
         <Fragment>
             <br />
+            {/* Sales Totals disabled for performance — re-enable with the getUsers effect above.
             <h3>Sales Totals</h3>
             <hr />
             {totals.map((total, index) => (
                 <p key={index}>{users[index].name}: ${Number(total).toFixed(2)}</p>
             ))}
-            <br />
+            <br /> */}
             <h3>Orders</h3>
             <hr />
 
@@ -87,6 +86,7 @@ const Orders = () => {
                     <Fragment key={index}>
                         <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"}
                             onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
+                            {order.isEstimate && <strong style={{ color: '#b8860b' }}>[ESTIMATE] </strong>}
                             {new Date(order.date).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })} - ${order.cigars.total}, {order.salesman.name} to {order.client.company ?? order.client.name ?? order.client.contact ?? order.client.city}
                         </button>
 
