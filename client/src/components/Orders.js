@@ -53,19 +53,18 @@ const Orders = () => {
         getOrders();
     }, [])
 
-    const [pdfList, setPdfList] = useState([]);
-    const [selectedPdf, setSelectedPdf] = useState(null);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     const PAGE_SIZE = 25;
     const [page, setPage] = useState(0);
     const pageCount = Math.ceil(orders.length / PAGE_SIZE);
     const pagedOrders = orders.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
-    const handlePdfClick = (pdfFileName) => {
-        if (pdfFileName === selectedPdf)
-            setSelectedPdf("")
+    const handleOrderClick = (order) => {
+        if (selectedOrder && order._id === selectedOrder._id)
+            setSelectedOrder(null)
         else
-            setSelectedPdf(pdfFileName);
+            setSelectedOrder(order);
     };
 
     return (
@@ -84,8 +83,8 @@ const Orders = () => {
             <div className="order-list">
                 {!orders.length? <></> : pagedOrders.map((order, index) => (
                     <Fragment key={index}>
-                        <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"}
-                            onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
+                        <button key={index} className={!selectedOrder || order._id !== selectedOrder._id ? "orderpdf" : "orderpdf-selected"}
+                            onClick={() => handleOrderClick(order)} >
                             {order.isEstimate && <strong style={{ color: '#b8860b' }}>[ESTIMATE] </strong>}
                             {new Date(order.date).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })} - ${order.cigars.total}, {order.salesman.name} to {order.client.company ?? order.client.name ?? order.client.contact ?? order.client.city}
                         </button>
@@ -106,54 +105,39 @@ const Orders = () => {
                 </div>
             )}
 
-            {selectedPdf && (
-                <PdfViewer pdfFileName={selectedPdf} />
+            {selectedOrder && (
+                <OrderViewer order={selectedOrder} />
             )}
         </Fragment>
     )
 }
 
-const PdfViewer = ({ pdfFileName }) => {
-
-    const [pdfUrl, setPdfUrl] = useState('');
-    const [pdfErr, setPdfErr] = useState(false);
-
-    useEffect(() => {
-        const fetchPdf = async () => {
-            try {
-                setPdfErr(false)
-
-                const response = await axios.get(`/api/orders/pdfs/${pdfFileName}`, {
-                    ...config(), 
-                    responseType: 'blob'
-                });
-                const blob = new Blob([response.data], { type: 'application/pdf' })
-                const url = URL.createObjectURL(blob)
-                setPdfUrl(url)
-
-            } catch (err) { console.error('Error fetching PDF:', err); setPdfErr(true) }
-        }
-
-        fetchPdf();
-
-        return () => {
-            // Clean up URL object when component unmounts
-            URL.revokeObjectURL(pdfUrl);
-        }
-
-    }, [pdfFileName])
-    
+// Renders the live /printorder/:id page (built straight from the DB), which
+// works even when the stored PDF was never generated. A link to the stored
+// PDF is offered as a fallback for orders that do have one.
+const OrderViewer = ({ order }) => {
     return (
       <div>
-        <h3>PDF Viewer</h3>
-        {pdfErr? <p style={{color: "red"}}><i>Error fetching {pdfFileName}</i></p> : 
+        <h3>Order Viewer</h3>
+        <p>
+          <a href={`/printorder/${order._id}`} target="_blank" rel="noopener noreferrer">
+            Open in new tab (to print / save as PDF)
+          </a>
+          {order.filename && (
+            <>
+              {"  |  "}
+              <a href={`/api/orders/pdfs/${encodeURIComponent(order.filename)}`} target="_blank" rel="noopener noreferrer">
+                Open stored PDF
+              </a>
+            </>
+          )}
+        </p>
         <iframe
-          title="PDF Viewer"
-          src={pdfUrl}
+          title="Order Viewer"
+          src={`/printorder/${order._id}`}
           width="100%"
           height="600px"
-          headers={config()}
-        />}
+        />
       </div>
     );
   };
