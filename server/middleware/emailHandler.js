@@ -1,21 +1,15 @@
-const nodemailer = require("nodemailer")
 require('dotenv').config()
+const fs = require("fs");
 const puppeteer = require("puppeteer");
+const { Resend } = require("resend");
 const file = require('../config/tax.json');
 
-const config = {
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: "estebancarrerassales@gmail.com",
-        pass: process.env.EMAIL_PASS
-    }
-}
-var options = {
-    convertTo : 'pdf'
-};
+// DigitalOcean blocks outbound SMTP (25/465/587), so we send over Resend's
+// HTTPS API (port 443) instead. Sender must be on a Resend-verified domain.
+const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM_ADDRESS = process.env.EMAIL_FROM || "orders@ecsales.work"
+// Where replies go when a salesman has no email on file.
+const REPLY_TO_FALLBACK = "estebancarrerassales@gmail.com"
 
 const generatePDF = async (filename, id) => {
     const browser = await puppeteer.launch({
@@ -32,19 +26,30 @@ const generatePDF = async (filename, id) => {
     return pdf
 }
 
-const send = (data) => {
-    return new Promise((resolve, reject) => {
-        const transporter = nodemailer.createTransport(config)
-        transporter.sendMail(data, (err, info) => {
-            if (err) {
-                console.error("SMTP sendMail error:", err)
-                reject(err)
-            } else {
-                console.log("SMTP accepted:", info.response)
-                resolve(info.response)
-            }
-        })
+const send = async (data) => {
+    // Nodemailer-style attachments use { filename, path }; Resend wants
+    // { filename, content }, so read each file into a Buffer.
+    const attachments = (data.attachments || []).map(a => ({
+        filename: a.filename,
+        content: fs.readFileSync(a.path),
+    }))
+
+    const { data: result, error } = await resend.emails.send({
+        from: data.from,
+        to: data.to,
+        cc: data.cc,
+        replyTo: data.replyTo,
+        subject: data.subject,
+        text: data.text,
+        attachments,
     })
+
+    if (error) {
+        console.error("Resend send error:", error)
+        throw error
+    }
+    console.log("Resend accepted, id:", result?.id)
+    return result
 }
 
 const sendEmail = async (data, time, id, filename) => {
@@ -69,11 +74,19 @@ const sendEmail = async (data, time, id, filename) => {
 
     if (!data.client.company || data.client.company === "") data.client.company = data.client.name
 
-    const data2 = 
+    if (!cc.length) {
+        console.error(`No recipients for order ${id} (${filename}) — email NOT sent`)
+        return
+    }
+
+    const salesmanEmails = (data.salesman.email || "").split(';').map(e => e.trim()).filter(e => e)
+
+    const data2 =
     {
-        "from": `${ data.salesman.name ?? "Esteban Carreras"} <estebancarrerassales@gmail.com>`,
-        "to": cc[0], //"henryschreiner@mac.com",
+        "from": `${ data.salesman.name ?? "Esteban Carreras"} <${FROM_ADDRESS}>`,
+        "to": cc[0],
         "cc": cc.slice(1),
+        "replyTo": salesmanEmails.length ? salesmanEmails : REPLY_TO_FALLBACK,
         "subject": `${data.isEstimate? "Estimate" : "Order"} ${"for " + data.client.company}`,
         "text": `Attached is a PDF of your ${data.isEstimate? "estimate" : "order"}.\nNote: Shipping costs not included.\n\nThis message is automated, please do not reply.`,
         "attachments": [
