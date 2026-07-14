@@ -33,13 +33,17 @@ const generatePDF = async (filename, id) => {
 }
 
 const send = (data) => {
-    const transporter = nodemailer.createTransport(config)
-    transporter.sendMail(data, (err, info) => {
-        if (err) {
-            console.log(err)
-        } else {
-            return info.response
-        }
+    return new Promise((resolve, reject) => {
+        const transporter = nodemailer.createTransport(config)
+        transporter.sendMail(data, (err, info) => {
+            if (err) {
+                console.error("SMTP sendMail error:", err)
+                reject(err)
+            } else {
+                console.log("SMTP accepted:", info.response)
+                resolve(info.response)
+            }
+        })
     })
 }
 
@@ -81,8 +85,10 @@ const sendEmail = async (data, time, id, filename) => {
     }
     const pdf = await generatePDF(filename, id)
     if (pdf) {
-        send(data2);
+        await send(data2);
         console.log("-------SENT-------");
+    } else {
+        console.error(`generatePDF returned no pdf for order ${id} (${filename}) — email NOT sent`);
     }
 }
 

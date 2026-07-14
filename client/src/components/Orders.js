@@ -58,6 +58,11 @@ const Orders = () => {
     const [pdfList, setPdfList] = useState([]);
     const [selectedPdf, setSelectedPdf] = useState(null);
 
+    const PAGE_SIZE = 25;
+    const [page, setPage] = useState(0);
+    const pageCount = Math.ceil(orders.length / PAGE_SIZE);
+    const pagedOrders = orders.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
     const handlePdfClick = (pdfFileName) => {
         if (pdfFileName === selectedPdf)
             setSelectedPdf("")
@@ -78,16 +83,28 @@ const Orders = () => {
             <hr />
 
             <div className="order-list">
-                {!orders.length? <></> : orders.map((order, index) => (
+                {!orders.length? <></> : pagedOrders.map((order, index) => (
                     <Fragment key={index}>
-                        <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"} 
+                        <button key={index} className={order.filename !== selectedPdf ? "orderpdf" : "orderpdf-selected"}
                             onClick={() => {handlePdfClick(order.filename); console.log(order.filename)}} >
                             {new Date(order.date).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })} - ${order.cigars.total}, {order.salesman.name} to {order.client.company ?? order.client.name ?? order.client.contact ?? order.client.city}
                         </button>
-                        
+
                     </Fragment>
                 ))}
             </div>
+
+            {orders.length > PAGE_SIZE && (
+                <div className="order-pagination">
+                    <button disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
+                        Prev
+                    </button>
+                    <span> Page {page + 1} of {pageCount} </span>
+                    <button disabled={page >= pageCount - 1} onClick={() => setPage(p => Math.min(pageCount - 1, p + 1))}>
+                        Next
+                    </button>
+                </div>
+            )}
 
             {selectedPdf && (
                 <PdfViewer pdfFileName={selectedPdf} />

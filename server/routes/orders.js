@@ -437,6 +437,7 @@ router.post("/add", async (req, res) => {
     if (order) {
         res.json({ success: "Order Added Successfully!"})
         sendEmail(req.body, time, order._id, filename)
+            .catch(err => console.error(`sendEmail FAILED for order ${order._id} (${filename}):`, err))
     } else {
         res.status(400).json({ error: 'Invalid order data received' })
     }

@@ -30,10 +30,10 @@ const AdminDashboard = () => {
         <div className="admin content">
             <h1>Admin Dashboard</h1>
 
+            <Orders />
             <UserList />
             {/* <Tax /> */}
             <Emails />
-            <Orders />
             <CigarsController />
             
         </div>
