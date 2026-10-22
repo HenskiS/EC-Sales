@@ -1,10 +1,10 @@
 /*import express from "express";
 import { OrderModel } from '../models/Orders.js'*/
-const sendEmail = require("../middleware/emailHandler");
 const express =  require("express");
 const OrderModel =  require('../models/Orders.js');
 const verifyJWT = require('../middleware/verifyJWT');
 const path = require('path');
+const { wakeOrderEmailWorker } = require('../services/orderEmailWorker');
 
 const router = express.Router();
 
@@ -425,14 +425,23 @@ router.post("/add", async (req, res) => {
             filename: filename,
             date: req.body.date,
             notes: req.body.notes,
-            isEstimate: req.body.isEstimate
+            isEstimate: req.body.isEstimate,
+            emailRecipients: Array.isArray(req.body.emails) ? req.body.emails : [],
+            emailDelivery: {
+                status: 'pending',
+                attempts: 0,
+                nextAttemptAt: new Date()
+            }
         })
     const order = await newOrder.save();
 
     if (order) {
-        res.json({ success: "Order Added Successfully!"})
-        sendEmail(req.body, time, order._id, filename)
-            .catch(err => console.error(`sendEmail FAILED for order ${order._id} (${filename}):`, err))
+        res.json({
+            success: "Order Added Successfully!",
+            orderId: order._id,
+            emailStatus: 'pending'
+        })
+        wakeOrderEmailWorker()
     } else {
         res.status(400).json({ error: 'Invalid order data received' })
     }

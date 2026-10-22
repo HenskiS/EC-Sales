@@ -8,9 +8,14 @@ const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConn')
+const { startOrderEmailWorker, stopOrderEmailWorker } = require('./services/orderEmailWorker')
 const PORT = process.env.PORT || 3001
 
 const app = express();
+
+// nginx/Cloudflare is the only public path to Express in production. Trusting
+// that single proxy makes express-rate-limit use the real client address.
+app.set('trust proxy', 1)
 
 console.log(process.env.NODE_ENV)
 
@@ -52,12 +57,53 @@ app.all('*', (req, res) => {
 
 app.use(errorHandler)
 
+let server
+let shuttingDown = false
+
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`)
+        startOrderEmailWorker()
+        if (process.send) process.send('ready')
+    });
 })
 
 mongoose.connection.on('error', err => {
     console.log(err)
     logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
 })
+
+const closeHttpServer = () => new Promise((resolve, reject) => {
+    if (!server) return resolve()
+    server.close(error => error ? reject(error) : resolve())
+})
+
+const shutdown = async (signal) => {
+    if (shuttingDown) return
+    shuttingDown = true
+    console.log(`${signal} received; draining HTTP requests and email work`)
+
+    const forceExit = setTimeout(() => {
+        console.error('Graceful shutdown timed out; forcing exit')
+        process.exit(1)
+    }, 55000)
+    forceExit.unref()
+
+    const results = await Promise.allSettled([
+        closeHttpServer(),
+        stopOrderEmailWorker(),
+    ])
+    for (const result of results) {
+        if (result.status === 'rejected') console.error('Shutdown task failed:', result.reason)
+    }
+
+    await mongoose.connection.close().catch(error => {
+        console.error('MongoDB shutdown failed:', error)
+    })
+    clearTimeout(forceExit)
+    process.exit(results.some(result => result.status === 'rejected') ? 1 : 0)
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'))
+process.on('SIGTERM', () => shutdown('SIGTERM'))

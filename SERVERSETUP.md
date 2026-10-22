@@ -1,6 +1,18 @@
 ## Server setup
 * * *
-Follow these instructions once you've already set up your droplet, git cloned the app into /apps/ECSales, copied the necessary data with [mongodb compass](https://www.digitalocean.com/community/tutorials/how-to-use-mongodb-compass) into [mongodb](https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04), and configured the backend server with `pm2 start "npm run start"` and `pm2 save`
+Follow these instructions once you've already set up your droplet, git cloned the app into `/apps/EC-Sales`, and copied the necessary data with [mongodb compass](https://www.digitalocean.com/community/tutorials/how-to-use-mongodb-compass) into [mongodb](https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04).
+
+Start the backend through the checked-in PM2 ecosystem file:
+
+```bash
+cd /apps/EC-Sales/server
+npm ci --omit=dev
+npm test
+pm2 start ../ecosystem.config.js --env production
+pm2 save
+```
+
+For subsequent releases, follow [DEPLOYMENT.md](./DEPLOYMENT.md) and use a graceful reload rather than `pm2 restart`.
 **Create the folders for your build files**
 ```mkdir -p /var/www/ecsales.work/html```
 
