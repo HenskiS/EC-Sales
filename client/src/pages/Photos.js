@@ -114,7 +114,7 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
 
                     {status.message && <p className={`catalog-email-status ${status.type}`}>{status.message}</p>}
                     <button className="catalog-send-button" type="submit" disabled={sending || status.type === 'success'}>
-                        <FaEnvelope /> {sending ? 'Sending catalogue...' : status.type === 'success' ? 'Catalogue sent' : 'Send catalogue'}
+                        <FaEnvelope /> {sending ? 'Sending catalogue...' : status.type === 'success' ? 'Catalogue queued' : 'Send catalogue'}
                     </button>
                 </form>
             </section>

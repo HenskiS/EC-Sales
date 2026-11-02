@@ -66,8 +66,6 @@ The defaults can be overridden in the server environment:
 - `EMAIL_WORKER_STALE_MS=300000`
 - `PDF_RENDER_TIMEOUT_MS=30000`
 - `PDF_BASE_URL=https://ecsales.work`
-- `CATALOG_PDF_URL=https://ecsales.work/api/catalog/pdf` (optional; defaults to
-  the `/api/catalog/pdf` route under `PDF_BASE_URL`)
 
 Each order records `emailDelivery.status`, attempts, the Resend ID, accepted
 recipients, dropped-address warnings, and the last error. Historical orders do
@@ -101,8 +99,8 @@ curl --fail --silent --show-error --output /dev/null http://localhost:3001/api/c
 ```
 
 Catalogue email uses the same `RESEND_API_KEY` and `EMAIL_FROM` settings as
-order email. Resend fetches the attachment from the public catalogue PDF URL,
-which avoids loading and JSON-encoding the full PDF in the Node process. To
-replace the catalogue later, put the new numbered JPGs in
+order email. The PDF is passed to Resend as Base64 text; do not pass the file
+as a Node Buffer because JSON serialization expands it into a much larger byte
+array. To replace the catalogue later, put the new numbered JPGs in
 `server/catalog/pages` and run `server/scripts/generateCatalogPdf.py` with a
 Python environment containing ReportLab before committing the release.

@@ -18,8 +18,6 @@ const router = express.Router()
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_ADDRESS = process.env.EMAIL_FROM || 'orders@ecsales.work'
 const REPLY_TO_FALLBACK = 'estebancarrerassales@gmail.com'
-const CATALOG_PDF_URL = process.env.CATALOG_PDF_URL
-    || `${(process.env.PDF_BASE_URL || 'https://ecsales.work').replace(/\/$/, '')}/api/catalog/pdf`
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60
 
 const setCatalogCacheHeaders = (res) => {
@@ -88,6 +86,10 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
     const customMessage = String(req.body.customMessage || '').trim().slice(0, 3000)
     const greeting = clientName ? `Hello ${clientName},` : 'Hello,'
     const message = customMessage ? `${customMessage}\n\n` : ''
+    // Resend accepts attachment content as Base64. Supplying a Buffer makes
+    // JSON.stringify expand it into a large numeric array, while a remote URL
+    // can fail later during Resend's fetch step after the request is accepted.
+    const pdfContent = await fs.promises.readFile(PDF_PATH, 'base64')
 
     const payload = {
         from: `${senderName} <${FROM_ADDRESS}>`,
@@ -97,9 +99,7 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
         text: `${greeting}\n\n${message}Attached is our current Esteban Carreras product catalog.\n\nBest regards,\n${senderName}`,
         attachments: [{
             filename: PDF_FILENAME,
-            // Let Resend fetch the public PDF. Passing a Buffer makes the SDK
-            // JSON-serialize every byte and can exhaust a small droplet's RAM.
-            path: CATALOG_PDF_URL,
+            content: pdfContent,
         }],
     }
 
@@ -115,7 +115,7 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
     console.log(`Resend accepted catalog email, id: ${data?.id}`)
 
     res.json({
-        message: `Catalog sent to ${parsed.addresses[0]}`,
+        message: `Catalogue queued for delivery to ${parsed.addresses[0]}`,
         resendId: data?.id,
     })
 }))
