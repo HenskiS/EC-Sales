@@ -51,12 +51,17 @@ const CACHE_API_ENDPOINTS = [
   '/api/clients/clientnames',
   '/api/clients/clientnames/intl',
   '/api/orders/catax',
+  '/api/catalog',
+  '/api/catalog/pages/',
+  '/api/catalog/thumbnails/',
   // Add other API endpoints that should be cached here
 ];
 
 // Helper function to check if a URL matches any of our cacheable API endpoints
 function shouldCacheEndpoint(url) {
-  return CACHE_API_ENDPOINTS.some(endpoint => url.includes(endpoint));
+  return CACHE_API_ENDPOINTS.some(endpoint => (
+    endpoint.endsWith('/') ? url.startsWith(endpoint) : url === endpoint
+  ));
 }
 
 // Helper function to determine if a request is for static assets

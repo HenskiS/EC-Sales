@@ -65,13 +65,7 @@ function Navbar() {
               <li key={3} className='nav-text'>
                 <Link to='/photos'>
                   <AiIcons.AiOutlinePicture />
-                  <span>Photos</span>
-                </Link>
-              </li>
-              <li key={4} className='nav-text'>
-                <Link to='/send-photos'>
-                  <IoIcons.IoMdMail />
-                  <span>Send Photos</span>
+                  <span>Product Catalogue</span>
                 </Link>
               </li>
               <li key={5} className='nav-text'>

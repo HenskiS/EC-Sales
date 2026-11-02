@@ -71,3 +71,34 @@ Each order records `emailDelivery.status`, attempts, the Resend ID, accepted
 recipients, dropped-address warnings, and the last error. Historical orders do
 not receive queue state automatically and therefore will not be resent when the
 worker is first deployed.
+
+## Product catalogue release
+
+The catalogue reader uses files from both halves of the repository:
+
+- `server/catalog/pages` contains the 41 ordered JPG pages served by `/api/catalog`.
+- `output/pdf/EC_Product_Catalog_2026.pdf` is the attachment sent through Resend.
+- The React catalogue reader is included in the normal client build.
+
+After pulling a catalogue release, deploy the backend with the routine PM2 steps
+above. Then build and publish the client:
+
+```bash
+cd /apps/EC-Sales/client
+npm ci
+npm run build
+sudo rsync -a --delete build/ /var/www/ecsales.work/html/
+```
+
+Confirm that the metadata, first page, and PDF are available:
+
+```bash
+curl --fail --silent --show-error http://localhost:3001/api/catalog
+curl --fail --silent --show-error --output /dev/null http://localhost:3001/api/catalog/pages/001_Cover.jpg
+curl --fail --silent --show-error --output /dev/null http://localhost:3001/api/catalog/pdf
+```
+
+Catalogue email uses the same `RESEND_API_KEY` and `EMAIL_FROM` settings as
+order email. To replace the catalogue later, put the new numbered JPGs in
+`server/catalog/pages` and run `server/scripts/generateCatalogPdf.py` with a
+Python environment containing ReportLab before committing the release.
