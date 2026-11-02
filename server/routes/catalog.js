@@ -18,6 +18,8 @@ const router = express.Router()
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_ADDRESS = process.env.EMAIL_FROM || 'orders@ecsales.work'
 const REPLY_TO_FALLBACK = 'estebancarrerassales@gmail.com'
+const CATALOG_PDF_URL = process.env.CATALOG_PDF_URL
+    || `${(process.env.PDF_BASE_URL || 'https://ecsales.work').replace(/\/$/, '')}/api/catalog/pdf`
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60
 
 const setCatalogCacheHeaders = (res) => {
@@ -95,7 +97,9 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
         text: `${greeting}\n\n${message}Attached is our current Esteban Carreras product catalog.\n\nBest regards,\n${senderName}`,
         attachments: [{
             filename: PDF_FILENAME,
-            content: fs.readFileSync(PDF_PATH),
+            // Let Resend fetch the public PDF. Passing a Buffer makes the SDK
+            // JSON-serialize every byte and can exhaust a small droplet's RAM.
+            path: CATALOG_PDF_URL,
         }],
     }
 
@@ -107,6 +111,8 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
             message: error.message || 'The email provider rejected the catalogue email',
         })
     }
+
+    console.log(`Resend accepted catalog email, id: ${data?.id}`)
 
     res.json({
         message: `Catalog sent to ${parsed.addresses[0]}`,

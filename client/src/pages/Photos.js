@@ -202,7 +202,7 @@ const Photos = () => {
     return (
         <div className="catalog-reader">
             <header className="catalog-toolbar">
-                <div><p className="catalog-eyebrow">Esteban Carreras</p><h1>Product Catalogue</h1></div>
+                <div><h1>Product Catalogue</h1></div>
                 <div className="catalog-toolbar-actions">
                     <button className="catalog-contents-toggle" type="button" onClick={() => setShowContents(value => !value)}><FaList /> Contents</button>
                     <button type="button" onClick={() => setShowThumbnails(value => !value)}><FaTh /> Thumbnails</button>

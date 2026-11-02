@@ -1,43 +1,53 @@
-# EC-Sales frontend deploy — skips re-uploading unchanged images.
-# CRA content-hashes files in build/static/media, so an unchanged image keeps
-# the same filename every build. We only upload media the server doesn't have.
+# EC-Sales frontend deploy.
+#
+# The complete build is packed locally and streamed through one SSH session.
+# This avoids opening a new password-authenticated SCP connection for every
+# file. With password authentication there is one prompt; with an SSH key
+# there are no prompts.
 
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
 $server = "root@143.198.236.191"
 $remote = "/var/www/ecsales.work/html"
+$staging = "${remote}.deploying"
+$previous = "${remote}.previous"
+$archiveName = "ecsales-frontend-$([guid]::NewGuid().ToString('N')).tar.gz"
+$archivePath = Join-Path ([IO.Path]::GetTempPath()) $archiveName
 
-Write-Host "==> Building..." -ForegroundColor Cyan
-npm run build
-if ($LASTEXITCODE -ne 0) { throw "npm run build failed" }
-
-# 1. Top-level build files (index.html, manifests, service-worker, favicon, etc.)
-Write-Host "==> Uploading root files..." -ForegroundColor Cyan
-Get-ChildItem ./build -File | ForEach-Object {
-    scp $_.FullName "${server}:${remote}/"
+foreach ($command in @("npm", "tar", "ssh")) {
+    if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
+        throw "Required command '$command' was not found in PATH."
+    }
 }
 
-# 2. JS + CSS bundles (new hashed names every build — always upload)
-Write-Host "==> Uploading js/css..." -ForegroundColor Cyan
-scp -r ./build/static/js  "${server}:${remote}/static/"
-scp -r ./build/static/css "${server}:${remote}/static/"
+try {
+    Write-Host "==> Building..." -ForegroundColor Cyan
+    npm run build
+    if ($LASTEXITCODE -ne 0) { throw "npm run build failed" }
 
-# 3. Media: only upload files not already on the server
-Write-Host "==> Diffing media..." -ForegroundColor Cyan
-ssh $server "mkdir -p ${remote}/static/media"
-$remoteMedia = @(ssh $server "ls -1 '${remote}/static/media' 2>/dev/null")
-$localMedia  = Get-ChildItem ./build/static/media -File
-$new         = $localMedia | Where-Object { $remoteMedia -notcontains $_.Name }
+    Write-Host "==> Packing build into one upload..." -ForegroundColor Cyan
+    tar -C ./build -czf $archivePath .
+    if ($LASTEXITCODE -ne 0) { throw "Could not create frontend archive" }
 
-Write-Host ("==> {0} new media file(s) to upload, {1} already on server" -f $new.Count, $remoteMedia.Count) -ForegroundColor Green
-foreach ($f in $new) {
-    Write-Host "    + $($f.Name)"
-    scp $f.FullName "${server}:${remote}/static/media/"
+    $archiveSize = [math]::Round((Get-Item -LiteralPath $archivePath).Length / 1MB, 1)
+    Write-Host "==> Uploading ${archiveSize} MB in one SSH session..." -ForegroundColor Cyan
+
+    # OpenSSH reads an interactive password from the console even though its
+    # standard input carries the archive. cmd.exe performs byte-safe stdin
+    # redirection on both Windows PowerShell 5 and PowerShell 7.
+    # Extract away from the live Nginx directory. The final rename only runs
+    # after tar receives the complete archive, so an interrupted connection
+    # leaves the currently deployed frontend untouched.
+    $remoteCommand = "set -e; rm -rf '$staging' '$previous'; mkdir -p '$staging'; tar -xzf - -C '$staging'; chown -R www-data:www-data '$staging'; if [ -d '$remote' ]; then mv '$remote' '$previous'; fi; mv '$staging' '$remote'; rm -rf '$previous'"
+    $sshCommand = "ssh $server `"$remoteCommand`" < `"$archivePath`""
+    & $env:ComSpec /d /s /c $sshCommand
+    if ($LASTEXITCODE -ne 0) { throw "Frontend upload failed" }
+
+    Write-Host "==> Done." -ForegroundColor Green
 }
-
-# 4. Fix ownership
-Write-Host "==> Fixing ownership..." -ForegroundColor Cyan
-ssh $server "chown -R www-data:www-data ${remote}"
-
-Write-Host "==> Done." -ForegroundColor Green
+finally {
+    if (Test-Path -LiteralPath $archivePath) {
+        Remove-Item -LiteralPath $archivePath -Force
+    }
+}
