@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const CATALOG_TITLE = 'Esteban Carreras 2026 Product Catalog'
+const CATALOG_TITLE = 'Esteban Carreras 2026 Product Catalogue'
 const PAGE_DIRECTORY = path.join(__dirname, 'pages')
 const PDF_FILENAME = 'EC_Product_Catalog_2026.pdf'
 const PDF_PATH = path.resolve(__dirname, '../../output/pdf', PDF_FILENAME)

@@ -3,6 +3,8 @@ import { FaChevronLeft, FaChevronRight, FaDownload, FaEnvelope, FaList, FaTh, Fa
 import axios, { config } from '../api/axios';
 import '../assets/Catalog.css';
 
+const DEFAULT_CATALOG_EMAIL_BODY = 'Hello,\n\nAttached is our current Esteban Carreras catalogue.';
+
 const formatFileSize = (bytes) => {
     if (!bytes) return '';
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -13,7 +15,7 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
     const [customEmail, setCustomEmail] = useState('');
     const [selectedClientId, setSelectedClientId] = useState('');
     const [clients, setClients] = useState([]);
-    const [customMessage, setCustomMessage] = useState('');
+    const [customMessage, setCustomMessage] = useState(DEFAULT_CATALOG_EMAIL_BODY);
     const [loadingClients, setLoadingClients] = useState(true);
     const [sending, setSending] = useState(false);
     const [status, setStatus] = useState({ type: '', message: '' });
@@ -48,7 +50,6 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const recipientEmail = recipientMode === 'client' ? selectedClient?.email : customEmail.trim();
-        const clientName = recipientMode === 'client' ? (selectedClient?.company || selectedClient?.name) : '';
         if (!recipientEmail) {
             setStatus({ type: 'error', message: 'Choose a client or enter an email address.' });
             return;
@@ -59,7 +60,6 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
         try {
             const response = await axios.post('/api/catalog/email', {
                 recipientEmail,
-                clientName,
                 customMessage,
             }, config());
             setStatus({ type: 'success', message: response.data.message });
@@ -108,8 +108,8 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
                     )}
 
                     <label className="catalog-field">
-                        Message <span>optional</span>
-                        <textarea rows="4" value={customMessage} onChange={event => setCustomMessage(event.target.value)} placeholder="Add a short note for the customer..." />
+                        Email message
+                        <textarea rows="6" value={customMessage} onChange={event => setCustomMessage(event.target.value)} />
                     </label>
 
                     {status.message && <p className={`catalog-email-status ${status.type}`}>{status.message}</p>}

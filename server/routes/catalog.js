@@ -18,6 +18,7 @@ const router = express.Router()
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_ADDRESS = process.env.EMAIL_FROM || 'orders@ecsales.work'
 const REPLY_TO_FALLBACK = 'estebancarrerassales@gmail.com'
+const DEFAULT_CATALOG_EMAIL_BODY = 'Hello,\n\nAttached is our current Esteban Carreras catalogue.'
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60
 
 const setCatalogCacheHeaders = (res) => {
@@ -82,10 +83,8 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
     const senderName = String(user?.name || 'Esteban Carreras')
         .replace(/[\r\n<>]/g, '')
         .trim() || 'Esteban Carreras'
-    const clientName = String(req.body.clientName || '').trim().slice(0, 200)
     const customMessage = String(req.body.customMessage || '').trim().slice(0, 3000)
-    const greeting = clientName ? `Hello ${clientName},` : 'Hello,'
-    const message = customMessage ? `${customMessage}\n\n` : ''
+    const emailBody = customMessage || DEFAULT_CATALOG_EMAIL_BODY
     // Resend accepts attachment content as Base64. Supplying a Buffer makes
     // JSON.stringify expand it into a large numeric array, while a remote URL
     // can fail later during Resend's fetch step after the request is accepted.
@@ -96,7 +95,7 @@ router.post('/email', verifyJWT, asyncHandler(async (req, res) => {
         to: parsed.addresses[0],
         replyTo: EMAIL_RE.test(user?.email || '') ? user.email : REPLY_TO_FALLBACK,
         subject: CATALOG_TITLE,
-        text: `${greeting}\n\n${message}Attached is our current Esteban Carreras product catalog.\n\nBest regards,\n${senderName}`,
+        text: emailBody,
         attachments: [{
             filename: PDF_FILENAME,
             content: pdfContent,
