@@ -307,6 +307,19 @@
 
 .catalog-field textarea { resize: vertical; }
 
+.catalog-client-select { font-weight: 400; }
+.catalog-client-select__control {
+    min-height: 44px !important;
+    border-color: #cfc5b7 !important;
+    box-shadow: none !important;
+}
+.catalog-client-select__control--is-focused { border-color: var(--catalog-gold) !important; }
+.catalog-client-select__value-container { padding: 4px 11px !important; }
+.catalog-client-select__menu { color: var(--catalog-ink); font-weight: 400; }
+.catalog-client-select__option { padding: 10px 12px !important; }
+.catalog-client-select__option--is-focused { background: #f3eadc !important; }
+.catalog-client-select__option--is-selected { background: var(--catalog-brown) !important; color: white !important; }
+
 .catalog-send-button {
     width: 100%;
     min-height: 50px;

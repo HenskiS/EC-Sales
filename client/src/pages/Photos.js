@@ -1,9 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaChevronLeft, FaChevronRight, FaDownload, FaEnvelope, FaList, FaTh, FaTimes } from 'react-icons/fa';
+import Select from 'react-select';
 import axios, { config } from '../api/axios';
 import '../assets/Catalog.css';
 
 const DEFAULT_CATALOG_EMAIL_BODY = 'Hello,\n\nAttached is our current Esteban Carreras catalogue.';
+const CLIENT_RESULT_LIMIT = 75;
+
+const clientLabel = (client) => {
+    const name = (client.company || client.name || '').trim();
+    const city = (client.city || '').trim();
+    const region = (client.state || client.country || '').trim();
+    return `${name}${city ? `, ${city}` : ''}${region ? ` ${region}` : ''}`;
+};
+
+const CLIENT_SELECT_STYLES = {
+    menuPortal: base => ({ ...base, zIndex: 7000 }),
+};
 
 const formatFileSize = (bytes) => {
     if (!bytes) return '';
@@ -14,6 +27,7 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
     const [recipientMode, setRecipientMode] = useState('custom');
     const [customEmail, setCustomEmail] = useState('');
     const [selectedClientId, setSelectedClientId] = useState('');
+    const [clientSearch, setClientSearch] = useState('');
     const [clients, setClients] = useState([]);
     const [customMessage, setCustomMessage] = useState(DEFAULT_CATALOG_EMAIL_BODY);
     const [loadingClients, setLoadingClients] = useState(true);
@@ -33,7 +47,7 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
                     .flatMap(result => result.value.data)
                     .filter(client => client.email && (client.company || client.name));
                 const unique = Array.from(new Map(combined.map(client => [client._id, client])).values())
-                    .sort((a, b) => (a.company || a.name).localeCompare(b.company || b.name));
+                    .sort((a, b) => clientLabel(a).localeCompare(clientLabel(b)));
                 if (active) setClients(unique);
             } catch (error) {
                 if (active) setStatus({ type: 'error', message: 'Client list could not be loaded. You can still enter an email.' });
@@ -46,6 +60,19 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
     }, []);
 
     const selectedClient = clients.find(client => client._id === selectedClientId);
+    const clientOptions = useMemo(() => clients.map(client => ({
+        value: client._id,
+        label: clientLabel(client),
+        searchText: `${clientLabel(client)} ${client.email || ''}`.toLowerCase(),
+    })), [clients]);
+    const visibleClientOptions = useMemo(() => {
+        const search = clientSearch.trim().toLowerCase();
+        const matches = search
+            ? clientOptions.filter(option => option.searchText.includes(search))
+            : clientOptions;
+        return matches.slice(0, CLIENT_RESULT_LIMIT);
+    }, [clientOptions, clientSearch]);
+    const selectedClientOption = clientOptions.find(option => option.value === selectedClientId) || null;
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -96,15 +123,36 @@ const CatalogEmailModal = ({ catalog, onClose }) => {
                             <input type="email" required autoFocus value={customEmail} onChange={event => setCustomEmail(event.target.value)} placeholder="customer@example.com" />
                         </label>
                     ) : (
-                        <label className="catalog-field">
-                            Client
-                            <select required value={selectedClientId} onChange={event => setSelectedClientId(event.target.value)} disabled={loadingClients}>
-                                <option value="">{loadingClients ? 'Loading clients...' : 'Choose a client'}</option>
-                                {clients.map(client => (
-                                    <option key={client._id} value={client._id}>{client.company || client.name} - {client.email}</option>
-                                ))}
-                            </select>
-                        </label>
+                        <div className="catalog-field">
+                            <label htmlFor="catalog-client-search">Client</label>
+                            <Select
+                                inputId="catalog-client-search"
+                                className="catalog-client-select"
+                                classNamePrefix="catalog-client-select"
+                                options={visibleClientOptions}
+                                value={selectedClientOption}
+                                onChange={option => {
+                                    setSelectedClientId(option?.value || '');
+                                    setClientSearch('');
+                                }}
+                                onInputChange={(value, action) => {
+                                    if (action.action === 'input-change') setClientSearch(value);
+                                    return value;
+                                }}
+                                filterOption={null}
+                                isClearable
+                                isSearchable
+                                isLoading={loadingClients}
+                                isDisabled={loadingClients}
+                                placeholder={loadingClients ? 'Loading clients...' : 'Search by name or city...'}
+                                noOptionsMessage={() => 'No clients found'}
+                                maxMenuHeight={260}
+                                menuPosition="fixed"
+                                menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+                                styles={CLIENT_SELECT_STYLES}
+                            />
+                            {selectedClient && <span>{selectedClient.email}</span>}
+                        </div>
                     )}
 
                     <label className="catalog-field">
