@@ -40,7 +40,8 @@ cd /apps/EC-Sales
 git pull --ff-only
 
 cd server
-npm ci --omit=dev
+# Reinstall dependencies only when the lockfile changed in this pull.
+git diff --quiet HEAD@{1} HEAD -- package-lock.json || npm ci --omit=dev
 npm test
 
 cd ..
@@ -48,6 +49,15 @@ pm2 startOrGracefulReload ecosystem.config.js --env production
 curl --fail --silent --show-error http://localhost:3001/api/ping
 pm2 save
 ```
+
+Skip `npm ci` when `server/package-lock.json` did not change. It deletes and
+reinstalls all of `node_modules`, including Puppeteer's Chrome check and the
+native `bcrypt` and `sharp` builds. On the droplet this saturates CPU and memory
+long enough for the MongoDB driver's server monitor to time out, which logs
+`PoolClearedOnNetworkError` from the email worker. The running process keeps
+working throughout, but if `npm ci` is interrupted, `node_modules` is left
+partly deleted; run `npm install --omit=dev` to repair it before reloading PM2.
+If the droplet has no swap, add 1–2 GB before any dependency install.
 
 PM2 starts the replacement process, waits for MongoDB and the HTTP listener to
 be ready, then asks the old process to drain. The old process has up to 60
