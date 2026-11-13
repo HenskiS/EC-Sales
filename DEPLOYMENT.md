@@ -81,13 +81,12 @@ The catalogue reader uses files from both halves of the repository:
 - The React catalogue reader is included in the normal client build.
 
 After pulling a catalogue release, deploy the backend with the routine PM2 steps
-above. Then build and publish the client:
+above. The client is never built on the server; build and publish it from a
+development machine with the deploy script:
 
-```bash
-cd /apps/EC-Sales/client
-npm ci
-npm run build
-sudo rsync -a --delete build/ /var/www/ecsales.work/html/
+```powershell
+cd client
+.\deploy.ps1
 ```
 
 Confirm that the metadata, first page, and PDF are available:

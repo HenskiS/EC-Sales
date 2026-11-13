@@ -11,6 +11,7 @@ const {
     PDF_FILENAME,
     PDF_PATH,
     getCatalogPages,
+    getPageVersion,
     resolveCatalogPage,
 } = require('../catalog/catalogManifest')
 
@@ -21,8 +22,27 @@ const REPLY_TO_FALLBACK = 'estebancarrerassales@gmail.com'
 const DEFAULT_CATALOG_EMAIL_BODY = 'Hello,\n\nAttached is our current Esteban Carreras catalogue.'
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60
 
-const setCatalogCacheHeaders = (res) => {
-    res.set('Cache-Control', `public, max-age=${ONE_YEAR_SECONDS}, immutable`)
+// Page URLs carry ?v=<content hash>, so a matching request can be cached
+// forever. Unversioned or outdated requests get a short revalidating cache.
+const setCatalogCacheHeaders = (req, res, filename) => {
+    const immutable = req.query.v && req.query.v === getPageVersion(filename)
+    res.set('Cache-Control', immutable
+        ? `public, max-age=${ONE_YEAR_SECONDS}, immutable`
+        : 'public, max-age=300, must-revalidate')
+}
+
+const thumbnailCache = new Map()
+const getThumbnail = async (filename, pagePath) => {
+    const version = getPageVersion(filename)
+    const cached = thumbnailCache.get(filename)
+    if (cached && cached.version === version) return cached.buffer
+
+    const buffer = await sharp(pagePath)
+        .resize({ width: 260, withoutEnlargement: true })
+        .jpeg({ quality: 76, progressive: true })
+        .toBuffer()
+    thumbnailCache.set(filename, { version, buffer })
+    return buffer
 }
 
 router.get('/', (req, res) => {
@@ -41,7 +61,7 @@ router.get('/pages/:filename', (req, res) => {
     const pagePath = resolveCatalogPage(req.params.filename)
     if (!pagePath) return res.status(404).json({ message: 'Catalog page not found' })
 
-    setCatalogCacheHeaders(res)
+    setCatalogCacheHeaders(req, res, req.params.filename)
     res.sendFile(pagePath)
 })
 
@@ -49,12 +69,9 @@ router.get('/thumbnails/:filename', asyncHandler(async (req, res) => {
     const pagePath = resolveCatalogPage(req.params.filename)
     if (!pagePath) return res.status(404).json({ message: 'Catalog page not found' })
 
-    setCatalogCacheHeaders(res)
+    const thumbnail = await getThumbnail(req.params.filename, pagePath)
+    setCatalogCacheHeaders(req, res, req.params.filename)
     res.type('jpeg')
-    const thumbnail = await sharp(pagePath)
-        .resize({ width: 260, withoutEnlargement: true })
-        .jpeg({ quality: 76, progressive: true })
-        .toBuffer()
     res.send(thumbnail)
 }))
 

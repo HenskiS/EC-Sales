@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
 
@@ -8,8 +9,8 @@ const PDF_PATH = path.resolve(__dirname, '../../output/pdf', PDF_FILENAME)
 
 const sectionForPage = (pageNumber) => {
     if (pageNumber <= 3) return 'About Esteban Carreras'
-    if (pageNumber <= 9) return 'Chupacabra Collection'
-    if (pageNumber <= 34) return 'Product Portfolio'
+    if (pageNumber <= 9) return 'Chupa Cabra Collection'
+    if (pageNumber <= 33) return 'Product Portfolio'
     return 'Specialty & Programs'
 }
 
@@ -22,8 +23,6 @@ const titleFromFilename = (filename) => {
 
     return withoutNumber
         .replace(/\bEc\b/gi, 'EC')
-        .replace(/\bCt\b/g, 'CT')
-        .replace(/\bCt\b/gi, 'CT')
         .replace(/\bL (\d)\b/g, 'L-$1')
 }
 
@@ -35,15 +34,32 @@ const getPageFiles = () => {
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
 }
 
+// Content hash per page, memoized on mtime+size so it's only recomputed when
+// a file actually changes. Used as a cache-busting query on page URLs, since
+// those responses are served as immutable.
+const versionCache = new Map()
+const getPageVersion = (filename) => {
+    const filePath = path.join(PAGE_DIRECTORY, filename)
+    const { mtimeMs, size } = fs.statSync(filePath)
+    const cached = versionCache.get(filename)
+    if (cached && cached.mtimeMs === mtimeMs && cached.size === size) return cached.version
+
+    const version = crypto.createHash('sha1').update(fs.readFileSync(filePath)).digest('hex').slice(0, 10)
+    versionCache.set(filename, { mtimeMs, size, version })
+    return version
+}
+
 const getCatalogPages = () => getPageFiles().map((filename, index) => {
     const number = index + 1
+    const version = getPageVersion(filename)
     return {
         number,
         filename,
         title: titleFromFilename(filename),
         section: sectionForPage(number),
-        imageUrl: `/api/catalog/pages/${encodeURIComponent(filename)}`,
-        thumbnailUrl: `/api/catalog/thumbnails/${encodeURIComponent(filename)}`,
+        version,
+        imageUrl: `/api/catalog/pages/${encodeURIComponent(filename)}?v=${version}`,
+        thumbnailUrl: `/api/catalog/thumbnails/${encodeURIComponent(filename)}?v=${version}`,
     }
 })
 
@@ -58,6 +74,7 @@ module.exports = {
     PDF_FILENAME,
     PDF_PATH,
     getCatalogPages,
+    getPageVersion,
     resolveCatalogPage,
     sectionForPage,
     titleFromFilename,

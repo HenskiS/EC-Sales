@@ -207,7 +207,11 @@ const Photos = () => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (showEmail || ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
+            if (showEmail) {
+                if (event.key === 'Escape' && !event.defaultPrevented) setShowEmail(false);
+                return;
+            }
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
             if (event.key === 'ArrowLeft') previousPage();
             if (event.key === 'ArrowRight') nextPage();
             if (event.key === 'Escape') {
